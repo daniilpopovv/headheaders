@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+    <div class="container w-25 d-flex flex-column justify-content-center">
+
+        <form method="post" class="w-100 form-block">
+            <h1 class="mb-3">Войдите</h1>
+
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            {% if app.user %}
+                <div class="mb-3">
+                    Вы уже залогинены, как {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Выйти</a>
+                </div>
+            {% endif %}
+
+            <label for="inputUsername">Логин</label>
+            <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control mb-2"
+                   autocomplete="username" required autofocus>
+            <label for="inputPassword">Пароль</label>
+            <input type="password" name="password" id="inputPassword" class="form-control mb-4"
+                   autocomplete="current-password" required>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button class="btn btn-lg btn-primary w-100" type="submit">
+                Войти
+            </button>
+            {#
+            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+            See https://symfony.com/doc/current/security/remember_me.html
+
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" name="_remember_me"> Remember me
+                </label>
+            </div>
+            #}
+        </form>
+
+        <div class="auth-form-register mt-5">
+            <h5 class="mb-3">Регистрация</h5>
+            <div class="d-flex justify-content-between">
+                <a class="btn btn-lg btn-primary w-100 me-4" href="{{ path('app_register_seeker') }}"> Я ищу работу </a>
+                <a class="btn btn-lg btn-primary w-100" href="{{ path('app_register_recruiter') }}"> Я ищу сотрудника </a>
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}

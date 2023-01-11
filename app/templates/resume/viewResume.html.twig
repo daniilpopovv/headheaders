@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ resume }}{% endblock %}
+
+{% block body %}
+
+    <div class="p-3 mb-3 container-sm detail-view-container w-50">
+        <div class="d-flex justify-content-between mb-3 align-items-center">
+            <h1 class="">{{ resume.seeker.fullName }}</h1>
+            {% if app.user.roles is defined and 'ROLE_RECRUITER' in app.user.roles %}
+                <button class="btn">Пригласить</button>
+                {% elseif app.user.username is defined and resume.seeker.username == app.user.username  %}
+                    <a class="btn" href="{{ path('edit_resume', { id: resume.id }) }}">Редактировать</a>
+            {% endif %}
+
+        </div>
+
+        {% if app.user.roles is defined and 'ROLE_RECRUITER' in app.user.roles %}
+            {% set break = false %}
+            {% if break == false %}
+                {% if app.user.vacancies is defined %}
+                    {% for vacancy in app.user.vacancies %}
+                        {% if break == false %}
+                            {% for resume_response in vacancy.responses %}
+                                {% if break == false %}
+                                    {% if resume_response == resume %}
+                                        <p class="fw-bold">Соискатель откликнулся на вашу вакансию! Почта для связи: <a href="mailto:{{ resume.seeker.email }}">{{ resume.seeker.email }}</a></p>
+                                        {% set break = true %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+        {% if resume.description %}
+            <p class="card-text w-75">{{ resume.description|nl2br }}</p>
+        {% endif %}
+
+        <hr />
+
+        <div class="d-flex justify-content-between">
+            <h5 class="card-title pb-2">{{ resume.specialization }}</h5>
+            <p class="m-0 salary">{{ resume.salary|number_format(thousandSep = ' ') }} руб.</p>
+        </div>
+
+        {% if resume.skills %}
+            <div class="d-flex flex-row mt-2">
+                {% for skill in resume.skills %}
+                    <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if app.user.roles is defined and 'ROLE_RECRUITER' in app.user.roles %}
+            {% if isInvite %}
+                <p class="fw-bold">Вы уже отправили приглашение ✓</p>
+            {% else %}
+                <div class="form-block w-75">
+                    {{ form(resume_form) }}
+                </div>
+            {% endif %}
+        {% endif %}
+
+        {% if app.user.username is defined and resume.seeker.username == app.user.username  %}
+            <h2 class="mt-4">Вам подойдут вакансии:</h2>
+
+            <div class="p-0 pt-1 mb-3 ms-0 w-75 container d-flex flex-column ">
+                {% for relevant_vacancy in relevant_vacancies|sort((a,b) => a.skills|length <=> b.skills|length)|reverse %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-end">
+                                <h5 class="card-title pb-2">{{ relevant_vacancy.specialization }}</h5>
+
+                                {# TODO: Оптимизировать #}
+                                {% set break = false %}
+                                {% if app.user.roles is defined and 'ROLE_SEEKER' in app.user.roles %}
+                                    {% for resume1 in app.user.resumes %}
+                                        {% for resume2 in relevant_vacancy.responses %}
+                                            {% if resume1 == resume2 and not break %}
+                                                <p class="fw-bold">Вы откликнулись ✓</p>
+                                                {% set break = true %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+
+
+                            {% if relevant_vacancy.recruiter.company %}
+                                <p class="p-0 m-0">{{ relevant_vacancy.recruiter.company.name }}</p>
+                            {% else %}
+                                <p class="p-0 m-0">{{ relevant_vacancy.recruiter.fullName }}</p>
+                            {% endif %}
+
+                            <hr class="my-3"/>
+
+                            {% if relevant_vacancy.description %}
+                                <p class="card-text">{{ relevant_vacancy.description|striptags|slice(0, 100) }}...</p>
+                            {% endif %}
+
+                            {% if relevant_vacancy.skills %}
+                                <div class="d-flex flex-row ">
+                                    {% for skill in relevant_vacancy.skills %}
+                                        <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="m-0 salary">{{ relevant_vacancy.salary|number_format(thousandSep = ' ') }} руб.</p>
+                                <a href="{{ path('view_vacancy', { id: relevant_vacancy.id }) }}" class="btn btn-primary">Открыть</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
