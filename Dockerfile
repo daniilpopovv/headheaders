@@ -26,14 +26,10 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY ./app/composer.lock ./app/composer.json ./app/symfony.lock ./
 RUN composer install -n --no-scripts
 
+#nginx
+COPY ./build/nginx/default.conf /etc/nginx/conf.d/default.conf
 #php-fpm
 COPY ./build/php/entrypoint.sh /etc/php/
 
 COPY ./app .
 COPY --from=assets /app/public/build /app/public/build
-
-FROM nginx:stable-alpine AS nginx
-
-COPY ./build/nginx/default.conf /etc/nginx/conf.d/default.conf
-
-COPY --from=build /app/public /app/public
