@@ -18,7 +18,8 @@ services:
 
   nginx:
     container_name: nginx
-    image: nginx:stable-alpine
+    build:
+      target: nginx
     ports:
       - '80:80'
     depends_on:
