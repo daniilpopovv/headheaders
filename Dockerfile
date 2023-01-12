@@ -1,33 +1,36 @@
-FROM php:8.1-fpm
-
-WORKDIR /app
-
-ENV COMPOSER_ALLOW_SUPERUSER=1
-
-RUN apt update \
-    && apt install -y g++ git libicu-dev zip libzip-dev libpq-dev \
-    && docker-php-ext-install intl opcache pdo pdo_pgsql
-
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-COPY ./app/composer.json ./app/composer.lock /app/
-
-RUN composer install --no-scripts
-
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - &&\
-    apt-get install -y nodejs
+FROM node:19-alpine AS assets
+WORKDIR /app/
+RUN apk update && apk upgrade
 
 COPY ./app/package.json ./app/package-lock.json /app/
 
+COPY ./app/vendor/symfony/ux-autocomplete/assets /app/vendor/symfony/ux-autocomplete/assets
+
 RUN npm install
 
-RUN curl -sS https://get.symfony.com/cli/installer | bash
-RUN mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
+COPY ./app/webpack.config.js /app/
+COPY ./app/assets /app/assets
+RUN npm run build
 
-COPY ./app /app/
 
-RUN symfony run -d npm run build
+FROM php:8.1-fpm as base
+WORKDIR /app/
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
-COPY ./build/php/entrypoint.sh /app/
-RUN chmod +x /app/entrypoint.sh
-CMD ["/app/entrypoint.sh"]
+RUN apt -y update \
+        && apt install -y g++ git libicu-dev zip libzip-dev libpq-dev \
+        && docker-php-ext-install intl opcache pdo pdo_pgsql
+
+FROM base
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY ./app/composer.lock ./app/composer.json ./app/symfony.lock ./
+RUN composer install -n --no-scripts
+
+#nginx
+COPY ./build/nginx/default.conf /etc/nginx/conf.d/default.conf
+
+#php-fpm
+COPY ./build/php/entrypoint.sh /etc/php/
+
+COPY ./app .
+COPY --from=assets /app/public/build /app/public/build
