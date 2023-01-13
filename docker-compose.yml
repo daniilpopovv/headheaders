@@ -13,14 +13,7 @@ services:
     container_name: php
     build:
       context: .
-    depends_on:
-      - database
-
-  nginx:
-    container_name: nginx
-    image: nginx:stable-alpine
     ports:
-      - '80:80'
+      - "80:80"
     depends_on:
-      - php
       - database
