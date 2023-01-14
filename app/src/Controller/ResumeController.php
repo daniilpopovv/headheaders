@@ -53,11 +53,11 @@ class ResumeController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'edit_resume')]
-    public function editResume(Request $request, SeekerRepository $seekerRepository, ResumeRepository $resumeRepository, int $id): Response
+    public function editResume(Resume $resume, Request $request, SeekerRepository $seekerRepository, ResumeRepository $resumeRepository): Response
     {
-        $userIdentifier = $this->getUser()->getUserIdentifier();
-        $seeker = $seekerRepository->findOneBy(['username' => $userIdentifier]);
-        $resume = $resumeRepository->findOneBy(['id' => $id]);
+        $seeker = $seekerRepository->findOneBy([
+            'username' => $this->getUser()->getUserIdentifier()
+        ]);
 
         if (!($resume->getSeeker() === $seeker)) {
             return $this->redirectToRoute('my_resumes', [
