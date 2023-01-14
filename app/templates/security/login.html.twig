@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Войти{% endblock %}
 
 {% block body %}
     <div class="container w-25 d-flex flex-column justify-content-center">
@@ -10,12 +10,6 @@
 
             {% if error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-            {% endif %}
-
-            {% if app.user %}
-                <div class="mb-3">
-                    Вы уже залогинены, как {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Выйти</a>
-                </div>
             {% endif %}
 
             <label for="inputUsername">Логин</label>
