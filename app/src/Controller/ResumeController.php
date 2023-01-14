@@ -5,9 +5,7 @@ namespace App\Controller;
 use App\Entity\Resume;
 use App\Form\ResumeFormType;
 use App\Form\ResumeInviteType;
-use App\Repository\RecruiterRepository;
 use App\Repository\ResumeRepository;
-use App\Repository\SeekerRepository;
 use App\Repository\VacancyRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,15 +29,13 @@ class ResumeController extends AbstractController
     }
 
     #[Route('/create', name: 'create_resume')]
-    public function createResume(Request $request, SeekerRepository $seekerRepository): Response
+    public function createResume(Request $request): Response
     {
         $resume = new Resume();
         $form = $this->createForm(ResumeFormType::class, $resume);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $resume->setSeeker($seekerRepository->findOneBy([
-                'username' => $this->getUser()->getUserIdentifier()
-            ]));
+            $resume->setSeeker($this->getUser());
 
             $this->entityManager->persist($resume);
             $this->entityManager->flush();
@@ -49,15 +45,14 @@ class ResumeController extends AbstractController
 
         return $this->render('resume/createResume.html.twig', [
             'resume_form' => $form->createView(),
+            'title' => 'Создание резюме',
         ]);
     }
 
     #[Route('/edit/{id}', name: 'edit_resume')]
-    public function editResume(Resume $resume, Request $request, SeekerRepository $seekerRepository, ResumeRepository $resumeRepository): Response
+    public function editResume(Resume $resume, Request $request, ResumeRepository $resumeRepository): Response
     {
-        $seeker = $seekerRepository->findOneBy([
-            'username' => $this->getUser()->getUserIdentifier()
-        ]);
+        $seeker = $this->getUser();
 
         if (!($resume->getSeeker() === $seeker)) {
             return $this->redirectToRoute('my_resumes', [
@@ -83,11 +78,9 @@ class ResumeController extends AbstractController
     }
 
     #[Route('/my', name: 'my_resumes')]
-    public function myResumes(ResumeRepository $resumeRepository, SeekerRepository $seekerRepository): Response
+    public function myResumes(ResumeRepository $resumeRepository): Response
     {
-        $seeker = $seekerRepository->findOneBy([
-            'username' => $this->getUser()->getUserIdentifier()
-        ]);
+        $seeker = $this->getUser();
 
         return $this->render('resume/index.html.twig', [
             'resumes' => $resumeRepository->findBy(['seeker' => $seeker]),
@@ -96,11 +89,10 @@ class ResumeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'view_resume')]
-    public function viewResume(Resume $resume, Request $request, RecruiterRepository $recruiterRepository, VacancyRepository $vacancyRepository): Response
+    public function viewResume(Resume $resume, Request $request, VacancyRepository $vacancyRepository): Response
     {
-        $relevant_vacancies = null;
+        $relevant_vacancies = [];
         $userRoles = $this->getUser() !== null ? $this->getUser()->getRoles() : null;
-        $userIdentifier = $this->getUser() !== null ? $this->getUser()->getUserIdentifier() : '';
         $isInvite = false;
         $isResponse = false;
 
@@ -108,19 +100,19 @@ class ResumeController extends AbstractController
             if (in_array('ROLE_SEEKER', $userRoles)) {
                 $role = 'seeker';
 
-                foreach ($vacancyRepository->findAll() as $vacancy) {
-                    if (!in_array($resume, $vacancy->getResponses()->toArray())) {
-                        if (!array_diff($vacancy->getSkills()->toArray(), $resume->getSkills()->toArray())) {
-                            $relevant_vacancies[] = $vacancy;
+                if ($resume->getSeeker() === $this->getUser()) {
+                    foreach ($vacancyRepository->findAll() as $vacancy) {
+                        if (!in_array($resume, $vacancy->getResponses()->toArray())) {
+                            if (!array_diff($vacancy->getSkills()->toArray(), $resume->getSkills()->toArray())) {
+                                $relevant_vacancies[] = $vacancy;
+                            }
                         }
                     }
                 }
             } elseif (in_array('ROLE_RECRUITER', $userRoles)) {
                 $role = 'recruiter';
                 $vacancies = $vacancyRepository->findBy([
-                    'recruiter' => $recruiterRepository->findOneBy([
-                        'username' => $userIdentifier
-                    ])
+                    'recruiter' => $this->getUser(),
                 ]);
 
                 $isInvite = (bool)array_intersect($vacancies, $resume->getInvites()->toArray());

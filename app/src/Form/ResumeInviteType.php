@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Vacancy;
 use App\Repository\VacancyRepository;
-use App\Repository\RecruiterRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
@@ -17,11 +16,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ResumeInviteType extends AbstractType
 {
-    public function __construct (Security $security, VacancyRepository $vacancyRepository, RecruiterRepository $recruiterRepository) {
+    public function __construct (Security $security, VacancyRepository $vacancyRepository) {
         $this->vacancies = $vacancyRepository->findBy([
-            'recruiter' => $recruiterRepository->findOneBy([
-                'username' => $security->getUser()->getUserIdentifier()
-            ])
+            'recruiter' => $security->getUser(),
         ]);
     }
 

@@ -11,7 +11,6 @@ class ResponsesController extends AbstractController
     #[Route('/responses', name: 'responses')]
     public function index(): Response
     {
-        return $this->render('responses/index.html.twig', [
-        ]);
+        return $this->render('responses/index.html.twig');
     }
 }
