@@ -30,23 +30,13 @@
             <button class="btn btn-lg btn-primary w-100" type="submit">
                 Войти
             </button>
-            {#
-            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-            See https://symfony.com/doc/current/security/remember_me.html
-
-            <div class="checkbox mb-3">
-                <label>
-                    <input type="checkbox" name="_remember_me"> Remember me
-                </label>
-            </div>
-            #}
         </form>
 
         <div class="auth-form-register mt-5">
             <h5 class="mb-3">Регистрация</h5>
             <div class="d-flex justify-content-between">
-                <a class="btn btn-lg btn-primary w-100 me-4" href="{{ path('app_register_seeker') }}"> Я ищу работу </a>
-                <a class="btn btn-lg btn-primary w-100" href="{{ path('app_register_recruiter') }}"> Я ищу сотрудника </a>
+                <a class="btn btn-lg btn-primary w-100 me-4" href="{{ path('app_register', {slug: 'seeker'}) }}"> Я ищу работу </a>
+                <a class="btn btn-lg btn-primary w-100" href="{{ path('app_register', {slug: 'recruiter'}) }}"> Я ищу сотрудника </a>
             </div>
 
         </div>

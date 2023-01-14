@@ -8,9 +8,8 @@
 
         <div class="d-flex justify-content-between w-75">
             {% if not app.user %}
-                <a class="btn btn-lg btn-primary w-100 me-4" href="{{ path('app_register_seeker') }}"> Я ищу работу </a>
-                <a class="btn btn-lg btn-primary w-100" href="{{ path('app_register_recruiter') }}"> Я ищу
-                    сотрудника </a>
+                <a class="btn btn-lg btn-primary w-100 me-4" href="{{ path('app_register', {slug: 'seeker'}) }}"> Я ищу работу </a>
+                <a class="btn btn-lg btn-primary w-100" href="{{ path('app_register', {slug: 'recruiter'}) }}"> Я ищу сотрудника </a>
             {% endif %}
         </div>
     </div>
