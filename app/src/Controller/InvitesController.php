@@ -11,6 +11,6 @@ class InvitesController extends AbstractController
     #[Route('/invites', name: 'invites')]
     public function index(): Response
     {
-        return $this->render('invites/index.html.twig', []);
+        return $this->render('invites/index.html.twig');
     }
 }
