@@ -18,12 +18,11 @@
                     <div class="d-flex justify-content-between align-items-end">
                         <h5 class="card-title pb-2">{{ resume.specialization }}</h5>
 
-                        {# TODO: Оптимизировать #}
                         {% set break = false %}
                         {% if app.user.roles is defined and 'ROLE_RECRUITER' in app.user.roles %}
-                            {% for vacancy1 in app.user.vacancies %}
-                                {% for vacancy2 in resume.invites %}
-                                    {% if vacancy1 == vacancy2 and not break %}
+                            {% for recruiterVacancy in app.user.vacancies %}
+                                {% for resumeInviteVacancy in resume.invites %}
+                                    {% if recruiterVacancy == resumeInviteVacancy and not break %}
                                         <p class="fw-bold">Вы пригласили ✓</p>
                                         {% set break = true %}
                                     {% endif %}

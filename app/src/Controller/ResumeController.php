@@ -85,8 +85,9 @@ class ResumeController extends AbstractController
     #[Route('/my', name: 'my_resumes')]
     public function myResumes(ResumeRepository $resumeRepository, SeekerRepository $seekerRepository): Response
     {
-        $userIdentifier = $this->getUser()->getUserIdentifier();
-        $seeker = $seekerRepository->findOneBy(['username' => $userIdentifier]);
+        $seeker = $seekerRepository->findOneBy([
+            'username' => $this->getUser()->getUserIdentifier()
+        ]);
 
         return $this->render('resume/index.html.twig', [
             'resumes' => $resumeRepository->findBy(['seeker' => $seeker]),
@@ -111,7 +112,7 @@ class ResumeController extends AbstractController
                 foreach ($vacancyRepository->findAll() as $vacancy) {
                     if (!in_array($resume, $vacancy->getResponses()->toArray())) {
                         if (!array_diff($vacancy->getSkills()->toArray(), $resume->getSkills()->toArray())) {
-                            array_push($relevant_vacancies, $vacancy);
+                            $relevant_vacancies[] = $vacancy;
                         }
                     }
                 }
