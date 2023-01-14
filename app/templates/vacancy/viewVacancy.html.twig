@@ -16,24 +16,8 @@
             <p class="p-0 m-0">{{ vacancy.recruiter.fullName }}</p>
         {% endif %}
 
-        {% if app.user.roles is defined and 'ROLE_SEEKER' in app.user.roles %}
-            {% set break = false %}
-            {% if break == false %}
-                {% if app.user.resumes is defined %}
-                    {% for resume in app.user.resumes %}
-                        {% if break == false %}
-                            {% for vacancy_invite in resume.invites %}
-                                {% if break == false %}
-                                    {% if vacancy_invite == vacancy %}
-                                        <p class="fw-bold pt-2">Вас пригласили! Почта для связи: <a href="mailto:{{ vacancy.recruiter.email }}">{{ vacancy.recruiter.email }}</a></p>
-                                        {% set break = true %}
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            {% endif %}
+        {% if role == 'seeker' and isInvite %}
+            <p class="fw-bold pt-2">Вас пригласили! Почта для связи: <a href="mailto:{{ vacancy.recruiter.email }}">{{ vacancy.recruiter.email }}</a></p>
         {% endif %}
 
         <hr class="my-3 w-75"/>
@@ -50,7 +34,7 @@
             </div>
         {% endif %}
 
-        {% if app.user.roles is defined and 'ROLE_SEEKER' in app.user.roles %}
+        {% if role == 'seeker' %}
             {% if isResponse %}
                 <p class="fw-bold">Вы уже откликнулись на эту вакансию ✓</p>
                 {% else %}
@@ -63,7 +47,7 @@
                 <a class="btn" href="{{ path('edit_vacancy', { id: vacancy.id }) }}">Редактировать</a>
         {% endif %}
 
-        {% if app.user.username is defined and vacancy.recruiter.username == app.user.username  %}
+        {% if role == 'recruiter' and vacancy.recruiter.username == app.user.username  %}
             <h2 class="mt-4">Вам подойдут резюме:</h2>
 
             <div class="p-0 pt-1 mb-3 ms-0 w-75 container d-flex flex-column ">
@@ -72,19 +56,6 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-end">
                                 <h5 class="card-title pb-2">{{ relevant_resume.specialization }}</h5>
-
-                                {# TODO: Оптимизировать #}
-                                {% set break = false %}
-                                {% if app.user.roles is defined and 'ROLE_RECRUITER' in app.user.roles %}
-                                    {% for vacancy1 in app.user.vacancies %}
-                                        {% for vacancy2 in relevant_resume.invites %}
-                                            {% if vacancy1 == vacancy2 and not break %}
-                                                <p class="fw-bold">Вы пригласили ✓</p>
-                                                {% set break = true %}
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endfor %}
-                                {% endif %}
                             </div>
 
                             <p class="p-0 m-0">{{ relevant_resume.seeker.fullName }}</p>

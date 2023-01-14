@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Resume;
-use App\Entity\Vacancy;
 use App\Repository\ResumeRepository;
 use App\Repository\SeekerRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -19,9 +18,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class VacancyResponseType extends AbstractType
 {
     public function __construct (Security $security, ResumeRepository $resumeRepository, SeekerRepository $seekerRepository) {
-
-        $seeker = $seekerRepository->findOneBy(['username' => $security->getUser()->getUserIdentifier()]);
-        $this->resumes = $resumeRepository->findBy(['seeker' => $seeker]);
+        $this->resumes = $resumeRepository->findBy([
+            'seeker' => $seekerRepository->findOneBy([
+                'username' => $security->getUser()->getUserIdentifier()
+            ])
+        ]);
     }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

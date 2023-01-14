@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\Resume;
 use App\Entity\Vacancy;
 use App\Repository\VacancyRepository;
 use App\Repository\RecruiterRepository;

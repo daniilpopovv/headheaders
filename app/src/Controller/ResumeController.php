@@ -37,9 +37,9 @@ class ResumeController extends AbstractController
         $form = $this->createForm(ResumeFormType::class, $resume);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $userIdentifier = $this->getUser()->getUserIdentifier();
-            $seeker = $seekerRepository->findOneBy(['username' => $userIdentifier]);
-            $resume->setSeeker($seeker);
+            $resume->setSeeker($seekerRepository->findOneBy([
+                'username' => $this->getUser()->getUserIdentifier()
+            ]));
 
             $this->entityManager->persist($resume);
             $this->entityManager->flush();
@@ -98,14 +98,13 @@ class ResumeController extends AbstractController
     #[Route('/{id}', name: 'view_resume')]
     public function viewResume(Resume $resume, Request $request, RecruiterRepository $recruiterRepository, VacancyRepository $vacancyRepository): Response
     {
-        $role = 'guest';
-        $relevant_vacancies = [];
-        $userRoles = $this->getUser() !== null ? $this->getUser()->getRoles() : [];
+        $relevant_vacancies = null;
+        $userRoles = $this->getUser() !== null ? $this->getUser()->getRoles() : null;
         $userIdentifier = $this->getUser() !== null ? $this->getUser()->getUserIdentifier() : '';
         $isInvite = false;
         $isResponse = false;
 
-        if (in_array('ROLE_USER', $userRoles)) {
+        if ($this->getUser()) {
             if (in_array('ROLE_SEEKER', $userRoles)) {
                 $role = 'seeker';
 
@@ -118,7 +117,11 @@ class ResumeController extends AbstractController
                 }
             } elseif (in_array('ROLE_RECRUITER', $userRoles)) {
                 $role = 'recruiter';
-                $vacancies = $vacancyRepository->findBy(['recruiter' => $recruiterRepository->findOneBy(['username' => $userIdentifier])]);
+                $vacancies = $vacancyRepository->findBy([
+                    'recruiter' => $recruiterRepository->findOneBy([
+                        'username' => $userIdentifier
+                    ])
+                ]);
 
                 $isInvite = (bool)array_intersect($vacancies, $resume->getInvites()->toArray());
                 $isResponse = (bool)array_intersect($vacancies, $resume->getRespondedVacancies()->toArray());
@@ -127,8 +130,7 @@ class ResumeController extends AbstractController
                 $form->handleRequest($request);
                 if ($form->isSubmitted() && $form->isValid()) {
                     $form_view_data = $form->get('invites')->getViewData();
-                    $idOfVacancy = $form_view_data[0];
-                    $vacancy = $vacancyRepository->findOneBy(['id' => $idOfVacancy]);
+                    $vacancy = $vacancyRepository->findOneBy(['id' => $form_view_data[0]]);
                     $resume->addInvite($vacancy);
 
                     $this->entityManager->persist($resume);
@@ -141,8 +143,8 @@ class ResumeController extends AbstractController
 
         return $this->render('resume/viewResume.html.twig', [
             'resume' => $resume,
-            'resume_form' => isset($form) ? $form->createView() : [],
-            'role' => $role,
+            'resume_form' => isset($form) ? $form->createView() : null,
+            'role' => $role ?? 'guest',
             'relevant_vacancies' => $relevant_vacancies,
             'isInvite' => $isInvite,
             'isResponse' => $isResponse,

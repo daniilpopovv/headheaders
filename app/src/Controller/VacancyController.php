@@ -23,7 +23,7 @@ class VacancyController extends AbstractController
     }
 
     #[Route('/', name: 'vacancies')]
-    public function index(VacancyRepository $vacancyRepository, ResumeRepository $resumeRepository, SeekerRepository $seekerRepository): Response
+    public function index(VacancyRepository $vacancyRepository): Response
     {
         return $this->render('vacancy/index.html.twig', [
             'vacancies' => $vacancyRepository->findAll(),
@@ -37,9 +37,9 @@ class VacancyController extends AbstractController
         $form = $this->createForm(VacancyFormType::class, $vacancy);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $userIdentifier = $this->getUser()->getUserIdentifier();
-            $recruiter = $recruiterRepository->findOneBy(['username' => $userIdentifier]);
-            $vacancy->setRecruiter($recruiter);
+            $vacancy->setRecruiter($recruiterRepository->findOneBy([
+                'username' => $this->getUser()->getUserIdentifier()
+            ]));
 
             $this->entityManager->persist($vacancy);
             $this->entityManager->flush();
@@ -53,11 +53,11 @@ class VacancyController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'edit_vacancy')]
-    public function editVacancy(Request $request, RecruiterRepository $recruiterRepository, VacancyRepository $vacancyRepository, int $id): Response
+    public function editVacancy(Vacancy $vacancy, Request $request, RecruiterRepository $recruiterRepository, VacancyRepository $vacancyRepository): Response
     {
-        $userIdentifier = $this->getUser()->getUserIdentifier();
-        $recruiter = $recruiterRepository->findOneBy(['username' => $userIdentifier]);
-        $vacancy = $vacancyRepository->findOneBy(['id' => $id]);
+        $recruiter = $recruiterRepository->findOneBy([
+            'username' => $this->getUser()->getUserIdentifier()
+        ]);
 
         if (!($vacancy->getRecruiter() === $recruiter)) {
             return $this->redirectToRoute('my_vacancies', [
@@ -85,8 +85,10 @@ class VacancyController extends AbstractController
     #[Route('/my', name: 'my_vacancies')]
     public function myVacancies(VacancyRepository $vacancyRepository, RecruiterRepository $recruiterRepository): Response
     {
-        $userIdentifier = $this->getUser()->getUserIdentifier();
-        $recruiter = $recruiterRepository->findOneBy(['username' => $userIdentifier]);
+
+        $recruiter = $recruiterRepository->findOneBy([
+            'username' => $this->getUser()->getUserIdentifier()
+        ]);
 
         return $this->render('vacancy/index.html.twig', [
             'vacancies' => $vacancyRepository->findBy(['recruiter' => $recruiter]),
@@ -97,58 +99,57 @@ class VacancyController extends AbstractController
     #[Route('/{id}', name: 'view_vacancy')]
     public function viewVacancy(Vacancy $vacancy, Request $request, SeekerRepository $seekerRepository, ResumeRepository $resumeRepository): Response
     {
-        $userIdentifier = $this->getUser()->getUserIdentifier();
-        $seeker = $seekerRepository->findOneBy(['username' => $userIdentifier]);
-        $resumes = $resumeRepository->findBy(['seeker' => $seeker]);
+        $relevant_resumes = null;
+        $userRoles = $this->getUser() !== null ? $this->getUser()->getRoles() : null;
+        $userIdentifier = $this->getUser() !== null ? $this->getUser()->getUserIdentifier() : '';
+        $isInvite = false;
         $isResponse = false;
-        $isRecruiter = false;
 
-        foreach ($this->getUser()->getRoles() as $role) {
+        if ($this->getUser()) {
+            if (in_array('ROLE_RECRUITER', $userRoles)) {
+                $role = 'recruiter';
 
-            if ($role === 'ROLE_RECRUITER') {
-                $isRecruiter = true;
-                break;
-            }
-        }
+                foreach ($resumeRepository->findAll() as $resume) {
+                    if (!in_array($vacancy, $resume->getInvites()->toArray())) {
+                        if (!array_diff($vacancy->getSkills()->toArray(), $resume->getSkills()->toArray())) {
+                            $relevant_resumes[] = $resume;
+                        }
+                    }
+                }
+            } elseif (in_array('ROLE_SEEKER', $userRoles)) {
+                $role = 'seeker';
+                $resumes = $resumeRepository->findBy([
+                    'seeker' => $seekerRepository->findOneBy([
+                        'username' => $userIdentifier,
+                    ])
+                ]);
 
-        $relevant_resumes = [];
+                $isInvite = (bool)array_intersect($resumes, $vacancy->getInvitedResumes()->toArray());
+                $isResponse = (bool)array_intersect($resumes, $vacancy->getResponses()->toArray());
 
-        if ($isRecruiter) {
-            foreach ($resumeRepository->findAll() as $resume) {
-                if (!(array_diff($vacancy->getSkills()->toArray(), $resume->getSkills()->toArray()))) {
-                    array_push($relevant_resumes, $resume);
+
+                $form = $this->createForm(VacancyResponseType::class);
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $form_view_data = $form->get('responses')->getViewData();
+                    $resume = $resumeRepository->findOneBy(['id' => $form_view_data[0]]);
+                    $vacancy->addResponse($resume);
+
+                    $this->entityManager->persist($vacancy);
+                    $this->entityManager->flush();
+
+                    return $this->redirectToRoute('view_vacancy', ['id' => $vacancy->getId()]);
                 }
             }
-        }
-
-        // TODO: Оптимизировать
-        foreach ($resumes as $resume1) {
-            foreach ($vacancy->getResponses() as $resume2) {
-                if ($resume1 === $resume2) {
-                    $isResponse = true;
-                }
-            }
-        }
-
-        $form = $this->createForm(VacancyResponseType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $form_view_data = $form->get('responses')->getViewData();
-            $idOfResume = $form_view_data[0];
-            $resume = $resumeRepository->findOneBy(['id' => $idOfResume]);
-            $vacancy->addResponse($resume);
-
-            $this->entityManager->persist($vacancy);
-            $this->entityManager->flush();
-
-            return $this->redirectToRoute('view_vacancy', ['id' => $vacancy->getId()]);
         }
 
         return $this->render('vacancy/viewVacancy.html.twig', [
             'vacancy' => $vacancy,
-            'vacancy_form' => $form->createView(),
-            'isResponse' => $isResponse,
+            'vacancy_form' => isset($form) ? $form->createView() : null,
+            'role' => $role ?? 'guest',
             'relevant_resumes' => $relevant_resumes,
+            'isInvite' => $isInvite,
+            'isResponse' => $isResponse,
         ]);
     }
 }
