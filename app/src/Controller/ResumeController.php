@@ -97,58 +97,54 @@ class ResumeController extends AbstractController
     #[Route('/{id}', name: 'view_resume')]
     public function viewResume(Resume $resume, Request $request, RecruiterRepository $recruiterRepository, VacancyRepository $vacancyRepository): Response
     {
-        $userIdentifier = $this->getUser()->getUserIdentifier();
-        $recruiter = $recruiterRepository->findOneBy(['username' => $userIdentifier]);
-        $vacancies = $vacancyRepository->findBy(['recruiter' => $recruiter]);
-        $isInvite = false;
-        $isSeeker = false;
-
-        foreach ($this->getUser()->getRoles() as $role) {
-
-            if ($role === 'ROLE_SEEKER') {
-                $isSeeker = true;
-                break;
-            }
-        }
-
+        $role = 'guest';
         $relevant_vacancies = [];
+        $userRoles = $this->getUser() !== null ? $this->getUser()->getRoles() : [];
+        $userIdentifier = $this->getUser() !== null ? $this->getUser()->getUserIdentifier() : '';
+        $isInvite = false;
+        $isResponse = false;
 
-        if ($isSeeker) {
-            foreach ($vacancyRepository->findAll() as $vacancy) {
-                if (!(array_diff($vacancy->getSkills()->toArray(), $resume->getSkills()->toArray()))) {
-                    array_push($relevant_vacancies, $vacancy);
+        if (in_array('ROLE_USER', $userRoles)) {
+            if (in_array('ROLE_SEEKER', $userRoles)) {
+                $role = 'seeker';
+
+                foreach ($vacancyRepository->findAll() as $vacancy) {
+                    if (!in_array($resume, $vacancy->getResponses()->toArray())) {
+                        if (!array_diff($vacancy->getSkills()->toArray(), $resume->getSkills()->toArray())) {
+                            array_push($relevant_vacancies, $vacancy);
+                        }
+                    }
+                }
+            } elseif (in_array('ROLE_RECRUITER', $userRoles)) {
+                $role = 'recruiter';
+                $vacancies = $vacancyRepository->findBy(['recruiter' => $recruiterRepository->findOneBy(['username' => $userIdentifier])]);
+
+                $isInvite = (bool)array_intersect($vacancies, $resume->getInvites()->toArray());
+                $isResponse = (bool)array_intersect($vacancies, $resume->getRespondedVacancies()->toArray());
+
+                $form = $this->createForm(ResumeInviteType::class);
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $form_view_data = $form->get('invites')->getViewData();
+                    $idOfVacancy = $form_view_data[0];
+                    $vacancy = $vacancyRepository->findOneBy(['id' => $idOfVacancy]);
+                    $resume->addInvite($vacancy);
+
+                    $this->entityManager->persist($resume);
+                    $this->entityManager->flush();
+
+                    return $this->redirectToRoute('view_resume', ['id' => $resume->getId()]);
                 }
             }
-        }
-
-        // TODO: Оптимизировать
-        foreach ($vacancies as $vacancy1) {
-            foreach ($resume->getInvites() as $vacancy2) {
-                if ($vacancy1 === $vacancy2) {
-                    $isInvite = true;
-                }
-            }
-        }
-
-        $form = $this->createForm(ResumeInviteType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $form_view_data = $form->get('invites')->getViewData();
-            $idOfVacancy = $form_view_data[0];
-            $vacancy = $vacancyRepository->findOneBy(['id' => $idOfVacancy]);
-            $resume->addInvite($vacancy);
-
-            $this->entityManager->persist($resume);
-            $this->entityManager->flush();
-
-            return $this->redirectToRoute('view_resume', ['id' => $resume->getId()]);
         }
 
         return $this->render('resume/viewResume.html.twig', [
             'resume' => $resume,
-            'resume_form' => $form->createView(),
-            'isInvite' => $isInvite,
+            'resume_form' => isset($form) ? $form->createView() : [],
+            'role' => $role,
             'relevant_vacancies' => $relevant_vacancies,
+            'isInvite' => $isInvite,
+            'isResponse' => $isResponse,
         ]);
     }
 }

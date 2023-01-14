@@ -7,32 +7,16 @@
     <div class="p-3 mb-3 container-sm detail-view-container w-50">
         <div class="d-flex justify-content-between mb-3 align-items-center">
             <h1 class="">{{ resume.seeker.fullName }}</h1>
-            {% if app.user.roles is defined and 'ROLE_RECRUITER' in app.user.roles %}
+            {% if role == 'recruiter' %}
                 <button class="btn">Пригласить</button>
-                {% elseif app.user.username is defined and resume.seeker.username == app.user.username  %}
+                {% elseif role == 'seeker' and resume.seeker.username == app.user.username  %}
                     <a class="btn" href="{{ path('edit_resume', { id: resume.id }) }}">Редактировать</a>
             {% endif %}
 
         </div>
 
-        {% if app.user.roles is defined and 'ROLE_RECRUITER' in app.user.roles %}
-            {% set break = false %}
-            {% if break == false %}
-                {% if app.user.vacancies is defined %}
-                    {% for vacancy in app.user.vacancies %}
-                        {% if break == false %}
-                            {% for resume_response in vacancy.responses %}
-                                {% if break == false %}
-                                    {% if resume_response == resume %}
-                                        <p class="fw-bold">Соискатель откликнулся на вашу вакансию! Почта для связи: <a href="mailto:{{ resume.seeker.email }}">{{ resume.seeker.email }}</a></p>
-                                        {% set break = true %}
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            {% endif %}
+        {% if role == 'recruiter' and isResponse %}
+            <p class="fw-bold">Соискатель откликнулся на вашу вакансию! Почта для связи: <a href="mailto:{{ resume.seeker.email }}">{{ resume.seeker.email }}</a></p>
         {% endif %}
 
         {% if resume.description %}
@@ -54,7 +38,7 @@
             </div>
         {% endif %}
 
-        {% if app.user.roles is defined and 'ROLE_RECRUITER' in app.user.roles %}
+        {% if role == 'recruiter' %}
             {% if isInvite %}
                 <p class="fw-bold">Вы уже отправили приглашение ✓</p>
             {% else %}
@@ -64,7 +48,7 @@
             {% endif %}
         {% endif %}
 
-        {% if app.user.username is defined and resume.seeker.username == app.user.username  %}
+        {% if role == 'seeker' and resume.seeker.username == app.user.username  %}
             <h2 class="mt-4">Вам подойдут вакансии:</h2>
 
             <div class="p-0 pt-1 mb-3 ms-0 w-75 container d-flex flex-column ">
@@ -73,19 +57,6 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-end">
                                 <h5 class="card-title pb-2">{{ relevant_vacancy.specialization }}</h5>
-
-                                {# TODO: Оптимизировать #}
-                                {% set break = false %}
-                                {% if app.user.roles is defined and 'ROLE_SEEKER' in app.user.roles %}
-                                    {% for resume1 in app.user.resumes %}
-                                        {% for resume2 in relevant_vacancy.responses %}
-                                            {% if resume1 == resume2 and not break %}
-                                                <p class="fw-bold">Вы откликнулись ✓</p>
-                                                {% set break = true %}
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endfor %}
-                                {% endif %}
                             </div>
 
 
