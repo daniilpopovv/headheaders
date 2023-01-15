@@ -120,10 +120,7 @@ class ResumeController extends AbstractController
     #[Route('/{id}', name: 'view_resume')]
     public function viewResume(Resume $resume, Request $request, VacancyRepository $vacancyRepository): Response
     {
-        $relevant_vacancies = [];
         $userRoles = $this->getUser() !== null ? $this->getUser()->getRoles() : null;
-        $isInvite = false;
-        $isResponse = false;
 
         if ($this->getUser()) {
             if (in_array('ROLE_SEEKER', $userRoles)) {
@@ -166,9 +163,9 @@ class ResumeController extends AbstractController
             'resume' => $resume,
             'resume_form' => isset($form) ? $form->createView() : null,
             'role' => $role ?? 'guest',
-            'relevant_vacancies' => $relevant_vacancies,
-            'isInvite' => $isInvite,
-            'isResponse' => $isResponse,
+            'relevant_vacancies' => $relevant_vacancies ?? [],
+            'isInvite' => $isInvite ?? false,
+            'isResponse' => $isResponse ?? false,
         ]);
     }
 }
