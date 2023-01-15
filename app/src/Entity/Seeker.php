@@ -6,6 +6,7 @@ use App\Repository\SeekerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -21,24 +22,28 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Constraints\NotBlank]
     private ?string $username = null;
 
     #[ORM\Column]
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var string|null The hashed password
      */
     #[ORM\Column]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: false)]
+    #[Constraints\NotBlank]
     private ?string $fullName = null;
 
     #[ORM\OneToMany(mappedBy: 'seeker', targetEntity: Resume::class, orphanRemoval: true)]
     private Collection $resumes;
 
     #[ORM\Column(length: 255, nullable: false)]
+    #[Constraints\NotBlank]
+    #[Constraints\Email]
     private ?string $email = null;
 
     public function __construct()

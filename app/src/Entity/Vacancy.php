@@ -6,6 +6,7 @@ use App\Repository\VacancyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints;
 
 #[ORM\Entity(repositoryClass: VacancyRepository::class)]
 class Vacancy
@@ -15,13 +16,15 @@ class Vacancy
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: false)]
+    #[Constraints\NotBlank]
     private ?string $specialization = null;
 
     #[ORM\Column(length: 2000, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: false)]
+    #[Constraints\NotBlank]
     private ?int $salary = null;
 
     #[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'vacancies')]
@@ -29,6 +32,7 @@ class Vacancy
 
     #[ORM\ManyToOne(inversedBy: 'vacancies')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Constraints\NotBlank]
     private ?Recruiter $recruiter = null;
 
     #[ORM\ManyToMany(targetEntity: Resume::class, mappedBy: 'invites')]
