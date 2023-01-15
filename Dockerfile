@@ -3,7 +3,7 @@ WORKDIR /app/
 RUN apk update && apk upgrade
 
 COPY ./app/package.json ./app/package-lock.json /app/
-COPY ./app/vendor/symfony/ux-autocomplete/assets /app/vendor/symfony/ux-autocomplete/assets
+COPY ./build/ux-autocomplete/assets /app/vendor/symfony/ux-autocomplete/assets
 
 RUN npm install
 
