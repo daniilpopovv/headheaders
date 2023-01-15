@@ -6,10 +6,13 @@ use App\Repository\RecruiterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: RecruiterRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['username'], message: 'Такой пользователь уже существует')]
 class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -46,15 +49,22 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
         $this->vacancies = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->fullName.' aka '.$this->username;
+    }
+
+    #[ORM\PrePersist]
+    public function setRecruiterRole()
+    {
+        $this->roles = ['ROLE_USER', 'ROLE_RECRUITER'];
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function __toString(): string
-    {
-        return $this->fullName.' aka '.$this->username;
-    }
     public function getUsername(): ?string
     {
         return $this->username;

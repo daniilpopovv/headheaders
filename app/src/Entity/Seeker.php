@@ -11,7 +11,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: SeekerRepository::class)]
-#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
+#[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['username'], message: 'Такой пользователь уже существует')]
 class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -45,6 +46,17 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
         $this->resumes = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->fullName.' aka '.$this->username;
+    }
+
+    #[ORM\PrePersist]
+    public function setSeekerRole()
+    {
+        $this->roles = ['ROLE_USER', 'ROLE_RECRUITER'];
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -53,11 +65,6 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUsername(): ?string
     {
         return $this->username;
-    }
-
-    public function __toString(): string
-    {
-        return $this->fullName.' aka '.$this->username;
     }
 
     public function setUsername(string $username): self
