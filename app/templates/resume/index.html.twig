@@ -11,9 +11,6 @@
 {% block body %}
     <div class="p-3 mb-3 container-sm">
         <h1 class="pb-3">{{ block('title') }}</h1>
-        {% if stage is defined%}
-            {{ stage }}
-        {% endif %}
         <div class="d-flex justify-content-between">
             <div class="w-50">
                 {% for resume in resumes|sort((a,b) => a.skills|length <=> b.skills|length)|reverse%}
@@ -60,6 +57,7 @@
             </div>
 
             <div class="card-body ms-3 p-3 pb-0 search-block form-block">
+                <h5 class="card-title pb-2">Поиск</h5>
                 {{ form(search_form) }}
             </div>
         </div>

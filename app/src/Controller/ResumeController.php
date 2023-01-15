@@ -29,33 +29,25 @@ class ResumeController extends AbstractController
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
             $queryText = preg_split('/[,-.\s;]+/', $searchForm->get('query_text')->getData());
             $resumesFromTextQuery = $resumeRepository->searchByQuery($queryText);
-            $querySkills = $searchForm->get('query_skills')->getViewData();
+            $querySkills = $searchForm->get('query_skills')->getNormData();
 
-            $stage = 0;
-            if ($searchForm->get('query_text')->getData() AND $querySkills !== []) {
+            if ($searchForm->get('query_text')->getData()) {
                 foreach ($resumesFromTextQuery as $resumeFromTextQuery) {
-                    if (!array_diff($querySkills, $resumeFromTextQuery->getSkills()->toArray())) {
+                    if (!array_diff($querySkills->toArray(), $resumeFromTextQuery->getSkills()->toArray())) {
                         $resumes[] = $resumeFromTextQuery;
                     }
                 }
-
-                $stage = 1;
-            } elseif ($searchForm->get('query_text')->getData()) {
-                $resumes = $resumesFromTextQuery;
-                $stage = 2;
-            } elseif ($querySkills !== []) {
+            } else {
                 foreach ($resumeRepository->findAll() as $resume) {
-                    if (!array_diff($querySkills, $resume->getSkills()->toArray())) {
+                    if (!array_diff($querySkills->toArray(), $resume->getSkills()->toArray())) {
                         $resumes[] = $resume;
                     }
                 }
-                $stage = 3;
             }
 
             return $this->render('resume/index.html.twig', [
                 'resumes' => $resumes ?? [],
                 'search_form' => $searchForm,
-                'stage' => $stage,
             ]);
         }
 
