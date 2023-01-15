@@ -1,27 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% set title = 'Отклики' %}
-{% if app.user %}
-    {% if app.user.roles is defined and 'ROLE_SEEKER' in app.user.roles %}
-        {% set title = 'Вы откликнулись на вакансии:' %}
-        {% elseif app.user.roles is defined and 'ROLE_RECRUITER' in app.user.roles %}
-            {% set title = 'На ваши вакансии откликнулись:' %}
-        {% endif %}
-{% endif %}
-
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
     <div class="p-3 mb-3 container-sm">
         <h1 class="pb-3">{{ block('title') }}</h1>
 
-        {% if app.user.roles is defined and 'ROLE_SEEKER' in app.user.roles %}
-            {% if app.user.resumes is defined %}
-                {% for resume in app.user.resumes %}
-                    {% if resume.respondedVacancies is defined %}
-                        {% for vacancy in resume.respondedVacancies|sort((a,b) => a.salary <=> b.salary)|reverse %}
-                            <div class="card w-50 mb-3">
-                                <div class="card-body">
+        {% if role == 'seeker' %}
+            {% for resume in resumes %}
+                {% for vacancy in resume.respondedVacancies|sort((a,b) => a.salary <=> b.salary)|reverse %}
+                    <div class="card w-50 mb-3">
+                        <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-end">
                                         <h5 class="card-title pb-2">Вакансия</h5>
                                         <p class="salary">{{ vacancy.salary|number_format(thousandSep = ' ') }} руб.</p>
@@ -50,18 +39,15 @@
                                         <a href="{{ path('view_resume', { id: resume.id }) }}" class="btn btn-primary">Открыть</a>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
+                    </div>
                 {% endfor %}
-            {% endif %}
+            {% endfor %}
+        {% endif %}
 
-            {% elseif app.user.roles is defined and 'ROLE_RECRUITER' in app.user.roles %}
-                {% if app.user.vacancies is defined %}
-                    {% for vacancy in app.user.vacancies %}
-                        {% if vacancy.responses is defined %}
-                            {% for resume in vacancy.responses|sort((a,b) => a.salary <=> b.salary) %}
-                                <div class="card w-50 mb-3">
+        {% if role == 'recruiter' %}
+            {% for vacancy in vacancies %}
+                {% for resume in vacancy.responses|sort((a,b) => a.salary <=> b.salary) %}
+                    <div class="card w-50 mb-3">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-end">
                                             <h5 class="card-title pb-2">Резюме</h5>
@@ -92,10 +78,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            {% endfor %}
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
+                {% endfor %}
+            {% endfor %}
         {% endif %}
     </div>
 {% endblock %}
