@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Vacancy;
+use App\Form\SearchFormType;
 use App\Form\VacancyFormType;
 use App\Form\VacancyResponseType;
 use App\Repository\ResumeRepository;
@@ -21,10 +22,38 @@ class VacancyController extends AbstractController
     }
 
     #[Route('/', name: 'vacancies')]
-    public function index(VacancyRepository $vacancyRepository): Response
+    public function index(VacancyRepository $vacancyRepository, Request $request): Response
     {
+        $searchForm = $this->createForm(SearchFormType::class);
+        $searchForm->handleRequest($request);
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $queryText = preg_split('/[,-.\s;]+/', $searchForm->get('query_text')->getData());
+            $vacanciesFromTextQuery = $vacancyRepository->searchByQuery($queryText);
+            $querySkills = $searchForm->get('query_skills')->getNormData();
+
+            if ($searchForm->get('query_text')->getData()) {
+                foreach ($vacanciesFromTextQuery as $vacancyFromTextQuery) {
+                    if (!array_diff($querySkills->toArray(), $vacancyFromTextQuery->getSkills()->toArray())) {
+                        $vacancies[] = $vacancyFromTextQuery;
+                    }
+                }
+            } else {
+                foreach ($vacancyRepository->findAll() as $vacancy) {
+                    if (!array_diff($querySkills->toArray(), $vacancy->getSkills()->toArray())) {
+                        $vacancies[] = $vacancy;
+                    }
+                }
+            }
+
+            return $this->render('vacancy/index.html.twig', [
+                'vacancies' => $vacancies ?? [],
+                'search_form' => $searchForm,
+            ]);
+        }
+
         return $this->render('vacancy/index.html.twig', [
             'vacancies' => $vacancyRepository->findAll(),
+            'search_form' => $searchForm,
         ]);
     }
 

@@ -12,53 +12,64 @@
     <div class="p-3 mb-3 container-sm">
         <h1 class="pb-3">{{ block('title') }}</h1>
 
-        {% for vacancy in vacancies|sort((a,b) => a.salary <=> b.salary)|reverse %}
-            <div class="card w-50 mb-3">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-end">
-                        <h5 class="card-title pb-2">{{ vacancy.specialization }}</h5>
+        <div class="d-flex justify-content-between">
+            <div class="w-50">
+                {% for vacancy in vacancies|sort((a,b) => a.salary <=> b.salary)|reverse %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-end">
+                                <h5 class="card-title pb-2">{{ vacancy.specialization }}</h5>
 
-                        {# TODO: Оптимизировать #}
-                        {% set break = false %}
-                        {% if app.user.roles is defined and 'ROLE_SEEKER' in app.user.roles %}
-                            {% for resume1 in app.user.resumes %}
-                                {% for resume2 in vacancy.responses %}
-                                    {% if resume1 == resume2 and not break %}
-                                        <p class="fw-bold">Вы откликнулись ✓</p>
-                                        {% set break = true %}
-                                    {% endif %}
-                                {% endfor %}
-                            {% endfor %}
-                        {% endif %}
-                    </div>
+                                {% set break = false %}
+                                {% if app.user.roles is defined and 'ROLE_SEEKER' in app.user.roles %}
+                                    {% for resume1 in app.user.resumes %}
+                                        {% for resume2 in vacancy.responses %}
+                                            {% if resume1 == resume2 and not break %}
+                                                <p class="fw-bold">Вы откликнулись ✓</p>
+                                                {% set break = true %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
 
 
-                    {% if vacancy.recruiter.company %}
-                        <p class="p-0 m-0">{{ vacancy.recruiter.company.name }}</p>
-                        {% else %}
-                            <p class="p-0 m-0">{{ vacancy.recruiter.fullName }}</p>
-                    {% endif %}
+                            {% if vacancy.recruiter.company %}
+                                <p class="p-0 m-0">{{ vacancy.recruiter.company.name }}</p>
+                            {% else %}
+                                <p class="p-0 m-0">{{ vacancy.recruiter.fullName }}</p>
+                            {% endif %}
 
-                    <hr class="my-3"/>
+                            <hr class="my-3"/>
 
-                    {% if vacancy.description %}
-                        <p class="card-text">{{ vacancy.description|striptags|slice(0, 100) }}...</p>
-                    {% endif %}
+                            {% if vacancy.description %}
+                                <p class="card-text">{{ vacancy.description|striptags|slice(0, 100) }}...</p>
+                            {% endif %}
 
-                    {% if vacancy.skills %}
-                        <div class="d-flex flex-row ">
-                            {% for skill in vacancy.skills %}
-                                <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
-                            {% endfor %}
+                            {% if vacancy.skills %}
+                                <div class="d-flex flex-row ">
+                                    {% for skill in vacancy.skills %}
+                                        <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="m-0 salary">{{ vacancy.salary|number_format(thousandSep = ' ') }} руб.</p>
+                                <a href="{{ path('view_vacancy', { id: vacancy.id }) }}" class="btn btn-primary">Открыть</a>
+                            </div>
                         </div>
-                    {% endif %}
-
-                    <div class="d-flex justify-content-between align-items-center">
-                        <p class="m-0 salary">{{ vacancy.salary|number_format(thousandSep = ' ') }} руб.</p>
-                        <a href="{{ path('view_vacancy', { id: vacancy.id }) }}" class="btn btn-primary">Открыть</a>
                     </div>
-                </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+
+            {% if search_form is defined %}
+                <div class="card-body ms-3 p-3 pb-0 search-block form-block">
+                    <h5 class="card-title pb-2">Поиск</h5>
+                    {{ form(search_form) }}
+                </div>
+            {% endif %}
+        </div>
+
     </div>
 {% endblock %}

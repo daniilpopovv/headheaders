@@ -39,6 +39,19 @@ class VacancyRepository extends ServiceEntityRepository
         }
     }
 
+    public function searchByQuery(array $queryText)
+    {
+        $qb = $this->createQueryBuilder('vacancy');
+
+        foreach ($queryText as $queryTextElement) {
+            $qb->andWhere("vacancy.specialization LIKE '%$queryTextElement%'");
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Vacancy[] Returns an array of Vacancy objects
 //     */
