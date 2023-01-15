@@ -40,8 +40,8 @@
                             {% endif %}
 
                             {% if resume.skills %}
-                                <div class="d-flex flex-row ">
-                                    {% for skill in resume.skills %}
+                                <div class="d-flex flex-wrap">
+                                    {% for skill in resume.skills|slice(0,9) %}
                                         <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
                                     {% endfor %}
                                 </div>

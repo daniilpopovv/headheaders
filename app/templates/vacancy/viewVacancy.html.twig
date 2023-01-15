@@ -27,7 +27,7 @@
         {% endif %}
 
         {% if vacancy.skills %}
-            <div class="d-flex flex-row mt-2">
+            <div class="d-flex flex-wrap mt-2">
                 {% for skill in vacancy.skills %}
                     <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
                 {% endfor %}
