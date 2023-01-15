@@ -24,7 +24,7 @@ class Resume
     #[ORM\Column(length: 2000, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(nullable: false)]
+    #[ORM\Column(length: 8, nullable: false)]
     #[Constraints\NotBlank]
     private ?int $salary = null;
 
