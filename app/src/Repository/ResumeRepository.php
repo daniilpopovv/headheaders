@@ -39,6 +39,19 @@ class ResumeRepository extends ServiceEntityRepository
         }
     }
 
+    public function searchByQuery(array $queryText)
+    {
+        $qb = $this->createQueryBuilder('resume');
+
+        foreach ($queryText as $queryTextElement) {
+            $qb->andWhere("resume.specialization LIKE '%$queryTextElement%'");
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Resume[] Returns an array of Resume objects
 //     */

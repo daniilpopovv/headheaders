@@ -129,3 +129,11 @@ hr {
   justify-content: space-between;
   align-items: flex-end;
 }
+
+.search-block {
+  height: fit-content;
+
+  .search-field {
+    border-radius: 0;
+  }
+}
