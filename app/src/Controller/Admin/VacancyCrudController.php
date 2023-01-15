@@ -10,7 +10,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
 class VacancyCrudController extends AbstractCrudController
 {
@@ -24,15 +26,17 @@ class VacancyCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Вакансия')
             ->setEntityLabelInPlural('Вакансии')
-            ->setSearchFields(['specialization'])
-            ->setDefaultSort(['specialization' => 'ASC'])
+            ->setSearchFields(['specialization', 'recruiter', 'description'])
+            ->setDefaultSort(['recruiter' => 'ASC'])
             ;
     }
 
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(NumericFilter::new('salary'))
+            ->add(NumericFilter::new('salary', 'Предлагаемая зарплата'))
+            ->add(TextFilter::new('specialization', 'Специализация'))
+            ->add(EntityFilter::new('recruiter', 'Владелец вакансии'))
             ;
     }
 

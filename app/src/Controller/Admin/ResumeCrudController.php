@@ -10,7 +10,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
 class ResumeCrudController extends AbstractCrudController
 {
@@ -24,15 +26,17 @@ class ResumeCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Резюме')
             ->setEntityLabelInPlural('Резюме')
-            ->setSearchFields(['specialization'])
-            ->setDefaultSort(['specialization' => 'ASC'])
+            ->setSearchFields(['specialization', 'seeker', 'description'])
+            ->setDefaultSort(['seeker' => 'ASC'])
             ;
     }
 
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(NumericFilter::new('salary'))
+            ->add(NumericFilter::new('salary', 'Желаемая зарплата'))
+            ->add(TextFilter::new('specialization', 'Специализация'))
+            ->add(EntityFilter::new('seeker', 'Владелец резюме'))
             ;
     }
 

@@ -54,8 +54,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Резюме', 'fas fa-file', Resume::class);
         yield MenuItem::linkToCrud('Вакансии', 'fas fa-briefcase', Vacancy::class);
         yield MenuItem::linkToCrud('Скиллы', 'fas fa-lightbulb', Skill::class);
-        yield MenuItem::linkToCrud('Искатели', 'fas fa-magnifying-glass', Seeker::class);
-        yield MenuItem::linkToCrud('Хантеры', 'fas fa-eye', Recruiter::class);
+        yield MenuItem::linkToCrud('Соискатели', 'fas fa-magnifying-glass', Seeker::class);
+        yield MenuItem::linkToCrud('Рекрутеры', 'fas fa-eye', Recruiter::class);
         yield MenuItem::linkToCrud('Компании', 'fas fa-building', Company::class);
     }
 }
