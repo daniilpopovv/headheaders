@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Resume;
 use App\Form\ResumeFormType;
 use App\Form\ResumeInviteType;
+use App\Form\SearchFormType;
 use App\Repository\ResumeRepository;
 use App\Repository\VacancyRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,10 +22,46 @@ class ResumeController extends AbstractController
     }
 
     #[Route('/', name: 'resumes')]
-    public function index(ResumeRepository $resumeRepository): Response
+    public function index(ResumeRepository $resumeRepository, Request $request): Response
     {
+        $searchForm = $this->createForm(SearchFormType::class);
+        $searchForm->handleRequest($request);
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $queryText = preg_split('/[,-.\s;]+/', $searchForm->get('query_text')->getData());
+            $resumesFromTextQuery = $resumeRepository->searchByQuery($queryText);
+            $querySkills = $searchForm->get('query_skills')->getViewData();
+
+            $stage = 0;
+            if ($searchForm->get('query_text')->getData() AND $querySkills !== []) {
+                foreach ($resumesFromTextQuery as $resumeFromTextQuery) {
+                    if (!array_diff($querySkills, $resumeFromTextQuery->getSkills()->toArray())) {
+                        $resumes[] = $resumeFromTextQuery;
+                    }
+                }
+
+                $stage = 1;
+            } elseif ($searchForm->get('query_text')->getData()) {
+                $resumes = $resumesFromTextQuery;
+                $stage = 2;
+            } elseif ($querySkills !== []) {
+                foreach ($resumeRepository->findAll() as $resume) {
+                    if (!array_diff($querySkills, $resume->getSkills()->toArray())) {
+                        $resumes[] = $resume;
+                    }
+                }
+                $stage = 3;
+            }
+
+            return $this->render('resume/index.html.twig', [
+                'resumes' => $resumes ?? [],
+                'search_form' => $searchForm,
+                'stage' => $stage,
+            ]);
+        }
+
         return $this->render('resume/index.html.twig', [
             'resumes' => $resumeRepository->findAll(),
+            'search_form' => $searchForm,
         ]);
     }
 
