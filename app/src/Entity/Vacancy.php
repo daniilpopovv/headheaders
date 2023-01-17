@@ -21,7 +21,7 @@ class Vacancy
     #[ORM\Column(length: 100, nullable: false)]
     #[Constraints\NotBlank]
     #[Constraints\Regex(
-        pattern: '[а-яА-ЯёЁa-zA-Z0-9\.\s]+$',
+        pattern: '/[а-яА-ЯёЁa-zA-Z0-9\.\s]+/',
         message: 'Название специальности может содержать только латинские и кириллические буквы, точки и цифры.'
     )]
     #[Constraints\Length(
