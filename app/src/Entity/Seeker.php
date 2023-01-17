@@ -61,7 +61,7 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PrePersist]
     public function setSeekerRole()
     {
-        $this->roles = ['ROLE_USER', 'ROLE_RECRUITER'];
+        $this->roles = ['ROLE_USER', 'ROLE_SEEKER'];
     }
 
     public function getId(): ?int
