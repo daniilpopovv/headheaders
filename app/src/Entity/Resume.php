@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ResumeRepository;
@@ -36,7 +38,6 @@ class Resume
 
     #[ORM\ManyToOne(inversedBy: 'resumes')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Constraints\NotBlank]
     private ?Seeker $seeker = null;
 
     #[ORM\ManyToMany(targetEntity: Vacancy::class, inversedBy: 'invitedResumes')]

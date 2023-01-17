@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
 use App\Entity\Vacancy;
@@ -37,6 +39,7 @@ class ResumeInviteType extends AbstractType
                 'tom_select_options' => [
                     'maxItems' => 1,
                 ],
+                'required' => true,
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Пригласить',

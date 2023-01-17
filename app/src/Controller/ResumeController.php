@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Resume;
@@ -27,17 +29,20 @@ class ResumeController extends AbstractController
         $searchForm = $this->createForm(SearchFormType::class);
         $searchForm->handleRequest($request);
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-            $queryText = preg_split('/[,-.\s;]+/', $searchForm->get('query_text')->getData());
-            $resumesFromTextQuery = $resumeRepository->searchByQuery($queryText);
-            $querySkills = $searchForm->get('query_skills')->getNormData();
 
             if ($searchForm->get('query_text')->getData()) {
+                $queryText = preg_split('/[,-.\s;]+/', $searchForm->get('query_text')->getData());
+                $querySkills = $searchForm->get('query_skills')->getNormData();
+                $resumesFromTextQuery = $resumeRepository->searchByQuery($queryText);
+
                 foreach ($resumesFromTextQuery as $resumeFromTextQuery) {
                     if (!array_diff($querySkills->toArray(), $resumeFromTextQuery->getSkills()->toArray())) {
                         $resumes[] = $resumeFromTextQuery;
                     }
                 }
             } else {
+                $querySkills = $searchForm->get('query_skills')->getNormData();
+
                 foreach ($resumeRepository->findAll() as $resume) {
                     if (!array_diff($querySkills->toArray(), $resume->getSkills()->toArray())) {
                         $resumes[] = $resume;
@@ -103,6 +108,7 @@ class ResumeController extends AbstractController
 
         return $this->render('resume/createResume.html.twig', [
             'resume_form' => $form->createView(),
+            'title' => 'Редактирование резюме',
         ]);
     }
 
@@ -146,7 +152,7 @@ class ResumeController extends AbstractController
 
                 $form = $this->createForm(ResumeInviteType::class);
                 $form->handleRequest($request);
-                if ($form->isSubmitted() && $form->isValid()) {
+                if ($form->isSubmitted() && $form->isValid() && $form->get('invites')->getViewData() !== []) {
                     $form_view_data = $form->get('invites')->getViewData();
                     $vacancy = $vacancyRepository->findOneBy(['id' => $form_view_data[0]]);
                     $resume->addInvite($vacancy);

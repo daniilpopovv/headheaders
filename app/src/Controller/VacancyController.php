@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Vacancy;
@@ -27,17 +29,19 @@ class VacancyController extends AbstractController
         $searchForm = $this->createForm(SearchFormType::class);
         $searchForm->handleRequest($request);
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-            $queryText = preg_split('/[,-.\s;]+/', $searchForm->get('query_text')->getData());
-            $vacanciesFromTextQuery = $vacancyRepository->searchByQuery($queryText);
-            $querySkills = $searchForm->get('query_skills')->getNormData();
-
             if ($searchForm->get('query_text')->getData()) {
+                $queryText = preg_split('/[,-.\s;]+/', $searchForm->get('query_text')->getData());
+                $vacanciesFromTextQuery = $vacancyRepository->searchByQuery($queryText);
+                $querySkills = $searchForm->get('query_skills')->getNormData();
+
                 foreach ($vacanciesFromTextQuery as $vacancyFromTextQuery) {
                     if (!array_diff($querySkills->toArray(), $vacancyFromTextQuery->getSkills()->toArray())) {
                         $vacancies[] = $vacancyFromTextQuery;
                     }
                 }
             } else {
+                $querySkills = $searchForm->get('query_skills')->getNormData();
+
                 foreach ($vacancyRepository->findAll() as $vacancy) {
                     if (!array_diff($querySkills->toArray(), $vacancy->getSkills()->toArray())) {
                         $vacancies[] = $vacancy;
@@ -103,6 +107,7 @@ class VacancyController extends AbstractController
 
         return $this->render('vacancy/createVacancy.html.twig', [
             'vacancy_form' => $form->createView(),
+            'title' => 'Редактирование вакансии',
         ]);
     }
 
@@ -148,7 +153,7 @@ class VacancyController extends AbstractController
 
                 $form = $this->createForm(VacancyResponseType::class);
                 $form->handleRequest($request);
-                if ($form->isSubmitted() && $form->isValid()) {
+                if ($form->isSubmitted() && $form->isValid() && $form->get('responses')->getViewData() !== []) {
                     $form_view_data = $form->get('responses')->getViewData();
                     $resume = $resumeRepository->findOneBy(['id' => $form_view_data[0]]);
                     $vacancy->addResponse($resume);

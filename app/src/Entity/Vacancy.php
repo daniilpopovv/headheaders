@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\VacancyRepository;
@@ -32,7 +34,6 @@ class Vacancy
 
     #[ORM\ManyToOne(inversedBy: 'vacancies')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Constraints\NotBlank]
     private ?Recruiter $recruiter = null;
 
     #[ORM\ManyToMany(targetEntity: Resume::class, mappedBy: 'invites')]
