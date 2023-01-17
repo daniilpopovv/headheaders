@@ -45,13 +45,8 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/resumes/create, roles: ROLE_SEEKER}
-        - { path: ^/resumes/edit/, roles: ROLE_SEEKER}
-        - { path: ^/resumes/my, roles: ROLE_SEEKER}
-        - { path: ^/vacancies/create/, roles: ROLE_RECRUITER}
-        - { path: ^/vacancies/edit/, roles: ROLE_RECRUITER}
-        - { path: ^/vacancies/my, roles: ROLE_RECRUITER}
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/resumes/\D, roles: ROLE_SEEKER}
+        - { path: ^/vacancies/\D, roles: ROLE_RECRUITER}
 
 when@test:
     security:
