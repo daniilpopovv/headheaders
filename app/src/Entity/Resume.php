@@ -18,16 +18,46 @@ class Resume
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: false)]
+    #[ORM\Column(length: 100, nullable: false)]
     #[Constraints\NotBlank]
+    #[Constraints\Regex(
+        pattern: '[а-яА-ЯёЁa-zA-Z0-9\.\s]+$',
+        message: 'Название специальности может содержать только латинские и кириллические буквы, точки и цифры.'
+    )]
+    #[Constraints\Length(
+        min: 3,
+        max: 100,
+        minMessage: 'Название специальности должно содержать минимум {{ limit }} символа.',
+        maxMessage: 'Название специальности не должно превышать {{ limit }} символов.',
+    )]
     private ?string $specialization = null;
 
 
     #[ORM\Column(length: 2000, nullable: true)]
+    #[Constraints\Length(
+        max: 2000,
+        maxMessage: 'Описание резюме не должно превышать {{ limit }} символов.',
+    )]
     private ?string $description = null;
 
     #[ORM\Column(length: 8, nullable: false)]
     #[Constraints\NotBlank]
+    #[Constraints\Type(
+        type: 'integer',
+        message: 'Пожалуйста, введите целое число',
+    )]
+    #[Constraints\Range(
+        minMessage: 'Зарплата должна быть меньше 13 890 рублей (МРОТ)',
+        maxMessage: 'Зарплата не должна превышать 2 000 000 рублей',
+        min: 13890,
+        max: 2000000,
+    )]
+    #[Constraints\Length(
+        min: 5,
+        max: 8,
+        minMessage: 'Зарплата должна содержать минимум {{ limit }} символов.',
+        maxMessage: 'Зарплата не должна превышать {{ limit }} символов.',
+    )]
     private ?int $salary = null;
 
     #[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'resumes')]

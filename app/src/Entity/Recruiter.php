@@ -15,7 +15,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: RecruiterRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[UniqueEntity(fields: ['username'], message: 'Такой пользователь уже существует')]
 class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -23,8 +22,19 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180, unique: true)]
+    #[ORM\Column(length: 20, unique: true)]
     #[Constraints\NotBlank]
+    #[Constraints\Unique(message: 'Пользователь с таким логином уже существует',)]
+    #[Constraints\Regex(
+        pattern: '[a-zA-Z0-9]{4,20}$',
+        message: 'Логин должен состоять только из латинских букв и цифр.'
+    )]
+    #[Constraints\Length(
+        min: 4,
+        max: 20,
+        minMessage: 'Логин должен содержать минимум {{ limit }} символа.',
+        maxMessage: 'Длина логина не должна превышать {{ limit }} символов.',
+    )]
     private ?string $username = null;
 
     #[ORM\Column]
@@ -36,8 +46,18 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255, nullable: false)]
+    #[ORM\Column(length: 100, nullable: false)]
     #[Constraints\NotBlank]
+    #[Constraints\Regex(
+        pattern: '[а-яА-ЯёЁa-zA-Z0-9\-\–\—\s]+$',
+        message: 'ФИО может содержать только латинские и кириллические буквы, тире'
+    )]
+    #[Constraints\Length(
+        min: 4,
+        max: 100,
+        minMessage: 'ФИО должно состоять минимум из {{ limit }} символов.',
+        maxMessage: 'ФИО не должно превышать {{ limit }} символов.',
+    )]
     private ?string $fullName = null;
 
     #[ORM\OneToMany(mappedBy: 'recruiter', targetEntity: Vacancy::class, orphanRemoval: true)]
@@ -46,9 +66,16 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'recruiters')]
     private ?Company $company = null;
 
-    #[ORM\Column(length: 255, nullable: false)]
+    #[ORM\Column(length: 50, nullable: false)]
     #[Constraints\NotBlank]
     #[Constraints\Email]
+    #[Constraints\Unique(message: 'Пользователь с такой почтой уже существует',)]
+    #[Constraints\Length(
+        min: 6,
+        max: 50,
+        minMessage: 'Email должен состоять минимум из {{ limit }} символов.',
+        maxMessage: 'Email не должен превышать {{ limit }} символов.',
+    )]
     private ?string $email = null;
 
     public function __construct()

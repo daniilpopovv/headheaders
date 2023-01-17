@@ -18,8 +18,18 @@ class Skill
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: false)]
+    #[ORM\Column(length: 50, nullable: false)]
     #[Constraints\NotBlank]
+    #[Constraints\Regex(
+        pattern: '[а-яА-ЯёЁa-zA-Z0-9\-\–\—\s\!]+$',
+        message: 'Название навыка содержит недопустимые символы'
+    )]
+    #[Constraints\Length(
+        min: 1,
+        max: 50,
+        minMessage: 'Название навыка должно содержать минимум {{ limit }} символ.',
+        maxMessage: 'Название навыка не может быть больше {{ limit }} символов.',
+    )]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Resume::class, mappedBy: 'skills')]

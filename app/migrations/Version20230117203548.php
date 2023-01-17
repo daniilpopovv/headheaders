@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230117145854 extends AbstractMigration
+final class Version20230117203548 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -29,11 +29,11 @@ final class Version20230117145854 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE vacancy_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE admin (id INT NOT NULL, username VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_880E0D76F85E0677 ON admin (username)');
-        $this->addSql('CREATE TABLE company (id INT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE recruiter (id INT NOT NULL, company_id INT DEFAULT NULL, username VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, full_name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE company (id INT NOT NULL, name VARCHAR(60) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE recruiter (id INT NOT NULL, company_id INT DEFAULT NULL, username VARCHAR(20) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, full_name VARCHAR(100) NOT NULL, email VARCHAR(50) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_DE8633D8F85E0677 ON recruiter (username)');
         $this->addSql('CREATE INDEX IDX_DE8633D8979B1AD6 ON recruiter (company_id)');
-        $this->addSql('CREATE TABLE resume (id INT NOT NULL, seeker_id INT NOT NULL, specialization VARCHAR(255) NOT NULL, description VARCHAR(2000) DEFAULT NULL, salary INT NOT NULL, photo_filename VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE resume (id INT NOT NULL, seeker_id INT NOT NULL, specialization VARCHAR(100) NOT NULL, description VARCHAR(2000) DEFAULT NULL, salary INT NOT NULL, photo_filename VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_60C1D0A057555B2 ON resume (seeker_id)');
         $this->addSql('CREATE TABLE resume_skill (resume_id INT NOT NULL, skill_id INT NOT NULL, PRIMARY KEY(resume_id, skill_id))');
         $this->addSql('CREATE INDEX IDX_C2CA241FD262AF09 ON resume_skill (resume_id)');
@@ -41,10 +41,10 @@ final class Version20230117145854 extends AbstractMigration
         $this->addSql('CREATE TABLE resume_vacancy (resume_id INT NOT NULL, vacancy_id INT NOT NULL, PRIMARY KEY(resume_id, vacancy_id))');
         $this->addSql('CREATE INDEX IDX_9F74D355D262AF09 ON resume_vacancy (resume_id)');
         $this->addSql('CREATE INDEX IDX_9F74D355433B78C4 ON resume_vacancy (vacancy_id)');
-        $this->addSql('CREATE TABLE seeker (id INT NOT NULL, username VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, full_name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE seeker (id INT NOT NULL, username VARCHAR(20) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, full_name VARCHAR(100) NOT NULL, email VARCHAR(50) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_835D8AF3F85E0677 ON seeker (username)');
-        $this->addSql('CREATE TABLE skill (id INT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE vacancy (id INT NOT NULL, recruiter_id INT NOT NULL, specialization VARCHAR(255) NOT NULL, description VARCHAR(2000) DEFAULT NULL, salary INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE skill (id INT NOT NULL, name VARCHAR(50) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE vacancy (id INT NOT NULL, recruiter_id INT NOT NULL, specialization VARCHAR(100) NOT NULL, description VARCHAR(2000) DEFAULT NULL, salary INT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_A9346CBD156BE243 ON vacancy (recruiter_id)');
         $this->addSql('CREATE TABLE vacancy_skill (vacancy_id INT NOT NULL, skill_id INT NOT NULL, PRIMARY KEY(vacancy_id, skill_id))');
         $this->addSql('CREATE INDEX IDX_87739B15433B78C4 ON vacancy_skill (vacancy_id)');
