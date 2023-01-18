@@ -47,8 +47,7 @@ class Resume
         message: 'Пожалуйста, введите целое число',
     )]
     #[Constraints\Range(
-        minMessage: 'Зарплата должна быть меньше 13 890 рублей (МРОТ)',
-        maxMessage: 'Зарплата не должна превышать 2 000 000 рублей',
+        notInRangeMessage: 'Зарплата должна быть в диапазоне от 13 890 до 2 000 000 рублей.',
         min: 13890,
         max: 2000000,
     )]
@@ -60,13 +59,10 @@ class Resume
     )]
     private ?int $salary = null;
 
-    #[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'resumes')]
+    #[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'resumes', fetch: 'EAGER')]
     private Collection $skills;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $photoFilename = null;
-
-    #[ORM\ManyToOne(inversedBy: 'resumes')]
+    #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'resumes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Seeker $seeker = null;
 
@@ -149,18 +145,6 @@ class Resume
     public function removeSkill(Skill $skill): self
     {
         $this->skills->removeElement($skill);
-
-        return $this;
-    }
-
-    public function getPhotoFilename(): ?string
-    {
-        return $this->photoFilename;
-    }
-
-    public function setPhotoFilename(?string $photoFilename): self
-    {
-        $this->photoFilename = $photoFilename;
 
         return $this;
     }

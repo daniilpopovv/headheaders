@@ -46,8 +46,7 @@ class Vacancy
         message: 'Пожалуйста, введите целое число',
     )]
     #[Constraints\Range(
-        minMessage: 'Зарплата должна быть меньше 13 890 рублей (МРОТ)',
-        maxMessage: 'Зарплата не должна превышать 2 000 000 рублей',
+        notInRangeMessage: 'Зарплата должна быть в диапазоне от 13 890 до 2 000 000 рублей.',
         min: 13890,
         max: 2000000,
     )]
@@ -59,10 +58,10 @@ class Vacancy
     )]
     private ?int $salary = null;
 
-    #[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'vacancies')]
+    #[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'vacancies', fetch: 'EAGER')]
     private Collection $skills;
 
-    #[ORM\ManyToOne(inversedBy: 'vacancies')]
+    #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'vacancies')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Recruiter $recruiter = null;
 

@@ -9,7 +9,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -63,7 +62,7 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'recruiter', targetEntity: Vacancy::class, orphanRemoval: true)]
     private Collection $vacancies;
 
-    #[ORM\ManyToOne(inversedBy: 'recruiters')]
+    #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'recruiters')]
     private ?Company $company = null;
 
     #[ORM\Column(length: 50, nullable: false)]

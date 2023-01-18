@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230117203548 extends AbstractMigration
+final class Version20230118145044 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -33,7 +33,7 @@ final class Version20230117203548 extends AbstractMigration
         $this->addSql('CREATE TABLE recruiter (id INT NOT NULL, company_id INT DEFAULT NULL, username VARCHAR(20) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, full_name VARCHAR(100) NOT NULL, email VARCHAR(50) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_DE8633D8F85E0677 ON recruiter (username)');
         $this->addSql('CREATE INDEX IDX_DE8633D8979B1AD6 ON recruiter (company_id)');
-        $this->addSql('CREATE TABLE resume (id INT NOT NULL, seeker_id INT NOT NULL, specialization VARCHAR(100) NOT NULL, description VARCHAR(2000) DEFAULT NULL, salary INT NOT NULL, photo_filename VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE resume (id INT NOT NULL, seeker_id INT NOT NULL, specialization VARCHAR(100) NOT NULL, description VARCHAR(2000) DEFAULT NULL, salary INT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_60C1D0A057555B2 ON resume (seeker_id)');
         $this->addSql('CREATE TABLE resume_skill (resume_id INT NOT NULL, skill_id INT NOT NULL, PRIMARY KEY(resume_id, skill_id))');
         $this->addSql('CREATE INDEX IDX_C2CA241FD262AF09 ON resume_skill (resume_id)');
