@@ -8,11 +8,20 @@ use App\Repository\RecruiterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RecruiterRepository::class)]
+#[UniqueEntity(
+    fields: ['username'],
+    message: 'Пользователь с таким логином уже существует',
+)]
+#[UniqueEntity(
+    fields: ['email'],
+    message: 'Пользователь с такой почтой уже существует',
+)]
 #[ORM\HasLifecycleCallbacks]
 class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -23,7 +32,6 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(unique: true)]
     #[Assert\NotBlank]
-    #[Assert\Unique(message: 'Пользователь с таким логином уже существует',)]
     #[Assert\Regex(
         pattern: '/[a-zA-Z0-9]+/',
         message: 'Логин должен состоять только из латинских букв и цифр.'
@@ -68,7 +76,6 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: false)]
     #[Assert\NotBlank]
     #[Assert\Email]
-    #[Assert\Unique(message: 'Пользователь с такой почтой уже существует',)]
     #[Assert\Length(
         min: 6,
         max: 50,
