@@ -47,7 +47,7 @@ class VacancyRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('vacancy');
 
         foreach ($queryText as $queryTextElement) {
-            $qb->andWhere("vacancy.specialization LIKE '%$queryTextElement%'");
+            $qb->orWhere("vacancy.specialization LIKE '%$queryTextElement%'");
             $qb->orWhere("vacancy.description LIKE '%$queryTextElement%'");
         }
 

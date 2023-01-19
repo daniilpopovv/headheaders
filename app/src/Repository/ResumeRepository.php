@@ -47,7 +47,7 @@ class ResumeRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('resume');
 
         foreach ($queryText as $queryTextElement) {
-            $qb->andWhere("resume.specialization LIKE '%$queryTextElement%'");
+            $qb->orWhere("resume.specialization LIKE '%$queryTextElement%'");
             $qb->orWhere("resume.description LIKE '%$queryTextElement%'");
         }
 
