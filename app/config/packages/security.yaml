@@ -47,6 +47,8 @@ security:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/resumes/\D, roles: ROLE_SEEKER}
         - { path: ^/vacancies/\D, roles: ROLE_RECRUITER}
+        - { path: ^/invites, roles: [ROLE_RECRUITER, ROLE_SEEKER]}
+        - { path: ^/responses, roles: [ROLE_RECRUITER, ROLE_SEEKER]}
 
 when@test:
     security:

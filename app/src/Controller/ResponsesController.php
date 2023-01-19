@@ -15,20 +15,18 @@ class ResponsesController extends AbstractController
     #[Route('/responses', name: 'responses')]
     public function index(ResumeRepository $resumeRepository, VacancyRepository $vacancyRepository): Response
     {
-        $userRoles = $this->getUser() !== null ? $this->getUser()->getRoles() : null;
+        $userRoles = $this->getUser()->getRoles();
 
-        if ($this->getUser()) {
-            if (in_array('ROLE_SEEKER', $userRoles)) {
-                $role = 'seeker';
-                $title = 'Вы откликнулись на вакансии:';
+        if (in_array('ROLE_SEEKER', $userRoles)) {
+            $role = 'seeker';
+            $title = 'Вы откликнулись на вакансии:';
 
-                $resumes = $resumeRepository->findBy(['seeker' => $this->getUser()]);
-            } elseif (in_array('ROLE_RECRUITER', $userRoles)) {
-                $role = 'recruiter';
-                $title = 'На ваши вакансии откликнулись:';
+            $resumes = $resumeRepository->findBy(['seeker' => $this->getUser()]);
+        } elseif (in_array('ROLE_RECRUITER', $userRoles)) {
+            $role = 'recruiter';
+            $title = 'На ваши вакансии откликнулись:';
 
-                $vacancies = $vacancyRepository->findBy(['recruiter' => $this->getUser()]);
-            }
+            $vacancies = $vacancyRepository->findBy(['recruiter' => $this->getUser()]);
         }
 
         return $this->render('responses/index.html.twig', [
