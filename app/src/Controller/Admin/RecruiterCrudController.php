@@ -26,8 +26,7 @@ class RecruiterCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('Рекрутер')
             ->setEntityLabelInPlural('Рекрутеры')
             ->setSearchFields(['fullName', 'email'])
-            ->setDefaultSort(['fullName' => 'ASC'])
-            ;
+            ->setDefaultSort(['fullName' => 'ASC']);
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -36,8 +35,7 @@ class RecruiterCrudController extends AbstractCrudController
             ->add(TextFilter::new('fullName', 'Полное имя'))
             ->add(TextFilter::new('email', 'Почта'))
             ->add(EntityFilter::new('vacancies', 'Вакансия рекрутера'))
-            ->add(EntityFilter::new('company', 'Компания рекрутера'))
-            ;
+            ->add(EntityFilter::new('company', 'Компания рекрутера'));
     }
 
     public function configureFields(string $pageName): iterable

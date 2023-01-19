@@ -25,16 +25,14 @@ class CompanyCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('Компания')
             ->setEntityLabelInPlural('Компании')
             ->setSearchFields(['name'])
-            ->setDefaultSort(['name' => 'ASC'])
-            ;
+            ->setDefaultSort(['name' => 'ASC']);
     }
 
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
             ->add(TextFilter::new('name', 'Название компании'))
-            ->add(EntityFilter::new('recruiters', 'Сотрудник компании'))
-            ;
+            ->add(EntityFilter::new('recruiters', 'Сотрудник компании'));
     }
 
     public function configureFields(string $pageName): iterable

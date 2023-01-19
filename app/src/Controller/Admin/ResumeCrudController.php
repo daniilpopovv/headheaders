@@ -29,8 +29,7 @@ class ResumeCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('Резюме')
             ->setEntityLabelInPlural('Резюме')
             ->setSearchFields(['specialization', 'seeker', 'description'])
-            ->setDefaultSort(['seeker' => 'ASC'])
-            ;
+            ->setDefaultSort(['seeker' => 'ASC']);
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -38,8 +37,7 @@ class ResumeCrudController extends AbstractCrudController
         return $filters
             ->add(NumericFilter::new('salary', 'Желаемая зарплата'))
             ->add(TextFilter::new('specialization', 'Специализация'))
-            ->add(EntityFilter::new('seeker', 'Владелец резюме'))
-            ;
+            ->add(EntityFilter::new('seeker', 'Владелец резюме'));
     }
 
     public function configureFields(string $pageName): iterable

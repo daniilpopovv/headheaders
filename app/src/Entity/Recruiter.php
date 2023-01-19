@@ -159,8 +159,7 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials()
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+
     }
 
     public function getFullName(): ?string
@@ -196,7 +195,6 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeVacancy(Vacancy $vacancy): self
     {
         if ($this->vacancies->removeElement($vacancy)) {
-            // set the owning side to null (unless already changed)
             if ($vacancy->getRecruiter() === $this) {
                 $vacancy->setRecruiter(null);
             }

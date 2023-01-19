@@ -24,15 +24,13 @@ class SkillCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('Навык')
             ->setEntityLabelInPlural('Навыки')
             ->setSearchFields(['name'])
-            ->setDefaultSort(['name' => 'ASC'])
-            ;
+            ->setDefaultSort(['name' => 'ASC']);
     }
 
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(TextFilter::new('name', 'Название навыка'))
-            ;
+            ->add(TextFilter::new('name', 'Название навыка'));
     }
 
     public function configureFields(string $pageName): iterable

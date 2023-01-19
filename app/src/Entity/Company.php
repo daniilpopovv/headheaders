@@ -83,7 +83,6 @@ class Company
     public function removeRecruiter(Recruiter $recruiter): self
     {
         if ($this->recruiters->removeElement($recruiter)) {
-            // set the owning side to null (unless already changed)
             if ($recruiter->getCompany() === $this) {
                 $recruiter->setCompany(null);
             }

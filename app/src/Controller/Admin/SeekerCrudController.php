@@ -25,8 +25,7 @@ class SeekerCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('Соискатель')
             ->setEntityLabelInPlural('Соискатели')
             ->setSearchFields(['fullName', 'email'])
-            ->setDefaultSort(['fullName' => 'ASC'])
-            ;
+            ->setDefaultSort(['fullName' => 'ASC']);
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -34,8 +33,7 @@ class SeekerCrudController extends AbstractCrudController
         return $filters
             ->add(TextFilter::new('fullName', 'Полное имя'))
             ->add(TextFilter::new('email', 'Почта'))
-            ->add(EntityFilter::new('resumes', 'Резюме соискателя'))
-            ;
+            ->add(EntityFilter::new('resumes', 'Резюме соискателя'));
     }
 
     public function configureFields(string $pageName): iterable

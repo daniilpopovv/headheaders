@@ -29,8 +29,7 @@ class VacancyCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('Вакансия')
             ->setEntityLabelInPlural('Вакансии')
             ->setSearchFields(['specialization', 'recruiter', 'description'])
-            ->setDefaultSort(['recruiter' => 'ASC'])
-            ;
+            ->setDefaultSort(['recruiter' => 'ASC']);
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -38,8 +37,7 @@ class VacancyCrudController extends AbstractCrudController
         return $filters
             ->add(NumericFilter::new('salary', 'Предлагаемая зарплата'))
             ->add(TextFilter::new('specialization', 'Специализация'))
-            ->add(EntityFilter::new('recruiter', 'Владелец вакансии'))
-            ;
+            ->add(EntityFilter::new('recruiter', 'Владелец вакансии'));
     }
 
     public function configureFields(string $pageName): iterable
