@@ -21,7 +21,7 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 20, unique: true)]
+    #[ORM\Column(unique: true)]
     #[Constraints\NotBlank]
     #[Constraints\Unique(message: 'Пользователь с таким логином уже существует',)]
     #[Constraints\Regex(
@@ -45,7 +45,7 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 100, nullable: false)]
+    #[ORM\Column(nullable: false)]
     #[Constraints\NotBlank]
     #[Constraints\Regex(
         pattern: '/[а-яА-ЯёЁa-zA-Z0-9\-\–\—\s]+/',
@@ -65,7 +65,7 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'recruiters')]
     private ?Company $company = null;
 
-    #[ORM\Column(length: 50, nullable: false)]
+    #[ORM\Column(nullable: false)]
     #[Constraints\NotBlank]
     #[Constraints\Email]
     #[Constraints\Unique(message: 'Пользователь с такой почтой уже существует',)]

@@ -18,7 +18,7 @@ class Skill
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50, nullable: false)]
+    #[ORM\Column(nullable: false)]
     #[Constraints\NotBlank]
     #[Constraints\Regex(
         pattern: '/[а-яА-ЯёЁa-zA-Z0-9\-\–\—\s\!]+/',
