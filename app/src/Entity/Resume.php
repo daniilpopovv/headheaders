@@ -72,11 +72,15 @@ class Resume
     #[ORM\ManyToMany(targetEntity: Vacancy::class, mappedBy: 'responses')]
     private Collection $respondedVacancies;
 
+    #[ORM\ManyToMany(targetEntity: Recruiter::class, inversedBy: 'invitedResumes')]
+    private Collection $whoInvited;
+
     public function __construct()
     {
         $this->skills = new ArrayCollection();
         $this->invites = new ArrayCollection();
         $this->respondedVacancies = new ArrayCollection();
+        $this->whoInvited = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -208,6 +212,30 @@ class Resume
         if ($this->respondedVacancies->removeElement($respondedVacancy)) {
             $respondedVacancy->removeResponse($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Recruiter>
+     */
+    public function getWhoInvited(): Collection
+    {
+        return $this->whoInvited;
+    }
+
+    public function addWhoInvited(Recruiter $whoInvited): self
+    {
+        if (!$this->whoInvited->contains($whoInvited)) {
+            $this->whoInvited->add($whoInvited);
+        }
+
+        return $this;
+    }
+
+    public function removeWhoInvited(Recruiter $whoInvited): self
+    {
+        $this->whoInvited->removeElement($whoInvited);
 
         return $this;
     }

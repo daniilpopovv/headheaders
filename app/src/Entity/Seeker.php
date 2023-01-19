@@ -74,9 +74,13 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private ?string $email = null;
 
+    #[ORM\ManyToMany(targetEntity: Vacancy::class, mappedBy: 'whoResponded')]
+    private Collection $respondedVacancies;
+
     public function __construct()
     {
         $this->resumes = new ArrayCollection();
+        $this->respondedVacancies = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -209,6 +213,33 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(?string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vacancy>
+     */
+    public function getRespondedVacancies(): Collection
+    {
+        return $this->respondedVacancies;
+    }
+
+    public function addRespondedVacancy(Vacancy $respondedVacancy): self
+    {
+        if (!$this->respondedVacancies->contains($respondedVacancy)) {
+            $this->respondedVacancies->add($respondedVacancy);
+            $respondedVacancy->addWhoResponded($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRespondedVacancy(Vacancy $respondedVacancy): self
+    {
+        if ($this->respondedVacancies->removeElement($respondedVacancy)) {
+            $respondedVacancy->removeWhoResponded($this);
+        }
 
         return $this;
     }

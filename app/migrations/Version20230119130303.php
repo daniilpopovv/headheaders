@@ -64,6 +64,12 @@ final class Version20230119130303 extends AbstractMigration
         $$ LANGUAGE plpgsql;');
         $this->addSql('DROP TRIGGER IF EXISTS notify_trigger ON messenger_messages;');
         $this->addSql('CREATE TRIGGER notify_trigger AFTER INSERT OR UPDATE ON messenger_messages FOR EACH ROW EXECUTE PROCEDURE notify_messenger_messages();');
+        $this->addSql('CREATE TABLE resume_recruiter (resume_id INT NOT NULL, recruiter_id INT NOT NULL, PRIMARY KEY(resume_id, recruiter_id))');
+        $this->addSql('CREATE INDEX IDX_13FFD261D262AF09 ON resume_recruiter (resume_id)');
+        $this->addSql('CREATE INDEX IDX_13FFD261156BE243 ON resume_recruiter (recruiter_id)');
+        $this->addSql('CREATE TABLE vacancy_seeker (vacancy_id INT NOT NULL, seeker_id INT NOT NULL, PRIMARY KEY(vacancy_id, seeker_id))');
+        $this->addSql('CREATE INDEX IDX_2038C4F8433B78C4 ON vacancy_seeker (vacancy_id)');
+        $this->addSql('CREATE INDEX IDX_2038C4F857555B2 ON vacancy_seeker (seeker_id)');
         $this->addSql('ALTER TABLE recruiter ADD CONSTRAINT FK_DE8633D8979B1AD6 FOREIGN KEY (company_id) REFERENCES company (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE resume ADD CONSTRAINT FK_60C1D0A057555B2 FOREIGN KEY (seeker_id) REFERENCES seeker (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE resume_skill ADD CONSTRAINT FK_C2CA241FD262AF09 FOREIGN KEY (resume_id) REFERENCES resume (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
@@ -75,6 +81,11 @@ final class Version20230119130303 extends AbstractMigration
         $this->addSql('ALTER TABLE vacancy_skill ADD CONSTRAINT FK_87739B155585C142 FOREIGN KEY (skill_id) REFERENCES skill (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE vacancy_resume ADD CONSTRAINT FK_C3A49EAB433B78C4 FOREIGN KEY (vacancy_id) REFERENCES vacancy (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE vacancy_resume ADD CONSTRAINT FK_C3A49EABD262AF09 FOREIGN KEY (resume_id) REFERENCES resume (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE resume_recruiter ADD CONSTRAINT FK_13FFD261D262AF09 FOREIGN KEY (resume_id) REFERENCES resume (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE resume_recruiter ADD CONSTRAINT FK_13FFD261156BE243 FOREIGN KEY (recruiter_id) REFERENCES recruiter (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE vacancy_seeker ADD CONSTRAINT FK_2038C4F8433B78C4 FOREIGN KEY (vacancy_id) REFERENCES vacancy (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE vacancy_seeker ADD CONSTRAINT FK_2038C4F857555B2 FOREIGN KEY (seeker_id) REFERENCES seeker (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE messenger_messages ALTER queue_name TYPE VARCHAR');
         $this->addSql('CREATE TABLE sessions (sess_id VARCHAR NOT NULL PRIMARY KEY, sess_data BYTEA NOT NULL, sess_lifetime INTEGER NOT NULL, sess_time INTEGER NOT NULL)');
         $this->addSql('CREATE INDEX expiry ON sessions (sess_lifetime)');
     }
@@ -101,6 +112,10 @@ final class Version20230119130303 extends AbstractMigration
         $this->addSql('ALTER TABLE vacancy_skill DROP CONSTRAINT FK_87739B155585C142');
         $this->addSql('ALTER TABLE vacancy_resume DROP CONSTRAINT FK_C3A49EAB433B78C4');
         $this->addSql('ALTER TABLE vacancy_resume DROP CONSTRAINT FK_C3A49EABD262AF09');
+        $this->addSql('ALTER TABLE resume_recruiter DROP CONSTRAINT FK_13FFD261D262AF09');
+        $this->addSql('ALTER TABLE resume_recruiter DROP CONSTRAINT FK_13FFD261156BE243');
+        $this->addSql('ALTER TABLE vacancy_seeker DROP CONSTRAINT FK_2038C4F8433B78C4');
+        $this->addSql('ALTER TABLE vacancy_seeker DROP CONSTRAINT FK_2038C4F857555B2');
         $this->addSql('DROP TABLE admin');
         $this->addSql('DROP TABLE company');
         $this->addSql('DROP TABLE recruiter');
@@ -113,5 +128,8 @@ final class Version20230119130303 extends AbstractMigration
         $this->addSql('DROP TABLE vacancy_skill');
         $this->addSql('DROP TABLE vacancy_resume');
         $this->addSql('DROP TABLE messenger_messages');
+        $this->addSql('DROP TABLE resume_recruiter');
+        $this->addSql('DROP TABLE vacancy_seeker');
+        $this->addSql('ALTER TABLE messenger_messages ALTER queue_name TYPE VARCHAR');
     }
 }

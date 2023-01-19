@@ -77,9 +77,13 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private ?string $email = null;
 
+    #[ORM\ManyToMany(targetEntity: Resume::class, mappedBy: 'whoInvited')]
+    private Collection $invitedResumes;
+
     public function __construct()
     {
         $this->vacancies = new ArrayCollection();
+        $this->invitedResumes = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -223,6 +227,33 @@ class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(?string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Resume>
+     */
+    public function getInvitedResumes(): Collection
+    {
+        return $this->invitedResumes;
+    }
+
+    public function addInvitedResume(Resume $invitedResume): self
+    {
+        if (!$this->invitedResumes->contains($invitedResume)) {
+            $this->invitedResumes->add($invitedResume);
+            $invitedResume->addWhoInvited($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvitedResume(Resume $invitedResume): self
+    {
+        if ($this->invitedResumes->removeElement($invitedResume)) {
+            $invitedResume->removeWhoInvited($this);
+        }
 
         return $this;
     }

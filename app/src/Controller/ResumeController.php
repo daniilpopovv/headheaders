@@ -8,6 +8,7 @@ use App\Entity\Resume;
 use App\Form\ResumeFormType;
 use App\Form\ResumeInviteType;
 use App\Form\SearchFormType;
+use App\Repository\RecruiterRepository;
 use App\Repository\ResumeRepository;
 use App\Repository\VacancyRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -107,7 +108,7 @@ class ResumeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'view_resume')]
-    public function viewResume(Resume $resume, Request $request, VacancyRepository $vacancyRepository): Response
+    public function viewResume(Resume $resume, Request $request, VacancyRepository $vacancyRepository, RecruiterRepository $recruiterRepository): Response
     {
         $userRoles = $this->getUser() !== null ? $this->getUser()->getRoles() : null;
 
@@ -126,11 +127,13 @@ class ResumeController extends AbstractController
                 }
             } elseif (in_array('ROLE_RECRUITER', $userRoles)) {
                 $role = 'recruiter';
+                $recruiter = $recruiterRepository->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
+
                 $vacancies = $vacancyRepository->findBy([
-                    'recruiter' => $this->getUser(),
+                    'recruiter' => $recruiter,
                 ]);
 
-                $isInvite = (bool)array_intersect($vacancies, $resume->getInvites()->toArray());
+                $isInvite = in_array($recruiter, $resume->getWhoInvited()->toArray());
                 $isResponse = (bool)array_intersect($vacancies, $resume->getRespondedVacancies()->toArray());
 
                 $form = $this->createForm(ResumeInviteType::class);
@@ -139,6 +142,7 @@ class ResumeController extends AbstractController
                     $form_view_data = $form->get('invites')->getViewData();
                     $vacancy = $vacancyRepository->findOneBy(['id' => $form_view_data[0]]);
                     $resume->addInvite($vacancy);
+                    $resume->addWhoInvited($recruiter);
 
                     $this->entityManager->persist($resume);
                     $this->entityManager->flush();

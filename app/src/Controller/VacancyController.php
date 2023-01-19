@@ -9,6 +9,7 @@ use App\Form\SearchFormType;
 use App\Form\VacancyFormType;
 use App\Form\VacancyResponseType;
 use App\Repository\ResumeRepository;
+use App\Repository\SeekerRepository;
 use App\Repository\VacancyRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -98,7 +99,6 @@ class VacancyController extends AbstractController
     #[Route('/my', name: 'my_vacancies')]
     public function myVacancies(VacancyRepository $vacancyRepository): Response
     {
-
         $recruiter = $this->getUser();
 
         return $this->render('vacancy/index.html.twig', [
@@ -108,7 +108,7 @@ class VacancyController extends AbstractController
     }
 
     #[Route('/{id}', name: 'view_vacancy')]
-    public function viewVacancy(Vacancy $vacancy, Request $request, ResumeRepository $resumeRepository): Response
+    public function viewVacancy(Vacancy $vacancy, Request $request, ResumeRepository $resumeRepository, SeekerRepository $seekerRepository): Response
     {
         $userRoles = $this->getUser() !== null ? $this->getUser()->getRoles() : null;
 
@@ -127,12 +127,14 @@ class VacancyController extends AbstractController
                 }
             } elseif (in_array('ROLE_SEEKER', $userRoles)) {
                 $role = 'seeker';
+                $seeker = $seekerRepository->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
+
                 $resumes = $resumeRepository->findBy([
-                    'seeker' => $this->getUser(),
+                    'seeker' => $seeker,
                 ]);
 
                 $isInvite = (bool)array_intersect($resumes, $vacancy->getInvitedResumes()->toArray());
-                $isResponse = (bool)array_intersect($resumes, $vacancy->getResponses()->toArray());
+                $isResponse = in_array($seeker, $vacancy->getWhoResponded()->toArray());
 
 
                 $form = $this->createForm(VacancyResponseType::class);
@@ -141,6 +143,7 @@ class VacancyController extends AbstractController
                     $form_view_data = $form->get('responses')->getViewData();
                     $resume = $resumeRepository->findOneBy(['id' => $form_view_data[0]]);
                     $vacancy->addResponse($resume);
+                    $vacancy->addWhoResponded($seeker);
 
                     $this->entityManager->persist($vacancy);
                     $this->entityManager->flush();

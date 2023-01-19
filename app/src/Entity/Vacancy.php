@@ -71,11 +71,15 @@ class Vacancy
     #[ORM\ManyToMany(targetEntity: Resume::class, inversedBy: 'respondedVacancies')]
     private Collection $responses;
 
+    #[ORM\ManyToMany(targetEntity: Seeker::class, inversedBy: 'respondedVacancies')]
+    private Collection $whoResponded;
+
     public function __construct()
     {
         $this->skills = new ArrayCollection();
         $this->invitedResumes = new ArrayCollection();
         $this->responses = new ArrayCollection();
+        $this->whoResponded = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -207,6 +211,30 @@ class Vacancy
     public function removeResponse(Resume $response): self
     {
         $this->responses->removeElement($response);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Seeker>
+     */
+    public function getWhoResponded(): Collection
+    {
+        return $this->whoResponded;
+    }
+
+    public function addWhoResponded(Seeker $whoResponded): self
+    {
+        if (!$this->whoResponded->contains($whoResponded)) {
+            $this->whoResponded->add($whoResponded);
+        }
+
+        return $this;
+    }
+
+    public function removeWhoResponded(Seeker $whoResponded): self
+    {
+        $this->whoResponded->removeElement($whoResponded);
 
         return $this;
     }

@@ -19,19 +19,10 @@
                             <div class="d-flex justify-content-between align-items-end">
                                 <h5 class="card-title pb-2">{{ resume.specialization }}</h5>
 
-                                {% set break = false %}
-                                {% if app.user.roles is defined and 'ROLE_RECRUITER' in app.user.roles %}
-                                    {% for recruiterVacancy in app.user.vacancies %}
-                                        {% for resumeInviteVacancy in resume.invites %}
-                                            {% if recruiterVacancy == resumeInviteVacancy and not break %}
-                                                <p class="fw-bold">Вы пригласили ✓</p>
-                                                {% set break = true %}
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endfor %}
+                                {% if app.user in resume.whoInvited %}
+                                    <p class="fw-bold">Вы пригласили ✓</p>
                                 {% endif %}
                             </div>
-
 
                             <p class="p-0 m-0">{{ resume.seeker.fullName }}</p>
                             <hr class="my-3"/>

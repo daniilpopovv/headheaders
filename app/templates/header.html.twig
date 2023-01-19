@@ -5,14 +5,13 @@
                 <li><a href="/" class="nav-link px-2 link-dark">Главная</a></li>
                 <li><a href="{{ path('resumes') }}" class="nav-link px-2 link-dark">Резюме</a></li>
                 <li><a href="{{ path('vacancies') }}" class="nav-link px-2 link-dark">Вакансии</a></li>
-                {% if app.user.roles is defined and 'ROLE_SEEKER' in app.user.roles %}
-                    <li><a class="nav-link px-2 link-dark" href="{{ path('my_resumes') }}">Мои резюме</a></li>
-                {% endif %}
-                {% if app.user.roles is defined and 'ROLE_RECRUITER' in app.user.roles %}
-                    <li><a class="nav-link px-2 link-dark" href="{{ path('my_vacancies') }}">Мои вакансии</a></li>
-                {% endif %}
-
-                {% if app.user %}
+                {% if app.user.roles is defined %}
+                    {% if 'ROLE_SEEKER' in app.user.roles %}
+                        <li><a class="nav-link px-2 link-dark" href="{{ path('my_resumes') }}">Мои резюме</a></li>
+                    {% endif %}
+                    {% if 'ROLE_RECRUITER' in app.user.roles %}
+                        <li><a class="nav-link px-2 link-dark" href="{{ path('my_vacancies') }}">Мои вакансии</a></li>
+                    {% endif %}
                     <li><a class="nav-link px-2 link-dark" href="{{ path('responses') }}">Отклики</a></li>
                     <li><a class="nav-link px-2 link-dark" href="{{ path('invites') }}">Приглашения</a></li>
                 {% endif %}

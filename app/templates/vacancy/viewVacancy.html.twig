@@ -16,7 +16,7 @@
             <p class="p-0 m-0">{{ vacancy.recruiter.fullName }}</p>
         {% endif %}
 
-        {% if role == 'seeker' and isInvite %}
+        {% if isInvite %}
             <p class="fw-bold pt-2">Вас пригласили! Почта для связи: <a href="mailto:{{ vacancy.recruiter.email }}">{{ vacancy.recruiter.email }}</a></p>
         {% endif %}
 
