@@ -52,7 +52,8 @@ class VacancyRepository extends ServiceEntityRepository
         }
 
         foreach ($querySkills as $querySkill) {
-            $qb->join('vacancy.skills', "vacancy_skill" . $querySkill, Join::WITH, "vacancy_skill" . $querySkill . ".id = '$querySkill'");
+            $id = $querySkill->getId();
+            $qb->join('vacancy.skills', "vacancy_skill" . $id, Join::WITH, "vacancy_skill" . $id . ".id = '$id'");
         }
 
         return $qb

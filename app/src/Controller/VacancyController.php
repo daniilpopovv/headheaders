@@ -31,7 +31,7 @@ class VacancyController extends AbstractController
         $searchForm->handleRequest($request);
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
             $queryText = preg_split('/[,-.\s;]+/', $searchForm->get('query_text')->getViewData()) ?? '';
-            $querySkills = $searchForm->get('query_skills')->getViewData();
+            $querySkills = $searchForm->get('query_skills')->getNormData();
             $vacancies = $vacancyRepository->searchByQuery($queryText, $querySkills);
 
             return $this->render('vacancy/index.html.twig', [
@@ -112,18 +112,12 @@ class VacancyController extends AbstractController
     {
         $userRoles = $this->getUser() !== null ? $this->getUser()->getRoles() : null;
 
-        if ($this->getUser()) {
+        if ($userRoles) {
             if (in_array('ROLE_RECRUITER', $userRoles)) {
                 $role = 'recruiter';
 
                 if ($vacancy->getRecruiter() === $this->getUser()) {
-                    foreach ($resumeRepository->findAll() as $resume) {
-                        if (!in_array($vacancy, $resume->getInvites()->toArray())) {
-                            if (!array_diff($vacancy->getSkills()->toArray(), $resume->getSkills()->toArray())) {
-                                $relevant_resumes[] = $resume;
-                            }
-                        }
-                    }
+                    $relevant_resumes = $resumeRepository->searchByQuery([], $vacancy->getSkills());
                 }
             } elseif (in_array('ROLE_SEEKER', $userRoles)) {
                 $role = 'seeker';
