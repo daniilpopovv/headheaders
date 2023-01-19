@@ -29,26 +29,9 @@ class ResumeController extends AbstractController
         $searchForm = $this->createForm(SearchFormType::class);
         $searchForm->handleRequest($request);
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-
-            if ($searchForm->get('query_text')->getData()) {
-                $queryText = preg_split('/[,-.\s;]+/', $searchForm->get('query_text')->getData());
-                $querySkills = $searchForm->get('query_skills')->getNormData();
-                $resumesFromTextQuery = $resumeRepository->searchByQuery($queryText);
-
-                foreach ($resumesFromTextQuery as $resumeFromTextQuery) {
-                    if (!array_diff($querySkills->toArray(), $resumeFromTextQuery->getSkills()->toArray())) {
-                        $resumes[] = $resumeFromTextQuery;
-                    }
-                }
-            } else {
-                $querySkills = $searchForm->get('query_skills')->getNormData();
-
-                foreach ($resumeRepository->findAll() as $resume) {
-                    if (!array_diff($querySkills->toArray(), $resume->getSkills()->toArray())) {
-                        $resumes[] = $resume;
-                    }
-                }
-            }
+            $queryText = preg_split('/[,-.\s;]+/', $searchForm->get('query_text')->getViewData()) ?? '';
+            $querySkills = $searchForm->get('query_skills')->getViewData();
+            $resumes = $resumeRepository->searchByQuery($queryText, $querySkills);
 
             return $this->render('resume/index.html.twig', [
                 'resumes' => $resumes ?? [],

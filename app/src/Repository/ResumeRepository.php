@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Resume;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -41,12 +42,17 @@ class ResumeRepository extends ServiceEntityRepository
         }
     }
 
-    public function searchByQuery(array $queryText)
+    public function searchByQuery(array $queryText, $querySkills)
     {
         $qb = $this->createQueryBuilder('resume');
 
         foreach ($queryText as $queryTextElement) {
             $qb->andWhere("resume.specialization LIKE '%$queryTextElement%'");
+            $qb->orWhere("resume.description LIKE '%$queryTextElement%'");
+        }
+
+        foreach ($querySkills as $querySkill) {
+            $qb->join('resume.skills', "resume_skill".$querySkill, Join::WITH, "resume_skill".$querySkill.".id = '$querySkill'");
         }
 
         return $qb

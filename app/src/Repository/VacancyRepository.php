@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Vacancy;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -41,12 +42,17 @@ class VacancyRepository extends ServiceEntityRepository
         }
     }
 
-    public function searchByQuery(array $queryText)
+    public function searchByQuery(array $queryText, $querySkills)
     {
         $qb = $this->createQueryBuilder('vacancy');
 
         foreach ($queryText as $queryTextElement) {
             $qb->andWhere("vacancy.specialization LIKE '%$queryTextElement%'");
+            $qb->orWhere("vacancy.description LIKE '%$queryTextElement%'");
+        }
+
+        foreach ($querySkills as $querySkill) {
+            $qb->join('vacancy.skills', "vacancy_skill".$querySkill, Join::WITH, "vacancy_skill".$querySkill.".id = '$querySkill'");
         }
 
         return $qb

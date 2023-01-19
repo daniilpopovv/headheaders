@@ -29,25 +29,9 @@ class VacancyController extends AbstractController
         $searchForm = $this->createForm(SearchFormType::class);
         $searchForm->handleRequest($request);
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-            if ($searchForm->get('query_text')->getData()) {
-                $queryText = preg_split('/[,-.\s;]+/', $searchForm->get('query_text')->getData());
-                $vacanciesFromTextQuery = $vacancyRepository->searchByQuery($queryText);
-                $querySkills = $searchForm->get('query_skills')->getNormData();
-
-                foreach ($vacanciesFromTextQuery as $vacancyFromTextQuery) {
-                    if (!array_diff($querySkills->toArray(), $vacancyFromTextQuery->getSkills()->toArray())) {
-                        $vacancies[] = $vacancyFromTextQuery;
-                    }
-                }
-            } else {
-                $querySkills = $searchForm->get('query_skills')->getNormData();
-
-                foreach ($vacancyRepository->findAll() as $vacancy) {
-                    if (!array_diff($querySkills->toArray(), $vacancy->getSkills()->toArray())) {
-                        $vacancies[] = $vacancy;
-                    }
-                }
-            }
+            $queryText = preg_split('/[,-.\s;]+/', $searchForm->get('query_text')->getViewData()) ?? '';
+            $querySkills = $searchForm->get('query_skills')->getViewData();
+            $vacancies = $vacancyRepository->searchByQuery($queryText, $querySkills);
 
             return $this->render('vacancy/index.html.twig', [
                 'vacancies' => $vacancies ?? [],
