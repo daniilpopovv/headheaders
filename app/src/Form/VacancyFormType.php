@@ -42,8 +42,7 @@ class VacancyFormType extends AbstractType
             ->add('submit', SubmitType::class, [
                 'label' => 'Отправить',
                 'attr' => ['class' => 'w-100 mt-3']
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

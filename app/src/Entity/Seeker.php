@@ -8,9 +8,9 @@ use App\Repository\SeekerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SeekerRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -22,13 +22,13 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(unique: true)]
-    #[Constraints\NotBlank]
-    #[Constraints\Unique(message: 'Пользователь с таким логином уже существует',)]
-    #[Constraints\Regex(
+    #[Assert\NotBlank]
+    #[Assert\Unique(message: 'Пользователь с таким логином уже существует',)]
+    #[Assert\Regex(
         pattern: '/[a-zA-Z0-9]+/',
         message: 'Логин должен состоять только из латинских букв и цифр.'
     )]
-    #[Constraints\Length(
+    #[Assert\Length(
         min: 4,
         max: 20,
         minMessage: 'Логин должен содержать минимум {{ limit }} символа.',
@@ -46,12 +46,12 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(nullable: false)]
-    #[Constraints\NotBlank]
-    #[Constraints\Regex(
+    #[Assert\NotBlank]
+    #[Assert\Regex(
         pattern: '/[а-яА-ЯёЁa-zA-Z0-9\-\–\—\s]+/',
         message: 'ФИО может содержать только латинские и кириллические буквы, тире'
     )]
-    #[Constraints\Length(
+    #[Assert\Length(
         min: 4,
         max: 100,
         minMessage: 'ФИО должно состоять минимум из {{ limit }} символов.',
@@ -63,10 +63,10 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $resumes;
 
     #[ORM\Column(nullable: false)]
-    #[Constraints\NotBlank]
-    #[Constraints\Email]
-    #[Constraints\Unique(message: 'Пользователь с такой почтой уже существует',)]
-    #[Constraints\Length(
+    #[Assert\NotBlank]
+    #[Assert\Email]
+    #[Assert\Unique(message: 'Пользователь с такой почтой уже существует',)]
+    #[Assert\Length(
         min: 6,
         max: 50,
         minMessage: 'Email должен состоять минимум из {{ limit }} символов.',
@@ -81,7 +81,7 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __toString(): string
     {
-        return $this->fullName.' aka '.$this->username;
+        return $this->fullName . ' aka ' . $this->username;
     }
 
     #[ORM\PrePersist]
@@ -114,7 +114,7 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->username;
+        return (string)$this->username;
     }
 
     /**

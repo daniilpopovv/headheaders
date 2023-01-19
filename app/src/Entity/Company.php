@@ -8,7 +8,7 @@ use App\Repository\CompanyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
 class Company
@@ -19,12 +19,12 @@ class Company
     private ?int $id = null;
 
     #[ORM\Column(nullable: false)]
-    #[Constraints\NotBlank]
-    #[Constraints\Regex(
+    #[Assert\NotBlank]
+    #[Assert\Regex(
         pattern: '/[а-яА-ЯёЁa-zA-Z0-9\.\s]+/',
         message: 'Название компании может содержать только латинские и кириллические буквы, точки и цифры.'
     )]
-    #[Constraints\Length(
+    #[Assert\Length(
         min: 3,
         max: 60,
         minMessage: 'Название компании должно содержать минимум {{ limit }} символов.',

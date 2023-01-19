@@ -8,7 +8,7 @@ use App\Repository\ResumeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ResumeRepository::class)]
 class Resume
@@ -19,12 +19,12 @@ class Resume
     private ?int $id = null;
 
     #[ORM\Column(nullable: false)]
-    #[Constraints\NotBlank]
-    #[Constraints\Regex(
+    #[Assert\NotBlank]
+    #[Assert\Regex(
         pattern: '/[а-яА-ЯёЁa-zA-Z0-9\.\s]+/',
         message: 'Название специальности может содержать только латинские и кириллические буквы, точки и цифры.'
     )]
-    #[Constraints\Length(
+    #[Assert\Length(
         min: 3,
         max: 100,
         minMessage: 'Название специальности должно содержать минимум {{ limit }} символа.',
@@ -34,24 +34,24 @@ class Resume
 
 
     #[ORM\Column(nullable: true)]
-    #[Constraints\Length(
+    #[Assert\Length(
         max: 2000,
         maxMessage: 'Описание резюме не должно превышать {{ limit }} символов.',
     )]
     private ?string $description = null;
 
     #[ORM\Column(nullable: false)]
-    #[Constraints\NotBlank]
-    #[Constraints\Type(
+    #[Assert\NotBlank]
+    #[Assert\Type(
         type: 'integer',
         message: 'Пожалуйста, введите целое число',
     )]
-    #[Constraints\Range(
+    #[Assert\Range(
         notInRangeMessage: 'Зарплата должна быть в диапазоне от 13 890 до 2 000 000 рублей.',
         min: 13890,
         max: 2000000,
     )]
-    #[Constraints\Length(
+    #[Assert\Length(
         min: 5,
         max: 8,
         minMessage: 'Зарплата должна содержать минимум {{ limit }} символов.',

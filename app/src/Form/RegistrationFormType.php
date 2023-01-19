@@ -61,8 +61,7 @@ class RegistrationFormType extends AbstractType
             ->add('submit', SubmitType::class, [
                 'label' => 'Зарегистрироваться',
                 'attr' => ['class' => 'w-100 mt-3']
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

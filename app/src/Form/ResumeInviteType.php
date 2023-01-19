@@ -18,7 +18,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ResumeInviteType extends AbstractType
 {
-    public function __construct (Security $security, VacancyRepository $vacancyRepository) {
+    public function __construct(Security $security, VacancyRepository $vacancyRepository)
+    {
         $this->vacancies = $vacancyRepository->findBy([
             'recruiter' => $security->getUser(),
         ]);
@@ -31,7 +32,7 @@ class ResumeInviteType extends AbstractType
                 'label' => 'Выберите вакансию, чтобы пригласить',
                 'class' => Vacancy::class,
                 'choices' => $this->vacancies,
-                'choice_value' => function(Vacancy $vacancy) {
+                'choice_value' => function (Vacancy $vacancy) {
                     return $vacancy->getId();
                 },
                 'multiple' => true,
@@ -44,8 +45,7 @@ class ResumeInviteType extends AbstractType
             ->add('submit', SubmitType::class, [
                 'label' => 'Пригласить',
                 'attr' => ['class' => 'w-100 mt-3']
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -38,7 +38,7 @@ class VacancyFixture extends Fixture implements DependentFixtureInterface
             $newVacancy->setDescription('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
             $newVacancy->setSalary(rand(13890, 500000));
             foreach ($skills as $skill) {
-                if (rand(0,1)) {
+                if (rand(0, 1)) {
                     $newVacancy->addSkill($skill);
                 }
             }

@@ -8,7 +8,7 @@ use App\Repository\SkillRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SkillRepository::class)]
 class Skill
@@ -19,12 +19,12 @@ class Skill
     private ?int $id = null;
 
     #[ORM\Column(nullable: false)]
-    #[Constraints\NotBlank]
-    #[Constraints\Regex(
+    #[Assert\NotBlank]
+    #[Assert\Regex(
         pattern: '/[а-яА-ЯёЁa-zA-Z0-9\-\–\—\s\!]+/',
         message: 'Название навыка содержит недопустимые символы'
     )]
-    #[Constraints\Length(
+    #[Assert\Length(
         min: 1,
         max: 50,
         minMessage: 'Название навыка должно содержать минимум {{ limit }} символ.',

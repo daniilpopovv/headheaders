@@ -52,7 +52,7 @@ class ResumeRepository extends ServiceEntityRepository
         }
 
         foreach ($querySkills as $querySkill) {
-            $qb->join('resume.skills', "resume_skill".$querySkill, Join::WITH, "resume_skill".$querySkill.".id = '$querySkill'");
+            $qb->join('resume.skills', "resume_skill" . $querySkill, Join::WITH, "resume_skill" . $querySkill . ".id = '$querySkill'");
         }
 
         return $qb

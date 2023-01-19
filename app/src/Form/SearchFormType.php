@@ -35,8 +35,7 @@ class SearchFormType extends AbstractType
             ->add('submit', SubmitType::class, [
                 'label' => 'Поиск',
                 'attr' => ['class' => 'w-100 mt-3']
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
