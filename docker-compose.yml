@@ -15,5 +15,9 @@ services:
       context: .
     ports:
       - "80:80"
+    volumes:
+      - ./app/assets:/app/assets
+      - ./app/templates:/app/templates
+      - ./app/src:/app/src
     depends_on:
       - database

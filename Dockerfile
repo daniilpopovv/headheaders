@@ -15,8 +15,8 @@ RUN composer install -n \
     --no-plugins \
     --no-autoloader \
     --no-scripts \
-    --no-suggest \
-    --no-dev
+    --no-suggest
+#добавить для прода --no-dev
 
 FROM node:lts-alpine AS assets
 WORKDIR /app/
@@ -35,8 +35,6 @@ FROM base
 COPY --from=composer /app/vendor /app/vendor
 COPY --from=assets /app/public/build /app/public/build
 COPY ./app /app
-
-RUN chown -R www-data:www-data /app/var/*
 
 #nginx config
 COPY ./build/nginx/default.conf /etc/nginx/conf.d/default.conf
