@@ -2,15 +2,19 @@ README.md
 .idea
 .gitignore
 
-/app/.gitignore
+# docker-files
+.dockerignore
+Dockerfile
+docker-compose.yml
+docker-compose.local.yml
 
 # framework-bundle
-/app/vendor/
-/app/public/bundles/
-/app/var/
+/vendor/
+/public/bundles/
+/var/
 
 # webpack-encore-bundle
-/app/node_modules/
-/app/public/build/
-/app/npm-debug.log
-/app/yarn-error.log
+/node_modules/
+/public/build/
+npm-debug.log
+yarn-error.log

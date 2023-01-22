@@ -9,7 +9,7 @@ RUN apt -y update \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 FROM base AS composer
-COPY ./app/composer.lock ./app/composer.json ./app/symfony.lock ./
+COPY composer.lock composer.json symfony.lock /app/
 RUN composer install -n \
     --no-progress \
     --no-plugins \
@@ -18,30 +18,30 @@ RUN composer install -n \
     --no-suggest
 #добавить для прода --no-dev
 
-FROM node:lts-alpine AS assets
+FROM node:18.3-alpine AS assets
 WORKDIR /app/
 RUN apk update && apk upgrade
 
-COPY ./app/package.json ./app/package-lock.json /app/
-COPY --from=composer /app/vendor /app/vendor
+COPY package.json package-lock.json /app/
+COPY --from=composer /app/vendor/symfony/ux-autocomplete/assets /app/vendor/symfony/ux-autocomplete/assets
 
-RUN npm install
+RUN npm install --no-progress
 
-COPY ./app/webpack.config.js /app/
-COPY ./app/assets /app/assets
+COPY webpack.config.js /app/
+COPY assets /app/assets/
 RUN npm run build
 
 FROM base
 COPY --from=composer /app/vendor /app/vendor
 COPY --from=assets /app/public/build /app/public/build
-COPY ./app /app
 
+#entrypoint
+COPY ./infrastructure/docker/scripts/php-nginx/entrypoint.sh /etc/service/
 #nginx config
-COPY ./build/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./infrastructure/docker/config/nginx/default.conf /etc/nginx/conf.d/default.conf
+
+COPY . .
 
 RUN composer dump-autoload --optimize
 
-#entrypoint
-COPY ./build/entrypoint.sh /etc/service/
-RUN chmod +x /etc/service/entrypoint.sh
 CMD ["/etc/service/entrypoint.sh"]
