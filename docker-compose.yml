@@ -8,6 +8,12 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_USER: symfony
       POSTGRES_DB: symfony_docker
+    healthcheck:
+      test: pg_isready -U symfony -d symfony_docker
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   php:
     container_name: php
@@ -16,4 +22,5 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - database
+      database:
+        condition: service_healthy
