@@ -18,40 +18,37 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ResumeInviteType extends AbstractType
 {
-    public function __construct(Security $security, VacancyRepository $vacancyRepository)
-    {
-        $this->vacancies = $vacancyRepository->findBy([
-            'recruiter' => $security->getUser(),
-        ]);
-    }
+	public function __construct(Security $security, VacancyRepository $vacancyRepository) {
+		$this->vacancies = $vacancyRepository->findBy([
+			'recruiter' => $security->getUser(),
+		]);
+	}
 
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            ->add('invites', EntityType::class, [
-                'label' => 'Выберите вакансию, чтобы пригласить',
-                'class' => Vacancy::class,
-                'choices' => $this->vacancies,
-                'choice_value' => function (Vacancy $vacancy) {
-                    return $vacancy->getId();
-                },
-                'multiple' => true,
-                'autocomplete' => true,
-                'tom_select_options' => [
-                    'maxItems' => 1,
-                ],
-                'required' => true,
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Пригласить',
-                'attr' => ['class' => 'w-100 mt-3']
-            ]);
-    }
+	public function buildForm(FormBuilderInterface $builder, array $options): void {
+		$builder
+			->add('invites', EntityType::class, [
+				'label' => 'Выберите вакансию, чтобы пригласить',
+				'class' => Vacancy::class,
+				'choices' => $this->vacancies,
+				'choice_value' => function (Vacancy $vacancy) {
+					return $vacancy->getId();
+				},
+				'multiple' => true,
+				'autocomplete' => true,
+				'tom_select_options' => [
+					'maxItems' => 1,
+				],
+				'required' => true,
+			])
+			->add('submit', SubmitType::class, [
+				'label' => 'Пригласить',
+				'attr' => ['class' => 'w-100 mt-3']
+			]);
+	}
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
+	public function configureOptions(OptionsResolver $resolver): void {
+		$resolver->setDefaults([
 
-        ]);
-    }
+		]);
+	}
 }

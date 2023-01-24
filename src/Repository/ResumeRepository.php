@@ -19,45 +19,41 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ResumeRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Resume::class);
-    }
+	public function __construct(ManagerRegistry $registry) {
+		parent::__construct($registry, Resume::class);
+	}
 
-    public function save(Resume $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
+	public function save(Resume $entity, bool $flush = false): void {
+		$this->getEntityManager()->persist($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
+		if ($flush) {
+			$this->getEntityManager()->flush();
+		}
+	}
 
-    public function remove(Resume $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
+	public function remove(Resume $entity, bool $flush = false): void {
+		$this->getEntityManager()->remove($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
+		if ($flush) {
+			$this->getEntityManager()->flush();
+		}
+	}
 
-    public function searchByQuery(array $queryText, $querySkills)
-    {
-        $qb = $this->createQueryBuilder('resume');
+	public function searchByQuery(array $queryText, $querySkills) {
+		$qb = $this->createQueryBuilder('resume');
 
-        foreach ($queryText as $queryTextElement) {
-            $qb->orWhere("resume.specialization LIKE '%$queryTextElement%'");
-            $qb->orWhere("resume.description LIKE '%$queryTextElement%'");
-        }
+		foreach ($queryText as $queryTextElement) {
+			$qb->orWhere("resume.specialization LIKE '%$queryTextElement%'");
+			$qb->orWhere("resume.description LIKE '%$queryTextElement%'");
+		}
 
-        foreach ($querySkills as $querySkill) {
-            $id = $querySkill->getId();
-            $qb->join('resume.skills', "resume_skill" . $id, Join::WITH, "resume_skill" . $id . ".id = '$id'");
-        }
+		foreach ($querySkills as $querySkill) {
+			$id = $querySkill->getId();
+			$qb->join('resume.skills', "resume_skill" . $id, Join::WITH, "resume_skill" . $id . ".id = '$id'");
+		}
 
-        return $qb
-            ->getQuery()
-            ->getResult();
-    }
+		return $qb
+			->getQuery()
+			->getResult();
+	}
 }

@@ -12,28 +12,27 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class InvitesController extends AbstractController
 {
-    #[Route('/invites', name: 'invites')]
-    public function index(ResumeRepository $resumeRepository, VacancyRepository $vacancyRepository): Response
-    {
-        $userRoles = $this->getUser()->getRoles();
+	#[Route('/invites', name: 'invites')]
+	public function index(ResumeRepository $resumeRepository, VacancyRepository $vacancyRepository): Response {
+		$userRoles = $this->getUser()->getRoles();
 
-        if (in_array('ROLE_SEEKER', $userRoles)) {
-            $role = 'seeker';
-            $title = 'Вас пригласили на вакансии:';
+		if (in_array('ROLE_SEEKER', $userRoles)) {
+			$role = 'seeker';
+			$title = 'Вас пригласили на вакансии:';
 
-            $resumes = $resumeRepository->findBy(['seeker' => $this->getUser()]);
-        } elseif (in_array('ROLE_RECRUITER', $userRoles)) {
-            $role = 'recruiter';
-            $title = 'Вы пригласили на вакансии:';
+			$resumes = $resumeRepository->findBy(['seeker' => $this->getUser()]);
+		} elseif (in_array('ROLE_RECRUITER', $userRoles)) {
+			$role = 'recruiter';
+			$title = 'Вы пригласили на вакансии:';
 
-            $vacancies = $vacancyRepository->findBy(['recruiter' => $this->getUser()]);
-        }
+			$vacancies = $vacancyRepository->findBy(['recruiter' => $this->getUser()]);
+		}
 
-        return $this->render('invites/index.html.twig', [
-            'title' => $title ?? 'Отклики',
-            'role' => $role ?? 'Гость',
-            'resumes' => $resumes ?? [],
-            'vacancies' => $vacancies ?? [],
-        ]);
-    }
+		return $this->render('invites/index.html.twig', [
+			'title' => $title ?? 'Отклики',
+			'role' => $role ?? 'Гость',
+			'resumes' => $resumes ?? [],
+			'vacancies' => $vacancies ?? [],
+		]);
+	}
 }

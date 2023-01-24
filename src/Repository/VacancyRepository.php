@@ -19,45 +19,41 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class VacancyRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Vacancy::class);
-    }
+	public function __construct(ManagerRegistry $registry) {
+		parent::__construct($registry, Vacancy::class);
+	}
 
-    public function save(Vacancy $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
+	public function save(Vacancy $entity, bool $flush = false): void {
+		$this->getEntityManager()->persist($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
+		if ($flush) {
+			$this->getEntityManager()->flush();
+		}
+	}
 
-    public function remove(Vacancy $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
+	public function remove(Vacancy $entity, bool $flush = false): void {
+		$this->getEntityManager()->remove($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
+		if ($flush) {
+			$this->getEntityManager()->flush();
+		}
+	}
 
-    public function searchByQuery(array $queryText, $querySkills)
-    {
-        $qb = $this->createQueryBuilder('vacancy');
+	public function searchByQuery(array $queryText, $querySkills) {
+		$qb = $this->createQueryBuilder('vacancy');
 
-        foreach ($queryText as $queryTextElement) {
-            $qb->orWhere("vacancy.specialization LIKE '%$queryTextElement%'");
-            $qb->orWhere("vacancy.description LIKE '%$queryTextElement%'");
-        }
+		foreach ($queryText as $queryTextElement) {
+			$qb->orWhere("vacancy.specialization LIKE '%$queryTextElement%'");
+			$qb->orWhere("vacancy.description LIKE '%$queryTextElement%'");
+		}
 
-        foreach ($querySkills as $querySkill) {
-            $id = $querySkill->getId();
-            $qb->join('vacancy.skills', "vacancy_skill" . $id, Join::WITH, "vacancy_skill" . $id . ".id = '$id'");
-        }
+		foreach ($querySkills as $querySkill) {
+			$id = $querySkill->getId();
+			$qb->join('vacancy.skills', "vacancy_skill" . $id, Join::WITH, "vacancy_skill" . $id . ".id = '$id'");
+		}
 
-        return $qb
-            ->getQuery()
-            ->getResult();
-    }
+		return $qb
+			->getQuery()
+			->getResult();
+	}
 }

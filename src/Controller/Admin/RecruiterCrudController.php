@@ -15,35 +15,31 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
 class RecruiterCrudController extends AbstractCrudController
 {
-    public static function getEntityFqcn(): string
-    {
-        return Recruiter::class;
-    }
+	public static function getEntityFqcn(): string {
+		return Recruiter::class;
+	}
 
-    public function configureCrud(Crud $crud): Crud
-    {
-        return $crud
-            ->setEntityLabelInSingular('Рекрутер')
-            ->setEntityLabelInPlural('Рекрутеры')
-            ->setSearchFields(['fullName', 'email'])
-            ->setDefaultSort(['fullName' => 'ASC']);
-    }
+	public function configureCrud(Crud $crud): Crud {
+		return $crud
+			->setEntityLabelInSingular('Рекрутер')
+			->setEntityLabelInPlural('Рекрутеры')
+			->setSearchFields(['fullName', 'email'])
+			->setDefaultSort(['fullName' => 'ASC']);
+	}
 
-    public function configureFilters(Filters $filters): Filters
-    {
-        return $filters
-            ->add(TextFilter::new('fullName', 'Полное имя'))
-            ->add(TextFilter::new('email', 'Почта'))
-            ->add(EntityFilter::new('vacancies', 'Вакансия рекрутера'))
-            ->add(EntityFilter::new('company', 'Компания рекрутера'));
-    }
+	public function configureFilters(Filters $filters): Filters {
+		return $filters
+			->add(TextFilter::new('fullName', 'Полное имя'))
+			->add(TextFilter::new('email', 'Почта'))
+			->add(EntityFilter::new('vacancies', 'Вакансия рекрутера'))
+			->add(EntityFilter::new('company', 'Компания рекрутера'));
+	}
 
-    public function configureFields(string $pageName): iterable
-    {
-        yield TextField::new('fullName', 'Полное имя');
-        yield TextField::new('email', 'Email');
-        yield TextField::new('username', 'Логин');
-        yield TextField::new('password', 'Пароль')->hideOnIndex();
-        yield AssociationField::new('company', 'Компания')->setRequired(false);
-    }
+	public function configureFields(string $pageName): iterable {
+		yield TextField::new('fullName', 'Полное имя');
+		yield TextField::new('email', 'Email');
+		yield TextField::new('username', 'Логин');
+		yield TextField::new('password', 'Пароль')->hideOnIndex();
+		yield AssociationField::new('company', 'Компания')->setRequired(false);
+	}
 }

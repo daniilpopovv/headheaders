@@ -19,35 +19,34 @@ use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 #[Route('/register')]
 class RegistrationController extends AbstractController
 {
-    #[Route('/{slug}', name: 'app_register')]
-    public function registerSeeker(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AppAuthenticator $authenticator, EntityManagerInterface $entityManager, string $slug): Response
-    {
-        $user = $slug === 'seeker' ? new Seeker() : new Recruiter();
+	#[Route('/{slug}', name: 'app_register')]
+	public function registerSeeker(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AppAuthenticator $authenticator, EntityManagerInterface $entityManager, string $slug): Response {
+		$user = $slug === 'seeker' ? new Seeker() : new Recruiter();
 
-        $form = $this->createForm(RegistrationFormType::class, $user);
-        $form->handleRequest($request);
+		$form = $this->createForm(RegistrationFormType::class, $user);
+		$form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('password')->getData()
-                )
-            );
+		if ($form->isSubmitted() && $form->isValid()) {
+			// encode the plain password
+			$user->setPassword(
+				$userPasswordHasher->hashPassword(
+					$user,
+					$form->get('password')->getData()
+				)
+			);
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+			$entityManager->persist($user);
+			$entityManager->flush();
 
-            return $userAuthenticator->authenticateUser(
-                $user,
-                $authenticator,
-                $request
-            );
-        }
+			return $userAuthenticator->authenticateUser(
+				$user,
+				$authenticator,
+				$request
+			);
+		}
 
-        return $this->render('security/register.html.twig', [
-            'registrationForm' => $form->createView(),
-        ]);
-    }
+		return $this->render('security/register.html.twig', [
+			'registrationForm' => $form->createView(),
+		]);
+	}
 }

@@ -15,253 +15,229 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RecruiterRepository::class)]
 #[UniqueEntity(
-    fields: ['username'],
-    message: 'Пользователь с таким логином уже существует',
+	fields: ['username'],
+	message: 'Пользователь с таким логином уже существует',
 )]
 #[UniqueEntity(
-    fields: ['email'],
-    message: 'Пользователь с такой почтой уже существует',
+	fields: ['email'],
+	message: 'Пользователь с такой почтой уже существует',
 )]
 #[ORM\HasLifecycleCallbacks]
 class Recruiter implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+	#[ORM\Id]
+	#[ORM\GeneratedValue]
+	#[ORM\Column]
+	private ?int $id = null;
 
-    #[ORM\Column(unique: true)]
-    #[Assert\NotBlank]
-    #[Assert\Regex(
-        pattern: '/[a-zA-Z0-9]+/',
-        message: 'Логин должен состоять только из латинских букв и цифр.'
-    )]
-    #[Assert\Length(
-        min: 4,
-        max: 20,
-        minMessage: 'Логин должен содержать минимум {{ limit }} символа.',
-        maxMessage: 'Длина логина не должна превышать {{ limit }} символов.',
-    )]
-    private ?string $username = null;
+	#[ORM\Column(unique: true)]
+	#[Assert\NotBlank]
+	#[Assert\Regex(
+		pattern: '/[a-zA-Z0-9]+/',
+		message: 'Логин должен состоять только из латинских букв и цифр.'
+	)]
+	#[Assert\Length(
+		min: 4,
+		max: 20,
+		minMessage: 'Логин должен содержать минимум {{ limit }} символа.',
+		maxMessage: 'Длина логина не должна превышать {{ limit }} символов.',
+	)]
+	private ?string $username = null;
 
-    #[ORM\Column]
-    private array $roles = [];
+	#[ORM\Column]
+	private array $roles = [];
 
-    /**
-     * @var string|null The hashed password
-     */
-    #[ORM\Column]
-    private ?string $password = null;
+	/**
+	 * @var string|null The hashed password
+	 */
+	#[ORM\Column]
+	private ?string $password = null;
 
-    #[ORM\Column(nullable: false)]
-    #[Assert\NotBlank]
-    #[Assert\Regex(
-        pattern: '/[а-яА-ЯёЁa-zA-Z0-9\-\–\—\s]+/',
-        message: 'ФИО может содержать только латинские и кириллические буквы, тире'
-    )]
-    #[Assert\Length(
-        min: 4,
-        max: 100,
-        minMessage: 'ФИО должно состоять минимум из {{ limit }} символов.',
-        maxMessage: 'ФИО не должно превышать {{ limit }} символов.',
-    )]
-    private ?string $fullName = null;
+	#[ORM\Column(nullable: false)]
+	#[Assert\NotBlank]
+	#[Assert\Regex(
+		pattern: '/[а-яА-ЯёЁa-zA-Z0-9\-\–\—\s]+/',
+		message: 'ФИО может содержать только латинские и кириллические буквы, тире'
+	)]
+	#[Assert\Length(
+		min: 4,
+		max: 100,
+		minMessage: 'ФИО должно состоять минимум из {{ limit }} символов.',
+		maxMessage: 'ФИО не должно превышать {{ limit }} символов.',
+	)]
+	private ?string $fullName = null;
 
-    #[ORM\OneToMany(mappedBy: 'recruiter', targetEntity: Vacancy::class, orphanRemoval: true)]
-    private Collection $vacancies;
+	#[ORM\OneToMany(mappedBy: 'recruiter', targetEntity: Vacancy::class, orphanRemoval: true)]
+	private Collection $vacancies;
 
-    #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'recruiters')]
-    private ?Company $company = null;
+	#[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'recruiters')]
+	private ?Company $company = null;
 
-    #[ORM\Column(nullable: false)]
-    #[Assert\NotBlank]
-    #[Assert\Email]
-    #[Assert\Length(
-        min: 6,
-        max: 50,
-        minMessage: 'Email должен состоять минимум из {{ limit }} символов.',
-        maxMessage: 'Email не должен превышать {{ limit }} символов.',
-    )]
-    private ?string $email = null;
+	#[ORM\Column(nullable: false)]
+	#[Assert\NotBlank]
+	#[Assert\Email]
+	#[Assert\Length(
+		min: 6,
+		max: 50,
+		minMessage: 'Email должен состоять минимум из {{ limit }} символов.',
+		maxMessage: 'Email не должен превышать {{ limit }} символов.',
+	)]
+	private ?string $email = null;
 
-    #[ORM\ManyToMany(targetEntity: Resume::class, mappedBy: 'whoInvited')]
-    private Collection $invitedResumes;
+	#[ORM\ManyToMany(targetEntity: Resume::class, mappedBy: 'whoInvited')]
+	private Collection $invitedResumes;
 
-    public function __construct()
-    {
-        $this->vacancies = new ArrayCollection();
-        $this->invitedResumes = new ArrayCollection();
-    }
+	public function __construct() {
+		$this->vacancies = new ArrayCollection();
+		$this->invitedResumes = new ArrayCollection();
+	}
 
-    public function __toString(): string
-    {
-        return $this->fullName . ' aka ' . $this->username;
-    }
+	public function __toString(): string {
+		return $this->fullName . ' aka ' . $this->username;
+	}
 
-    #[ORM\PrePersist]
-    public function setRecruiterRole()
-    {
-        $this->roles = ['ROLE_USER', 'ROLE_RECRUITER'];
-    }
+	#[ORM\PrePersist]
+	public function setRecruiterRole() {
+		$this->roles = ['ROLE_USER', 'ROLE_RECRUITER'];
+	}
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+	public function getId(): ?int {
+		return $this->id;
+	}
 
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
+	public function getUsername(): ?string {
+		return $this->username;
+	}
 
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
+	public function setUsername(string $username): self {
+		$this->username = $username;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string)$this->username;
-    }
+	/**
+	 * A visual identifier that represents this user.
+	 *
+	 * @see UserInterface
+	 */
+	public function getUserIdentifier(): string {
+		return (string)$this->username;
+	}
 
-    /**
-     * @see UserInterface
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+	/**
+	 * @see UserInterface
+	 */
+	public function getRoles(): array {
+		$roles = $this->roles;
+		// guarantee every user at least has ROLE_USER
+		$roles[] = 'ROLE_USER';
 
-        return array_unique($roles);
-    }
+		return array_unique($roles);
+	}
 
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
+	public function setRoles(array $roles): self {
+		$this->roles = $roles;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
+	/**
+	 * @see PasswordAuthenticatedUserInterface
+	 */
+	public function getPassword(): string {
+		return $this->password;
+	}
 
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
+	public function setPassword(string $password): self {
+		$this->password = $password;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials()
-    {
+	/**
+	 * @see UserInterface
+	 */
+	public function eraseCredentials() {
 
-    }
+	}
 
-    public function getFullName(): ?string
-    {
-        return $this->fullName;
-    }
+	public function getFullName(): ?string {
+		return $this->fullName;
+	}
 
-    public function setFullName(?string $fullName): self
-    {
-        $this->fullName = $fullName;
+	public function setFullName(?string $fullName): self {
+		$this->fullName = $fullName;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * @return Collection<int, Vacancy>
-     */
-    public function getVacancies(): Collection
-    {
-        return $this->vacancies;
-    }
+	/**
+	 * @return Collection<int, Vacancy>
+	 */
+	public function getVacancies(): Collection {
+		return $this->vacancies;
+	}
 
-    public function addVacancy(Vacancy $vacancy): self
-    {
-        if (!$this->vacancies->contains($vacancy)) {
-            $this->vacancies->add($vacancy);
-            $vacancy->setRecruiter($this);
-        }
+	public function addVacancy(Vacancy $vacancy): self {
+		if (!$this->vacancies->contains($vacancy)) {
+			$this->vacancies->add($vacancy);
+			$vacancy->setRecruiter($this);
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function removeVacancy(Vacancy $vacancy): self
-    {
-        if ($this->vacancies->removeElement($vacancy)) {
-            if ($vacancy->getRecruiter() === $this) {
-                $vacancy->setRecruiter(null);
-            }
-        }
+	public function removeVacancy(Vacancy $vacancy): self {
+		if ($this->vacancies->removeElement($vacancy)) {
+			if ($vacancy->getRecruiter() === $this) {
+				$vacancy->setRecruiter(null);
+			}
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getCompany(): ?Company
-    {
-        return $this->company;
-    }
+	public function getCompany(): ?Company {
+		return $this->company;
+	}
 
-    public function setCompany(?Company $company): self
-    {
-        $this->company = $company;
+	public function setCompany(?Company $company): self {
+		$this->company = $company;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
+	public function getEmail(): ?string {
+		return $this->email;
+	}
 
-    public function setEmail(?string $email): self
-    {
-        $this->email = $email;
+	public function setEmail(?string $email): self {
+		$this->email = $email;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * @return Collection<int, Resume>
-     */
-    public function getInvitedResumes(): Collection
-    {
-        return $this->invitedResumes;
-    }
+	/**
+	 * @return Collection<int, Resume>
+	 */
+	public function getInvitedResumes(): Collection {
+		return $this->invitedResumes;
+	}
 
-    public function addInvitedResume(Resume $invitedResume): self
-    {
-        if (!$this->invitedResumes->contains($invitedResume)) {
-            $this->invitedResumes->add($invitedResume);
-            $invitedResume->addWhoInvited($this);
-        }
+	public function addInvitedResume(Resume $invitedResume): self {
+		if (!$this->invitedResumes->contains($invitedResume)) {
+			$this->invitedResumes->add($invitedResume);
+			$invitedResume->addWhoInvited($this);
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function removeInvitedResume(Resume $invitedResume): self
-    {
-        if ($this->invitedResumes->removeElement($invitedResume)) {
-            $invitedResume->removeWhoInvited($this);
-        }
+	public function removeInvitedResume(Resume $invitedResume): self {
+		if ($this->invitedResumes->removeElement($invitedResume)) {
+			$invitedResume->removeWhoInvited($this);
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 }

@@ -19,29 +19,26 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractDashboardController
 {
-    #[Route('/admin', name: 'admin')]
-    public function index(): Response
-    {
-        $routeBuilder = $this->container->get(AdminUrlGenerator::class);
-        $url = $routeBuilder->setController(ResumeCrudController::class)->generateUrl();
+	#[Route('/admin', name: 'admin')]
+	public function index(): Response {
+		$routeBuilder = $this->container->get(AdminUrlGenerator::class);
+		$url = $routeBuilder->setController(ResumeCrudController::class)->generateUrl();
 
-        return $this->redirect($url);
-    }
+		return $this->redirect($url);
+	}
 
-    public function configureDashboard(): Dashboard
-    {
-        return Dashboard::new()
-            ->setTitle('Headheaders');
-    }
+	public function configureDashboard(): Dashboard {
+		return Dashboard::new()
+			->setTitle('Headheaders');
+	}
 
-    public function configureMenuItems(): iterable
-    {
-        yield MenuItem::linkToRoute('Обратно на сайт', 'fas fa-home', 'homepage');
-        yield MenuItem::linkToCrud('Резюме', 'fas fa-file', Resume::class);
-        yield MenuItem::linkToCrud('Вакансии', 'fas fa-briefcase', Vacancy::class);
-        yield MenuItem::linkToCrud('Скиллы', 'fas fa-lightbulb', Skill::class);
-        yield MenuItem::linkToCrud('Соискатели', 'fas fa-magnifying-glass', Seeker::class);
-        yield MenuItem::linkToCrud('Рекрутеры', 'fas fa-eye', Recruiter::class);
-        yield MenuItem::linkToCrud('Компании', 'fas fa-building', Company::class);
-    }
+	public function configureMenuItems(): iterable {
+		yield MenuItem::linkToRoute('Обратно на сайт', 'fas fa-home', 'homepage');
+		yield MenuItem::linkToCrud('Резюме', 'fas fa-file', Resume::class);
+		yield MenuItem::linkToCrud('Вакансии', 'fas fa-briefcase', Vacancy::class);
+		yield MenuItem::linkToCrud('Скиллы', 'fas fa-lightbulb', Skill::class);
+		yield MenuItem::linkToCrud('Соискатели', 'fas fa-magnifying-glass', Seeker::class);
+		yield MenuItem::linkToCrud('Рекрутеры', 'fas fa-eye', Recruiter::class);
+		yield MenuItem::linkToCrud('Компании', 'fas fa-building', Company::class);
+	}
 }

@@ -10,16 +10,15 @@ use Doctrine\Persistence\ObjectManager;
 
 class SkillFixture extends Fixture
 {
-    public function load(ObjectManager $manager): void
-    {
-        $skills = ['PHP', 'ООП', 'MySQL', 'PostgreSQL', 'Redis', 'VueJS', 'Bootstrap', 'Symfony', 'Git', 'TypeScript'];
+	public function load(ObjectManager $manager): void {
+		$skills = ['PHP', 'ООП', 'MySQL', 'PostgreSQL', 'Redis', 'VueJS', 'Bootstrap', 'Symfony', 'Git', 'TypeScript'];
 
-        foreach ($skills as $skill) {
-            $newSkill = new Skill();
-            $newSkill->setName($skill);
-            $manager->persist($newSkill);
-        }
+		foreach ($skills as $skill) {
+			$newSkill = new Skill();
+			$newSkill->setName($skill);
+			$manager->persist($newSkill);
+		}
 
-        $manager->flush();
-    }
+		$manager->flush();
+	}
 }

@@ -18,36 +18,32 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
 class ResumeCrudController extends AbstractCrudController
 {
-    public static function getEntityFqcn(): string
-    {
-        return Resume::class;
-    }
+	public static function getEntityFqcn(): string {
+		return Resume::class;
+	}
 
-    public function configureCrud(Crud $crud): Crud
-    {
-        return $crud
-            ->setEntityLabelInSingular('Резюме')
-            ->setEntityLabelInPlural('Резюме')
-            ->setSearchFields(['specialization', 'seeker', 'description'])
-            ->setDefaultSort(['seeker' => 'ASC']);
-    }
+	public function configureCrud(Crud $crud): Crud {
+		return $crud
+			->setEntityLabelInSingular('Резюме')
+			->setEntityLabelInPlural('Резюме')
+			->setSearchFields(['specialization', 'seeker', 'description'])
+			->setDefaultSort(['seeker' => 'ASC']);
+	}
 
-    public function configureFilters(Filters $filters): Filters
-    {
-        return $filters
-            ->add(NumericFilter::new('salary', 'Желаемая зарплата'))
-            ->add(TextFilter::new('specialization', 'Специализация'))
-            ->add(EntityFilter::new('seeker', 'Владелец резюме'));
-    }
+	public function configureFilters(Filters $filters): Filters {
+		return $filters
+			->add(NumericFilter::new('salary', 'Желаемая зарплата'))
+			->add(TextFilter::new('specialization', 'Специализация'))
+			->add(EntityFilter::new('seeker', 'Владелец резюме'));
+	}
 
-    public function configureFields(string $pageName): iterable
-    {
-        yield TextField::new('specialization', 'Специализация');
-        yield TextareaField::new('description', 'О себе');
-        yield NumberField::new('salary', 'Желаемая ЗП');
-        yield AssociationField::new('skills', 'Скиллы')->hideOnIndex();
-        yield AssociationField::new('seeker', 'Владелец');
-        yield AssociationField::new('invites', 'Приглашения');
-        yield AssociationField::new('respondedVacancies', 'Отклики');
-    }
+	public function configureFields(string $pageName): iterable {
+		yield TextField::new('specialization', 'Специализация');
+		yield TextareaField::new('description', 'О себе');
+		yield NumberField::new('salary', 'Желаемая ЗП');
+		yield AssociationField::new('skills', 'Скиллы')->hideOnIndex();
+		yield AssociationField::new('seeker', 'Владелец');
+		yield AssociationField::new('invites', 'Приглашения');
+		yield AssociationField::new('respondedVacancies', 'Отклики');
+	}
 }
