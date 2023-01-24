@@ -44,4 +44,5 @@ COPY . .
 
 RUN composer dump-autoload --optimize
 
+RUN chmod +x /etc/service/entrypoint.sh
 CMD ["/etc/service/entrypoint.sh"]
