@@ -1,0 +1,30 @@
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-end">
+            <h5 class="card-title pb-2">{{ resume.specialization }}</h5>
+
+            {% if app.user in resume.whoInvited %}
+                <p class="fw-bold">Вы пригласили ✓</p>
+            {% endif %}
+        </div>
+
+        <p class="p-0 m-0">{{ resume.seeker.fullName }}</p>
+        <hr class="my-3"/>
+        {% if resume.description %}
+            <p class="card-text">{{ resume.description|striptags|slice(0, 100) }}...</p>
+        {% endif %}
+
+        {% if resume.skills %}
+            <div class="d-flex flex-wrap">
+                {% for skill in resume.skills|slice(0,9) %}
+                    <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="d-flex justify-content-between align-items-center">
+            <p class="m-0 salary">{{ resume.salary|number_format(thousandSep = ' ') }} руб.</p>
+            <a href="{{ path('view_resume', { id: resume.id }) }}" class="btn btn-primary">Открыть</a>
+        </div>
+    </div>
+</div>
