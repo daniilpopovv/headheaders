@@ -107,37 +107,39 @@ class VacancyController extends AbstractController
 		$userRoles = $this->getUser() !== null ? $this->getUser()->getRoles() : null;
 
 		if ($userRoles) {
-			if (in_array('ROLE_RECRUITER', $userRoles)) {
-				$role = 'recruiter';
+			switch (true) {
+				case in_array('ROLE_RECRUITER', $userRoles):
+					$role = 'recruiter';
+					if ($vacancy->getRecruiter() === $this->getUser()) {
+						$relevant_resumes = $resumeRepository->searchByQuery([], $vacancy->getSkills());
+					}
+					break;
+				case in_array('ROLE_SEEKER', $userRoles):
+					$role = 'seeker';
+					$seeker = $seekerRepository->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
 
-				if ($vacancy->getRecruiter() === $this->getUser()) {
-					$relevant_resumes = $resumeRepository->searchByQuery([], $vacancy->getSkills());
-				}
-			} elseif (in_array('ROLE_SEEKER', $userRoles)) {
-				$role = 'seeker';
-				$seeker = $seekerRepository->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
+					$resumes = $resumeRepository->findBy([
+						'seeker' => $seeker,
+					]);
 
-				$resumes = $resumeRepository->findBy([
-					'seeker' => $seeker,
-				]);
-
-				$isInvite = (bool)array_intersect($resumes, $vacancy->getInvitedResumes()->toArray());
-				$isResponse = in_array($seeker, $vacancy->getWhoResponded()->toArray());
+					$isInvite = (bool)array_intersect($resumes, $vacancy->getInvitedResumes()->toArray());
+					$isResponse = in_array($seeker, $vacancy->getWhoResponded()->toArray());
 
 
-				$form = $this->createForm(VacancyResponseType::class);
-				$form->handleRequest($request);
-				if ($form->isSubmitted() && $form->isValid() && $form->get('responses')->getViewData() !== []) {
-					$form_view_data = $form->get('responses')->getViewData();
-					$resume = $resumeRepository->findOneBy(['id' => $form_view_data[0]]);
-					$vacancy->addResponse($resume);
-					$vacancy->addWhoResponded($seeker);
+					$form = $this->createForm(VacancyResponseType::class);
+					$form->handleRequest($request);
+					if ($form->isSubmitted() && $form->isValid() && $form->get('responses')->getViewData() !== []) {
+						$form_view_data = $form->get('responses')->getViewData();
+						$resume = $resumeRepository->findOneBy(['id' => $form_view_data[0]]);
+						$vacancy->addResponse($resume);
+						$vacancy->addWhoResponded($seeker);
 
-					$this->entityManager->persist($vacancy);
-					$this->entityManager->flush();
+						$this->entityManager->persist($vacancy);
+						$this->entityManager->flush();
 
-					return $this->redirectToRoute('view_vacancy', ['id' => $vacancy->getId()]);
-				}
+						return $this->redirectToRoute('view_vacancy', ['id' => $vacancy->getId()]);
+					}
+					break;
 			}
 		}
 
