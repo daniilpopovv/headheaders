@@ -13,7 +13,7 @@
         <h1 class="pb-3">{{ block('title') }}</h1>
         <div class="d-flex justify-content-between">
             <div class="w-50">
-                {% for resume in resumes|sort((a,b) => a.skills|length <=> b.skills|length)|reverse%}
+                {% for resume in resumes|sort((a,b) => a.skills|length <=> b.skills|length)|reverse|sort((a,b) => a.salary <=> b.salary)%}
                     {% include 'resume/resumeFullCard.html.twig' with {'resume': resume} %}
                 {% endfor %}
             </div>

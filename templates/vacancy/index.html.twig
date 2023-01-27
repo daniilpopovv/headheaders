@@ -14,7 +14,7 @@
 
         <div class="d-flex justify-content-between">
             <div class="w-50">
-                {% for vacancy in vacancies|sort((a,b) => a.salary <=> b.salary)|reverse %}
+                {% for vacancy in vacancies|sort((a,b) => a.salary <=> b.salary)|reverse|sort((a,b) => a.salary <=> b.salary) %}
                     {% include 'vacancy/vacancyFullCard.html.twig' with {'vacancy': vacancy} %}
                 {% endfor %}
             </div>
