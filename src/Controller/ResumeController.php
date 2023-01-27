@@ -112,13 +112,13 @@ class ResumeController extends AbstractController
 
 		if ($userRoles) {
 			switch (true) {
-				case in_array('ROLE_SEEKER', $userRoles):
+				case isset(array_flip($userRoles)['ROLE_SEEKER']):
 					$role = 'seeker';
 					if ($resume->getSeeker() === $this->getUser()) {
 						$relevant_vacancies = $vacancyRepository->searchByQuery([], $resume->getSkills());
 					}
 					break;
-				case in_array('ROLE_RECRUITER', $userRoles):
+				case isset(array_flip($userRoles)['ROLE_RECRUITER']):
 					$role = 'recruiter';
 					$recruiter = $recruiterRepository->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
 
