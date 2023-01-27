@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/resumes')]
 class ResumeController extends AbstractController
@@ -44,6 +45,7 @@ class ResumeController extends AbstractController
 		]);
 	}
 
+	#[IsGranted('ROLE_SEEKER')]
 	#[Route('/create', name: 'create_resume')]
 	public function createResume(Request $request): Response {
 		$resume = new Resume();
@@ -64,6 +66,7 @@ class ResumeController extends AbstractController
 		]);
 	}
 
+	#[IsGranted('ROLE_SEEKER')]
 	#[Route('/edit/{id}', name: 'edit_resume')]
 	public function editResume(Resume $resume, Request $request, ResumeRepository $resumeRepository): Response {
 		$seeker = $this->getUser();
@@ -92,6 +95,7 @@ class ResumeController extends AbstractController
 		]);
 	}
 
+	#[IsGranted('ROLE_SEEKER')]
 	#[Route('/my', name: 'my_resumes')]
 	public function myResumes(ResumeRepository $resumeRepository): Response {
 		$seeker = $this->getUser();

@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/vacancies')]
 class VacancyController extends AbstractController
@@ -44,6 +45,7 @@ class VacancyController extends AbstractController
 		]);
 	}
 
+	#[IsGranted('ROLE_RECRUITER')]
 	#[Route('/create', name: 'create_vacancy')]
 	public function createVacancy(Request $request): Response {
 		$vacancy = new Vacancy();
@@ -64,6 +66,7 @@ class VacancyController extends AbstractController
 		]);
 	}
 
+	#[IsGranted('ROLE_RECRUITER')]
 	#[Route('/edit/{id}', name: 'edit_vacancy')]
 	public function editVacancy(Vacancy $vacancy, Request $request, VacancyRepository $vacancyRepository): Response {
 		$recruiter = $this->getUser();
@@ -92,6 +95,7 @@ class VacancyController extends AbstractController
 		]);
 	}
 
+	#[IsGranted('ROLE_RECRUITER')]
 	#[Route('/my', name: 'my_vacancies')]
 	public function myVacancies(VacancyRepository $vacancyRepository): Response {
 		$recruiter = $this->getUser();

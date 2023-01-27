@@ -9,9 +9,11 @@ use App\Repository\VacancyRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class NegotiationController extends AbstractController
 {
+	#[IsGranted('ROLE_RECRUITER')]
 	#[Route('/sent-invites', name: 'sent-invites')]
 	public function sentInvites(VacancyRepository $vacancyRepository): Response {
 
@@ -24,6 +26,7 @@ class NegotiationController extends AbstractController
 		]);
 	}
 
+	#[IsGranted('ROLE_RECRUITER')]
 	#[Route('/received-replies', name: 'received-replies')]
 	public function receivedReplies(VacancyRepository $vacancyRepository): Response {
 
@@ -33,6 +36,7 @@ class NegotiationController extends AbstractController
 		]);
 	}
 
+	#[IsGranted('ROLE_SEEKER')]
 	#[Route('/sent-replies', name: 'sent-replies')]
 	public function sentReplies(ResumeRepository $resumeRepository): Response {
 
@@ -42,6 +46,7 @@ class NegotiationController extends AbstractController
 		]);
 	}
 
+	#[IsGranted('ROLE_SEEKER')]
 	#[Route('/received-invites', name: 'received-invites')]
 	public function receivedInvites(ResumeRepository $resumeRepository): Response {
 
