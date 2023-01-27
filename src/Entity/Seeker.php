@@ -81,12 +81,12 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
 	)]
 	private ?string $email = null;
 
-	#[ORM\ManyToMany(targetEntity: Vacancy::class, mappedBy: 'whoResponded')]
-	private Collection $respondedVacancies;
+	#[ORM\ManyToMany(targetEntity: Vacancy::class, mappedBy: 'whoReplied')]
+	private Collection $repliedVacancies;
 
 	public function __construct() {
 		$this->resumes = new ArrayCollection();
-		$this->respondedVacancies = new ArrayCollection();
+		$this->repliedVacancies = new ArrayCollection();
 	}
 
 	public function __toString(): string {
@@ -208,22 +208,22 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
 	/**
 	 * @return Collection<int, Vacancy>
 	 */
-	public function getRespondedVacancies(): Collection {
-		return $this->respondedVacancies;
+	public function getRepliedVacancies(): Collection {
+		return $this->repliedVacancies;
 	}
 
-	public function addRespondedVacancy(Vacancy $respondedVacancy): self {
-		if (!$this->respondedVacancies->contains($respondedVacancy)) {
-			$this->respondedVacancies->add($respondedVacancy);
-			$respondedVacancy->addWhoResponded($this);
+	public function addRepliedVacancy(Vacancy $repliedVacancy): self {
+		if (!$this->repliedVacancies->contains($repliedVacancy)) {
+			$this->repliedVacancies->add($repliedVacancy);
+			$repliedVacancy->addWhoReplied($this);
 		}
 
 		return $this;
 	}
 
-	public function removeRespondedVacancy(Vacancy $respondedVacancy): self {
-		if ($this->respondedVacancies->removeElement($respondedVacancy)) {
-			$respondedVacancy->removeWhoResponded($this);
+	public function removeRepliedVacancy(Vacancy $repliedVacancy): self {
+		if ($this->repliedVacancies->removeElement($repliedVacancy)) {
+			$repliedVacancy->removeWhoReplied($this);
 		}
 
 		return $this;

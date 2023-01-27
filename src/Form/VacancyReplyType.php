@@ -16,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @property Resume[] $resumes
  */
-class VacancyResponseType extends AbstractType
+class VacancyReplyType extends AbstractType
 {
 	public function __construct(Security $security, ResumeRepository $resumeRepository) {
 		$this->resumes = $resumeRepository->findBy([
@@ -26,7 +26,7 @@ class VacancyResponseType extends AbstractType
 
 	public function buildForm(FormBuilderInterface $builder, array $options): void {
 		$builder
-			->add('responses', EntityType::class, [
+			->add('replies', EntityType::class, [
 				'label' => 'Выберите резюме, чтобы откликнуться на вакансию',
 				'class' => Resume::class,
 				'choices' => $this->resumes,

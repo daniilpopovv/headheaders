@@ -68,17 +68,17 @@ class Vacancy
 	#[ORM\ManyToMany(targetEntity: Resume::class, mappedBy: 'invites')]
 	private Collection $invitedResumes;
 
-	#[ORM\ManyToMany(targetEntity: Resume::class, inversedBy: 'respondedVacancies')]
-	private Collection $responses;
+	#[ORM\ManyToMany(targetEntity: Resume::class, inversedBy: 'repliedVacancies')]
+	private Collection $replies;
 
-	#[ORM\ManyToMany(targetEntity: Seeker::class, inversedBy: 'respondedVacancies')]
-	private Collection $whoResponded;
+	#[ORM\ManyToMany(targetEntity: Seeker::class, inversedBy: 'repliedVacancies')]
+	private Collection $whoReplied;
 
 	public function __construct() {
 		$this->skills = new ArrayCollection();
 		$this->invitedResumes = new ArrayCollection();
-		$this->responses = new ArrayCollection();
-		$this->whoResponded = new ArrayCollection();
+		$this->replies = new ArrayCollection();
+		$this->whoReplied = new ArrayCollection();
 	}
 
 	public function getId(): ?int {
@@ -177,20 +177,20 @@ class Vacancy
 	/**
 	 * @return Collection<int, Resume>
 	 */
-	public function getResponses(): Collection {
-		return $this->responses;
+	public function getReplies(): Collection {
+		return $this->replies;
 	}
 
-	public function addResponse(Resume $response): self {
-		if (!$this->responses->contains($response)) {
-			$this->responses->add($response);
+	public function addReply(Resume $reply): self {
+		if (!$this->replies->contains($reply)) {
+			$this->replies->add($reply);
 		}
 
 		return $this;
 	}
 
-	public function removeResponse(Resume $response): self {
-		$this->responses->removeElement($response);
+	public function removeReply(Resume $reply): self {
+		$this->replies->removeElement($reply);
 
 		return $this;
 	}
@@ -198,20 +198,20 @@ class Vacancy
 	/**
 	 * @return Collection<int, Seeker>
 	 */
-	public function getWhoResponded(): Collection {
-		return $this->whoResponded;
+	public function getWhoReplied(): Collection {
+		return $this->whoReplied;
 	}
 
-	public function addWhoResponded(Seeker $whoResponded): self {
-		if (!$this->whoResponded->contains($whoResponded)) {
-			$this->whoResponded->add($whoResponded);
+	public function addWhoReplied(Seeker $whoReplied): self {
+		if (!$this->whoReplied->contains($whoReplied)) {
+			$this->whoReplied->add($whoReplied);
 		}
 
 		return $this;
 	}
 
-	public function removeWhoResponded(Seeker $whoResponded): self {
-		$this->whoResponded->removeElement($whoResponded);
+	public function removeWhoReplied(Seeker $whoReplied): self {
+		$this->whoReplied->removeElement($whoReplied);
 
 		return $this;
 	}

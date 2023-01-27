@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class NegotiationsController extends AbstractController
+class NegotiationController extends AbstractController
 {
 	#[Route('/sent-invites', name: 'sent-invites')]
 	public function sentInvites(VacancyRepository $vacancyRepository): Response {
@@ -24,19 +24,19 @@ class NegotiationsController extends AbstractController
 		]);
 	}
 
-	#[Route('/received-responses', name: 'received-responses')]
-	public function receivedResponses(VacancyRepository $vacancyRepository): Response {
+	#[Route('/received-replies', name: 'received-replies')]
+	public function receivedReplies(VacancyRepository $vacancyRepository): Response {
 
-		return $this->render('responses/index.html.twig', [
+		return $this->render('replies/index.html.twig', [
 			'title' => 'На ваши вакансии откликнулись:',
 			'vacancies' => $vacancyRepository->findBy(['recruiter' => $this->getUser()]),
 		]);
 	}
 
-	#[Route('/sent-responses', name: 'sent-responses')]
-	public function sentResponses(ResumeRepository $resumeRepository): Response {
+	#[Route('/sent-replies', name: 'sent-replies')]
+	public function sentReplies(ResumeRepository $resumeRepository): Response {
 
-		return $this->render('responses/index.html.twig', [
+		return $this->render('replies/index.html.twig', [
 			'title' => 'Вы откликнулись на вакансии:',
 			'resumes' => $resumeRepository->findBy(['seeker' => $this->getUser()]),
 		]);

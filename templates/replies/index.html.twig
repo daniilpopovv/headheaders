@@ -8,7 +8,7 @@
 
         {% if 'ROLE_SEEKER' in app.user.roles %}
             {% for resume in resumes %}
-                {% for vacancy in resume.respondedVacancies|sort((a,b) => a.salary <=> b.salary)|reverse %}
+                {% for vacancy in resume.repliedVacancies|sort((a,b) => a.salary <=> b.salary)|reverse %}
                     <div class="card w-50 mb-3">
                         <div class="card-body">
                             {% if vacancy in resume.invites %}
@@ -26,7 +26,7 @@
 
         {% elseif 'ROLE_RECRUITER' in app.user.roles %}
             {% for vacancy in vacancies %}
-                {% for resume in vacancy.responses|sort((a,b) => a.salary <=> b.salary) %}
+                {% for resume in vacancy.replies|sort((a,b) => a.salary <=> b.salary) %}
                     <div class="card w-50 mb-3">
                         <div class="card-body">
 
@@ -34,7 +34,7 @@
 
                             <hr class="my-3"/>
 
-                            {% if resume in vacancy.responses %}
+                            {% if resume in vacancy.replies %}
                                 {% set show_contacts_to_recruiter = true %}
                             {% endif %}
                             {% include 'resume/resumeShortInfo.html.twig' %}

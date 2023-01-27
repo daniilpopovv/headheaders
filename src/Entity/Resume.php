@@ -69,8 +69,8 @@ class Resume
 	#[ORM\ManyToMany(targetEntity: Vacancy::class, inversedBy: 'invitedResumes')]
 	private Collection $invites;
 
-	#[ORM\ManyToMany(targetEntity: Vacancy::class, mappedBy: 'responses')]
-	private Collection $respondedVacancies;
+	#[ORM\ManyToMany(targetEntity: Vacancy::class, mappedBy: 'replies')]
+	private Collection $repliedVacancies;
 
 	#[ORM\ManyToMany(targetEntity: Recruiter::class, inversedBy: 'invitedResumes')]
 	private Collection $whoInvited;
@@ -78,7 +78,7 @@ class Resume
 	public function __construct() {
 		$this->skills = new ArrayCollection();
 		$this->invites = new ArrayCollection();
-		$this->respondedVacancies = new ArrayCollection();
+		$this->repliedVacancies = new ArrayCollection();
 		$this->whoInvited = new ArrayCollection();
 	}
 
@@ -175,22 +175,22 @@ class Resume
 	/**
 	 * @return Collection<int, Vacancy>
 	 */
-	public function getRespondedVacancies(): Collection {
-		return $this->respondedVacancies;
+	public function getRepliedVacancies(): Collection {
+		return $this->repliedVacancies;
 	}
 
-	public function addRespondedVacancy(Vacancy $respondedVacancy): self {
-		if (!$this->respondedVacancies->contains($respondedVacancy)) {
-			$this->respondedVacancies->add($respondedVacancy);
-			$respondedVacancy->addResponse($this);
+	public function addRepliedVacancy(Vacancy $repliedVacancy): self {
+		if (!$this->repliedVacancies->contains($repliedVacancy)) {
+			$this->repliedVacancies->add($repliedVacancy);
+			$repliedVacancy->addReply($this);
 		}
 
 		return $this;
 	}
 
-	public function removeRespondedVacancy(Vacancy $respondedVacancy): self {
-		if ($this->respondedVacancies->removeElement($respondedVacancy)) {
-			$respondedVacancy->removeResponse($this);
+	public function removeRepliedVacancy(Vacancy $repliedVacancy): self {
+		if ($this->repliedVacancies->removeElement($repliedVacancy)) {
+			$repliedVacancy->removeReply($this);
 		}
 
 		return $this;

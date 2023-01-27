@@ -123,7 +123,7 @@ class ResumeController extends AbstractController
 					]);
 
 					$isInvite = in_array($recruiter, $resume->getWhoInvited()->toArray());
-					$isResponse = (bool)array_intersect($vacancies, $resume->getRespondedVacancies()->toArray());
+					$isReply = (bool)array_intersect($vacancies, $resume->getRepliedVacancies()->toArray());
 
 					$form = $this->createForm(ResumeInviteType::class);
 					$form->handleRequest($request);
@@ -149,7 +149,7 @@ class ResumeController extends AbstractController
 			'role' => $role ?? 'Гость',
 			'relevant_vacancies' => $relevant_vacancies ?? [],
 			'isInvite' => $isInvite ?? false,
-			'isResponse' => $isResponse ?? false,
+			'isReply' => $isReply ?? false,
 		]);
 	}
 }

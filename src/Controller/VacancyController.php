@@ -7,7 +7,7 @@ namespace App\Controller;
 use App\Entity\Vacancy;
 use App\Form\SearchFormType;
 use App\Form\VacancyFormType;
-use App\Form\VacancyResponseType;
+use App\Form\VacancyReplyType;
 use App\Repository\ResumeRepository;
 use App\Repository\SeekerRepository;
 use App\Repository\VacancyRepository;
@@ -123,16 +123,16 @@ class VacancyController extends AbstractController
 					]);
 
 					$isInvite = (bool)array_intersect($resumes, $vacancy->getInvitedResumes()->toArray());
-					$isResponse = in_array($seeker, $vacancy->getWhoResponded()->toArray());
+					$isReply = in_array($seeker, $vacancy->getWhoReplied()->toArray());
 
 
-					$form = $this->createForm(VacancyResponseType::class);
+					$form = $this->createForm(VacancyReplyType::class);
 					$form->handleRequest($request);
-					if ($form->isSubmitted() && $form->isValid() && $form->get('responses')->getViewData() !== []) {
-						$form_view_data = $form->get('responses')->getViewData();
+					if ($form->isSubmitted() && $form->isValid() && $form->get('replies')->getViewData() !== []) {
+						$form_view_data = $form->get('replies')->getViewData();
 						$resume = $resumeRepository->findOneBy(['id' => $form_view_data[0]]);
-						$vacancy->addResponse($resume);
-						$vacancy->addWhoResponded($seeker);
+						$vacancy->addReply($resume);
+						$vacancy->addWhoReplied($seeker);
 
 						$this->entityManager->persist($vacancy);
 						$this->entityManager->flush();
@@ -149,7 +149,7 @@ class VacancyController extends AbstractController
 			'role' => $role ?? 'guest',
 			'relevant_resumes' => $relevant_resumes ?? [],
 			'isInvite' => $isInvite ?? false,
-			'isResponse' => $isResponse ?? false,
+			'isReply' => $isReply ?? false,
 		]);
 	}
 }

@@ -22,13 +22,13 @@
                 {% if role == 'seeker' or role == 'recruiter' %}
                     {% if role == 'seeker' %}
                         <li><a class="nav-link px-2 link-dark" href="{{ path('my_resumes') }}">Мои резюме</a></li>
-                        <li><a class="nav-link px-2 link-dark" href="{{ path('sent-responses') }}">Отклики</a></li>
+                        <li><a class="nav-link px-2 link-dark" href="{{ path('sent-replies') }}">Отклики</a></li>
                         <li><a class="nav-link px-2 link-dark" href="{{ path('received-invites') }}">Приглашения</a></li>
                     {% endif %}
 
                     {% if role == 'recruiter' %}
                         <li><a class="nav-link px-2 link-dark" href="{{ path('my_vacancies') }}">Мои вакансии</a></li>
-                        <li><a class="nav-link px-2 link-dark" href="{{ path('received-responses') }}">Отклики</a></li>
+                        <li><a class="nav-link px-2 link-dark" href="{{ path('received-replies') }}">Отклики</a></li>
                         <li><a class="nav-link px-2 link-dark" href="{{ path('sent-invites') }}">Приглашения</a></li>
                     {% endif %}
                 {% endif %}
