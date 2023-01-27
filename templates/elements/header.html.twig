@@ -1,3 +1,17 @@
+{% if app.user %}
+    {% if 'ROLE_ADMIN' in app.user.roles %}
+        {% set role = 'admin' %}
+    {% elseif 'ROLE_SEEKER' in app.user.roles %}
+        {% set role = 'seeker' %}
+    {% elseif 'ROLE_RECRUITER' in app.user.roles %}
+        {% set role = 'recruiter' %}
+    {% endif %}
+
+{% else %}
+    {% set role = 'guest' %}
+{% endif %}
+
+
 <header class="p-3 mb-3 border-bottom">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-between justify-content-lg-start">
@@ -5,37 +19,42 @@
                 <li><a href="/" class="nav-link px-2 link-dark">Главная</a></li>
                 <li><a href="{{ path('resumes') }}" class="nav-link px-2 link-dark">Резюме</a></li>
                 <li><a href="{{ path('vacancies') }}" class="nav-link px-2 link-dark">Вакансии</a></li>
-                {% if app.user.roles is defined %}
-                    {% if 'ROLE_SEEKER' in app.user.roles %}
+                {% if role == 'seeker' or role == 'recruiter' %}
+                    {% if role == 'seeker' %}
                         <li><a class="nav-link px-2 link-dark" href="{{ path('my_resumes') }}">Мои резюме</a></li>
+                        <li><a class="nav-link px-2 link-dark" href="{{ path('sent-responses') }}">Отклики</a></li>
+                        <li><a class="nav-link px-2 link-dark" href="{{ path('received-invites') }}">Приглашения</a></li>
                     {% endif %}
-                    {% if 'ROLE_RECRUITER' in app.user.roles %}
+
+                    {% if role == 'recruiter' %}
                         <li><a class="nav-link px-2 link-dark" href="{{ path('my_vacancies') }}">Мои вакансии</a></li>
+                        <li><a class="nav-link px-2 link-dark" href="{{ path('received-responses') }}">Отклики</a></li>
+                        <li><a class="nav-link px-2 link-dark" href="{{ path('sent-invites') }}">Приглашения</a></li>
                     {% endif %}
-                    <li><a class="nav-link px-2 link-dark" href="{{ path('responses') }}">Отклики</a></li>
-                    <li><a class="nav-link px-2 link-dark" href="{{ path('invites') }}">Приглашения</a></li>
                 {% endif %}
             </ul>
             <ul class="nav justify-content-right align-items-center">
-                {% if not app.user %}
+                {% if role == 'guest' %}
                     <a class="nav-link px-2 auth-link btn" href="{{ path('app_login') }}">Войти</a>
                 {% endif %}
 
-                {% if app.user %}
-                    {% if app.user.roles is defined and 'ROLE_ADMIN' in app.user.roles %}
-                        <a class="nav-link px-2 auth-link btn me-3" href="{{ path('admin') }}">Админка</a>
+                {% if role == 'admin' %}
+                    <a class="nav-link px-2 auth-link btn me-3" href="{{ path('admin') }}">Админка</a>
+
+                    <a class="nav-link px-2 auth-link btn" href="{{ path('app_logout') }}">Выйти</a>
+                {% endif %}
+
+                {% if role == 'seeker' or role == 'recruiter' %}
+                    <p class="p-0 mb-0 me-3">{{ app.user.fullName }}</p>
+
+                    {% if role == 'seeker' %}
+                        <a class="nav-link px-2 auth-link btn me-3" href="{{ path('create_resume') }}">Создать
+                            резюме</a>
                     {% endif %}
 
-                    {% if app.user.roles is defined and 'ROLE_ADMIN' not in app.user.roles %}
-                        <p class="p-0 mb-0 me-3">{{ app.user.fullName }}</p>
-                    {% endif %}
-
-                    {% if app.user.roles is defined and 'ROLE_SEEKER' in app.user.roles %}
-                        <a class="nav-link px-2 auth-link btn me-3" href="{{ path('create_resume') }}">Создать резюме</a>
-                    {% endif %}
-
-                    {% if app.user.roles is defined and 'ROLE_RECRUITER' in app.user.roles %}
-                        <a class="nav-link px-2 auth-link btn me-3" href="{{ path('create_vacancy') }}">Создать вакансию</a>
+                    {% if role == 'recruiter' %}
+                        <a class="nav-link px-2 auth-link btn me-3" href="{{ path('create_vacancy') }}">Создать
+                            вакансию</a>
                     {% endif %}
 
                     <a class="nav-link px-2 auth-link btn" href="{{ path('app_logout') }}">Выйти</a>

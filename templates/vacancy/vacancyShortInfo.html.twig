@@ -3,7 +3,7 @@
     <p class="salary">{{ vacancy.salary|number_format(thousandSep = ' ') }} руб.</p>
 </div>
 
-<div class="d-flex justify-content-between align-items-end">
+<div class="d-flex justify-content-between align-items-center">
     <div>
         {% if vacancy.recruiter.company is null %}
             <p class="p-0 m-0">{{ vacancy.recruiter.fullName }} / {{ vacancy.specialization }}</p>
@@ -11,7 +11,9 @@
             <p class="p-0 m-0">{{ vacancy.recruiter.company }} / {{ vacancy.specialization }}</p>
         {% endif %}
 
-        <p class="mb-0 mt-3">Почта для связи: <a href="mailto:{{ vacancy.recruiter.email }}">{{ vacancy.recruiter.email }}</a></p>
+        {% if show_contacts_to_seeker is defined %}
+            <p class="mb-0 mt-3">Почта для связи: <a href="mailto:{{ vacancy.recruiter.email }}">{{ vacancy.recruiter.email }}</a></p>
+        {% endif %}
     </div>
 
     <a href="{{ path('view_vacancy', { id: vacancy.id }) }}" class="btn btn-primary">Открыть</a>

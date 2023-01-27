@@ -6,74 +6,38 @@
     <div class="p-3 mb-3 container-sm">
         <h1 class="pb-3">{{ block('title') }}</h1>
 
-        {% if role == 'seeker' %}
+        {% if 'ROLE_SEEKER' in app.user.roles %}
             {% for resume in resumes %}
                 {% for vacancy in resume.invites|sort((a,b) => a.salary <=> b.salary)|reverse %}
                     <div class="card w-50 mb-3">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-end">
-                                        <h5 class="card-title pb-2">Вакансия</h5>
-                                        <p class="salary">{{ vacancy.salary|number_format(thousandSep = ' ') }} руб.</p>
-                                    </div>
+                        <div class="card-body">
+                            {% if vacancy in resume.invites %}
+                                {% set show_contacts_to_seeker = true %}
+                            {% endif %}
+                            {% include 'vacancy/vacancyShortInfo.html.twig' %}
 
-                                    <div class="d-flex justify-content-between align-items-end">
-                                        <div>
-                                            {% if vacancy.recruiter.company is null %}
-                                                <p class="p-0 m-0">{{ vacancy.recruiter.fullName }} / {{ vacancy.specialization }}</p>
-                                            {% else %}
-                                                <p class="p-0 m-0">{{ vacancy.recruiter.company }} / {{ vacancy.specialization }}</p>
-                                            {% endif %}
+                            <hr class="my-3"/>
 
-                                            <p class="mb-0 mt-3">Почта для связи: <a href="mailto:{{ vacancy.recruiter.email }}">{{ vacancy.recruiter.email }}</a></p>
-                                        </div>
-
-                                        <a href="{{ path('view_vacancy', { id: vacancy.id }) }}" class="btn btn-primary">Открыть</a>
-                                    </div>
-
-                                    <hr class="my-3"/>
-
-                                    <div class="d-flex justify-content-between align-items-end">
-                                        <h5 class="card-title pb-2">Резюме</h5>
-                                        <p class="salary">{{ resume.salary|number_format(thousandSep = ' ') }} руб.</p>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <p class="p-0 m-0">{{ resume.specialization }}</p>
-
-                                        <a href="{{ path('view_resume', { id: resume.id }) }}" class="btn btn-primary">Открыть</a>
-                                    </div>
-                                </div>
-                            </div>
+                            {% include 'resume/resumeShortInfo.html.twig' %}
+                        </div>
+                    </div>
                 {% endfor %}
             {% endfor %}
-        {% endif %}
 
-        {% if role == 'recruiter' %}
+        {% elseif 'ROLE_RECRUITER' in app.user.roles %}
             {% for vacancy in vacancies %}
                 {% for resume in vacancy.invitedResumes|sort((a,b) => a.salary <=> b.salary) %}
                     <div class="card w-50 mb-3">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-end">
-                                <h5 class="card-title pb-2">Резюме</h5>
-                                <p class="salary">{{ resume.salary|number_format(thousandSep = ' ') }} руб.</p>
-                            </div>
 
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="p-0 m-0">{{ resume.seeker.fullName }}</p>
-                                <a href="{{ path('view_resume', { id: resume.id }) }}" class="btn btn-primary">Открыть</a>
-                            </div>
+                            {% include 'vacancy/vacancyShortInfo.html.twig' %}
 
                             <hr class="my-3"/>
 
-                            <div class="d-flex justify-content-between align-items-end">
-                                <h5 class="card-title pb-2">Вакансия</h5>
-                                <p class="salary">{{ vacancy.salary|number_format(thousandSep = ' ') }} руб.</p>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="p-0 m-0">{{ vacancy.specialization }}</p>
-                                <a href="{{ path('view_vacancy', { id: vacancy.id }) }}" class="btn btn-primary">Открыть</a>
-                            </div>
+                            {% if resume in vacancy.responses %}
+                                {% set show_contacts_to_recruiter = true %}
+                            {% endif %}
+                            {% include 'resume/resumeShortInfo.html.twig' %}
                         </div>
                     </div>
                 {% endfor %}

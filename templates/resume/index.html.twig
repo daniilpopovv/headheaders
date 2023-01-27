@@ -18,7 +18,9 @@
                 {% endfor %}
             </div>
 
-            {% include 'elements/search.html.twig' with {'search_form': search_form} %}
+            {% if search_form is defined %}
+                {% include 'elements/search.html.twig' with {'search_form': search_form} %}
+            {% endif %}
         </div>
     </div>
 {% endblock %}

@@ -8,6 +8,7 @@ use App\Entity\Vacancy;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Vacancy>
@@ -55,5 +56,10 @@ class VacancyRepository extends ServiceEntityRepository
 		return $qb
 			->getQuery()
 			->getResult();
+	}
+
+	// TODO: '1-2) Не ясна цель использования, так как по сути одно и то же'
+	public function findByRecruiter(UserInterface $recruiter): array {
+		return $this->findBy(['recruiter' => $recruiter]);
 	}
 }

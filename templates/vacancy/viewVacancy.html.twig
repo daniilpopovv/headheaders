@@ -5,7 +5,7 @@
 {% block body %}
 
     <div class="p-3 mb-3 container-sm detail-view-container w-50">
-        <div class="d-flex justify-content-between mb-3 align-items-center w-75">
+        <div class="d-flex justify-content-between mb-3 align-items-center">
             <h1 class="">{{ vacancy.specialization }}</h1>
             <p class="m-0 salary salary-in-vacancy">{{ vacancy.salary|number_format(thousandSep = ' ') }} руб.</p>
         </div>
@@ -20,10 +20,10 @@
             <p class="fw-bold pt-2">Вас пригласили! Почта для связи: <a href="mailto:{{ vacancy.recruiter.email }}">{{ vacancy.recruiter.email }}</a></p>
         {% endif %}
 
-        <hr class="my-3 w-75"/>
+        <hr class="my-3"/>
 
         {% if vacancy.description %}
-            <p class="card-text w-75">{{ vacancy.description|nl2br }}</p>
+            <p class="card-text">{{ vacancy.description|nl2br }}</p>
         {% endif %}
 
         {% if vacancy.skills %}
