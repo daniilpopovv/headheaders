@@ -7,10 +7,9 @@
     <div class="p-3 mb-3 container-sm detail-view-container w-50">
         <div class="d-flex justify-content-between mb-3 align-items-center">
             <h1 class="">{{ resume.seeker.fullName }}</h1>
-            {% if role == 'recruiter' %}
-                <button class="btn">Пригласить</button>
-                {% elseif role == 'seeker' and resume.seeker.username == app.user.username  %}
-                    <a class="btn" href="{{ path('edit_resume', { id: resume.id }) }}">Редактировать</a>
+
+            {% if role == 'seeker' and resume.seeker.username == app.user.username  %}
+                <a class="btn" href="{{ path('edit_resume', { id: resume.id }) }}">Редактировать</a>
             {% endif %}
 
         </div>
@@ -20,7 +19,7 @@
         {% endif %}
 
         {% if resume.description %}
-            <p class="card-text w-75">{{ resume.description|nl2br }}</p>
+            <p class="card-text">{{ resume.description|nl2br }}</p>
         {% endif %}
 
         <hr />
@@ -42,7 +41,7 @@
             {% if isInvite %}
                 <p class="fw-bold">Вы уже отправили приглашение ✓</p>
             {% else %}
-                <div class="form-block w-75">
+                <div class="form-block w-50">
                     {{ form(resume_form) }}
                 </div>
             {% endif %}

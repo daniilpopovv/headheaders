@@ -60,8 +60,8 @@ class ResumeController extends AbstractController
 			return $this->redirectToRoute('view_resume', ['id' => $resume->getId()]);
 		}
 
-		return $this->render('resume/createResume.html.twig', [
-			'resume_form' => $form->createView(),
+		return $this->render('propertyActions.html.twig', [
+			'actions_form' => $form->createView(),
 			'title' => 'Создание резюме',
 		]);
 	}
@@ -89,8 +89,8 @@ class ResumeController extends AbstractController
 			return $this->redirectToRoute('view_resume', ['id' => $resume->getId()]);
 		}
 
-		return $this->render('resume/createResume.html.twig', [
-			'resume_form' => $form->createView(),
+		return $this->render('propertyActions.html.twig', [
+			'actions_form' => $form->createView(),
 			'title' => 'Редактирование резюме',
 		]);
 	}

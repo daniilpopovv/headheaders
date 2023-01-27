@@ -60,8 +60,8 @@ class VacancyController extends AbstractController
 			return $this->redirectToRoute('view_vacancy', ['id' => $vacancy->getId()]);
 		}
 
-		return $this->render('vacancy/createVacancy.html.twig', [
-			'vacancy_form' => $form->createView(),
+		return $this->render('propertyActions.html.twig', [
+			'actions_form' => $form->createView(),
 			'title' => 'Создание вакансии',
 		]);
 	}
@@ -89,8 +89,8 @@ class VacancyController extends AbstractController
 			return $this->redirectToRoute('view_vacancy', ['id' => $vacancy->getId()]);
 		}
 
-		return $this->render('vacancy/createVacancy.html.twig', [
-			'vacancy_form' => $form->createView(),
+		return $this->render('propertyActions.html.twig', [
+			'actions_form' => $form->createView(),
 			'title' => 'Редактирование вакансии',
 		]);
 	}
