@@ -6,7 +6,7 @@
     <div class="p-3 mb-3 container-sm">
         <h1 class="pb-3">{{ block('title') }}</h1>
 
-        {% if 'ROLE_SEEKER' in app.user.roles %}
+        {% if role == 'seeker' %}
             {% for resume in resumes %}
                 {% for vacancy in resume.invites|sort((a,b) => a.salary <=> b.salary)|reverse %}
                     <div class="card w-50 mb-3">
@@ -24,7 +24,7 @@
                 {% endfor %}
             {% endfor %}
 
-        {% elseif 'ROLE_RECRUITER' in app.user.roles %}
+        {% elseif role == 'recruiter' %}
             {% for vacancy in vacancies %}
                 {% for resume in vacancy.invitedResumes|sort((a,b) => a.salary <=> b.salary) %}
                     <div class="card w-50 mb-3">

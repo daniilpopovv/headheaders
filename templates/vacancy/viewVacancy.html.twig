@@ -17,7 +17,8 @@
         {% endif %}
 
         {% if isInvite %}
-            <p class="fw-bold pt-2">Вас пригласили! Почта для связи: <a href="mailto:{{ vacancy.recruiter.email }}">{{ vacancy.recruiter.email }}</a></p>
+            <p class="fw-bold pt-2">Вас пригласили! Почта для связи: <a
+                        href="mailto:{{ vacancy.recruiter.email }}">{{ vacancy.recruiter.email }}</a></p>
         {% endif %}
 
         <hr class="my-3"/>
@@ -37,19 +38,26 @@
         {% if role == 'seeker' %}
             {% if isReply %}
                 <p class="fw-bold">Вы уже откликнулись на эту вакансию ✓</p>
-                {% else %}
-                    <div class="form-block w-50">
-                        {{ form(vacancy_form) }}
-                    </div>
+            {% else %}
+                <div class="form-block w-100">
+                    {{ form_start(vacancy_form) }}
+                        <div class="d-flex flex-row align-items-end">
+                            {{ form_row(vacancy_form.replies) }}
+                            <div class="ps-4">
+                                {{ form_row(vacancy_form.submit) }}
+                            </div>
+                        </div>
+                    {{ form_end(vacancy_form) }}
+                </div>
             {% endif %}
-
-            {% elseif app.user.username is defined and vacancy.recruiter.username == app.user.username  %}
-                <a class="btn" href="{{ path('edit_vacancy', { id: vacancy.id }) }}">Редактировать</a>
         {% endif %}
 
-        {% if role == 'recruiter' and vacancy.recruiter.username == app.user.username  %}
-            <h2 class="mt-4">Вам подойдут резюме:</h2>
+        {% if app.user.username is defined and vacancy.recruiter.username == app.user.username %}
+            <a class="btn" href="{{ path('edit_vacancy', { id: vacancy.id }) }}">Редактировать</a>
+        {% endif %}
 
+        <div>
+            <h2 class="mt-4">Подходящие резюме:</h2>
             <div class="p-0 pt-1 mb-3 ms-0 w-75 container d-flex flex-column ">
                 {% for relevant_resume in relevant_resumes|sort((a,b) => a.skills|length <=> b.skills|length)|reverse|sort((a,b) => a.salary <=> b.salary) %}
                     <div class="card mb-3">
@@ -82,8 +90,7 @@
                     </div>
                 {% endfor %}
             </div>
-        {% endif %}
-
+        </div>
     </div>
 
 {% endblock %}

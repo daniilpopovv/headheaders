@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/vacancies')]
@@ -35,13 +36,13 @@ class VacancyController extends AbstractController
 
 			return $this->render('vacancy/index.html.twig', [
 				'vacancies' => $vacancies ?? [],
-				'search_form' => $searchForm,
+				'search_form' => $searchForm->createView(),
 			]);
 		}
 
 		return $this->render('vacancy/index.html.twig', [
 			'vacancies' => $vacancyRepository->findAll(),
-			'search_form' => $searchForm,
+			'search_form' => $searchForm->createView(),
 		]);
 	}
 
@@ -107,51 +108,39 @@ class VacancyController extends AbstractController
 	}
 
 	#[Route('/{id}', name: 'view_vacancy')]
-	public function viewVacancy(Vacancy $vacancy, Request $request, ResumeRepository $resumeRepository, SeekerRepository $seekerRepository): Response {
-		$userRoles = $this->getUser() !== null ? $this->getUser()->getRoles() : null;
+	public function viewVacancy(Vacancy $vacancy, Request $request, ResumeRepository $resumeRepository, SeekerRepository $seekerRepository, AuthorizationCheckerInterface $authorizationChecker): Response {
+		$relevant_resumes = $resumeRepository->searchByQuery([], $vacancy->getSkills());
 
-		if ($userRoles) {
-			switch (true) {
-				case isset(array_flip($userRoles)['ROLE_RECRUITER']):
-					$role = 'recruiter';
-					if ($vacancy->getRecruiter() === $this->getUser()) {
-						$relevant_resumes = $resumeRepository->searchByQuery([], $vacancy->getSkills());
-					}
-					break;
-				case isset(array_flip($userRoles)['ROLE_SEEKER']):
-					$role = 'seeker';
-					$seeker = $seekerRepository->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
+		if ($authorizationChecker->isGranted('ROLE_SEEKER')) {
+			$seeker = $seekerRepository->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
 
-					$resumes = $resumeRepository->findBy([
-						'seeker' => $seeker,
-					]);
+			$resumes = $resumeRepository->findBy([
+				'seeker' => $this->getUser(),
+			]);
 
-					$isInvite = (bool)array_intersect($resumes, $vacancy->getInvitedResumes()->toArray());
-					$isReply = in_array($seeker, $vacancy->getWhoReplied()->toArray());
+			$isInvite = (bool)array_intersect($resumes, $vacancy->getInvitedResumes()->toArray());
+			$isReply = in_array($seeker, $vacancy->getWhoReplied()->toArray());
 
 
-					$form = $this->createForm(VacancyReplyType::class);
-					$form->handleRequest($request);
-					if ($form->isSubmitted() && $form->isValid() && $form->get('replies')->getViewData() !== []) {
-						$form_view_data = $form->get('replies')->getViewData();
-						$resume = $resumeRepository->findOneBy(['id' => $form_view_data[0]]);
-						$vacancy->addReply($resume);
-						$vacancy->addWhoReplied($seeker);
+			$form = $this->createForm(VacancyReplyType::class);
+			$form->handleRequest($request);
+			if ($form->isSubmitted() && $form->isValid() && $form->get('replies')->getViewData() !== []) {
+				$form_view_data = $form->get('replies')->getViewData();
+				$resume = $resumeRepository->findOneBy(['id' => $form_view_data[0]]);
+				$vacancy->addReply($resume);
+				$vacancy->addWhoReplied($seeker);
 
-						$this->entityManager->persist($vacancy);
-						$this->entityManager->flush();
+				$this->entityManager->persist($vacancy);
+				$this->entityManager->flush();
 
-						return $this->redirectToRoute('view_vacancy', ['id' => $vacancy->getId()]);
-					}
-					break;
+				return $this->redirectToRoute('view_vacancy', ['id' => $vacancy->getId()]);
 			}
 		}
 
 		return $this->render('vacancy/viewVacancy.html.twig', [
 			'vacancy' => $vacancy,
 			'vacancy_form' => isset($form) ? $form->createView() : null,
-			'role' => $role ?? 'guest',
-			'relevant_resumes' => $relevant_resumes ?? [],
+			'relevant_resumes' => $relevant_resumes,
 			'isInvite' => $isInvite ?? false,
 			'isReply' => $isReply ?? false,
 		]);
