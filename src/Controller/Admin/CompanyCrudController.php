@@ -29,7 +29,7 @@ class CompanyCrudController extends AbstractCrudController
 	public function configureFilters(Filters $filters): Filters {
 		return $filters
 			->add(TextFilter::new('name', 'Название компании'))
-			->add(EntityFilter::new('recruiters', 'Сотрудник компании'));
+			->add(EntityFilter::new('staff', 'Сотрудник компании'));
 	}
 
 	public function configureFields(string $pageName): iterable {

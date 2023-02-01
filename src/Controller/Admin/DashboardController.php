@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Company;
-use App\Entity\Recruiter;
 use App\Entity\Resume;
-use App\Entity\Seeker;
 use App\Entity\Skill;
+use App\Entity\User;
 use App\Entity\Vacancy;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -37,8 +36,7 @@ class DashboardController extends AbstractDashboardController
 		yield MenuItem::linkToCrud('Резюме', 'fas fa-file', Resume::class);
 		yield MenuItem::linkToCrud('Вакансии', 'fas fa-briefcase', Vacancy::class);
 		yield MenuItem::linkToCrud('Скиллы', 'fas fa-lightbulb', Skill::class);
-		yield MenuItem::linkToCrud('Соискатели', 'fas fa-magnifying-glass', Seeker::class);
-		yield MenuItem::linkToCrud('Рекрутеры', 'fas fa-eye', Recruiter::class);
+		yield MenuItem::linkToCrud('Пользователи', 'fas fa-magnifying-glass', User::class);
 		yield MenuItem::linkToCrud('Компании', 'fas fa-building', Company::class);
 	}
 }

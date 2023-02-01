@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Entity;
 
-use App\Repository\SeekerRepository;
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,7 +11,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: SeekerRepository::class)]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: '`user`')]
 #[UniqueEntity(
 	fields: ['username'],
 	message: 'Пользователь с таким логином уже существует',
@@ -22,8 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 	fields: ['email'],
 	message: 'Пользователь с такой почтой уже существует',
 )]
-#[ORM\HasLifecycleCallbacks]
-class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 	#[ORM\Id]
 	#[ORM\GeneratedValue]
@@ -44,7 +42,7 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
 	)]
 	private ?string $username = null;
 
-	#[ORM\Column]
+	#[ORM\Column(type: 'simple_array')]
 	private array $roles = [];
 
 	/**
@@ -67,9 +65,6 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
 	)]
 	private ?string $fullName = null;
 
-	#[ORM\OneToMany(mappedBy: 'seeker', targetEntity: Resume::class, orphanRemoval: true)]
-	private Collection $resumes;
-
 	#[ORM\Column(nullable: false)]
 	#[Assert\NotBlank]
 	#[Assert\Email]
@@ -81,21 +76,18 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
 	)]
 	private ?string $email = null;
 
-	#[ORM\ManyToMany(targetEntity: Vacancy::class, mappedBy: 'whoReplied')]
-	private Collection $repliedVacancies;
+	#[ORM\ManyToOne(inversedBy: 'staff')]
+	private ?Company $company = null;
+
+	#[ORM\OneToMany(mappedBy: 'owner', targetEntity: Resume::class, orphanRemoval: true)]
+	private Collection $resumes;
+
+	#[ORM\OneToMany(mappedBy: 'owner', targetEntity: Vacancy::class, orphanRemoval: true)]
+	private Collection $vacancies;
 
 	public function __construct() {
 		$this->resumes = new ArrayCollection();
-		$this->repliedVacancies = new ArrayCollection();
-	}
-
-	public function __toString(): string {
-		return $this->fullName . ' aka ' . $this->username;
-	}
-
-	#[ORM\PrePersist]
-	public function setSeekerRole() {
-		$this->roles = ['ROLE_USER', 'ROLE_SEEKER'];
+		$this->vacancies = new ArrayCollection();
 	}
 
 	public function getId(): ?int {
@@ -155,14 +147,15 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
 	 * @see UserInterface
 	 */
 	public function eraseCredentials() {
-
+		// If you store any temporary, sensitive data on the user, clear it here
+		// $this->plainPassword = null;
 	}
 
 	public function getFullName(): ?string {
 		return $this->fullName;
 	}
 
-	public function setFullName(?string $fullName): self {
+	public function setFullName(string $fullName): self {
 		$this->fullName = $fullName;
 
 		return $this;
@@ -178,7 +171,7 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
 	public function addResume(Resume $resume): self {
 		if (!$this->resumes->contains($resume)) {
 			$this->resumes->add($resume);
-			$resume->setSeeker($this);
+			$resume->setOwner($this);
 		}
 
 		return $this;
@@ -187,10 +180,47 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
 	public function removeResume(Resume $resume): self {
 		if ($this->resumes->removeElement($resume)) {
 			// set the owning side to null (unless already changed)
-			if ($resume->getSeeker() === $this) {
-				$resume->setSeeker(null);
+			if ($resume->getOwner() === $this) {
+				$resume->setOwner(null);
 			}
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @return Collection<int, Vacancy>
+	 */
+	public function getVacancies(): Collection {
+		return $this->vacancies;
+	}
+
+	public function addVacancy(Vacancy $vacancy): self {
+		if (!$this->vacancies->contains($vacancy)) {
+			$this->vacancies->add($vacancy);
+			$vacancy->setOwner($this);
+		}
+
+		return $this;
+	}
+
+	public function removeVacancy(Vacancy $vacancy): self {
+		if ($this->vacancies->removeElement($vacancy)) {
+			// set the owning side to null (unless already changed)
+			if ($vacancy->getOwner() === $this) {
+				$vacancy->setOwner(null);
+			}
+		}
+
+		return $this;
+	}
+
+	public function getCompany(): ?Company {
+		return $this->company;
+	}
+
+	public function setCompany(?Company $company): self {
+		$this->company = $company;
 
 		return $this;
 	}
@@ -199,32 +229,8 @@ class Seeker implements UserInterface, PasswordAuthenticatedUserInterface
 		return $this->email;
 	}
 
-	public function setEmail(?string $email): self {
+	public function setEmail(string $email): self {
 		$this->email = $email;
-
-		return $this;
-	}
-
-	/**
-	 * @return Collection<int, Vacancy>
-	 */
-	public function getRepliedVacancies(): Collection {
-		return $this->repliedVacancies;
-	}
-
-	public function addRepliedVacancy(Vacancy $repliedVacancy): self {
-		if (!$this->repliedVacancies->contains($repliedVacancy)) {
-			$this->repliedVacancies->add($repliedVacancy);
-			$repliedVacancy->addWhoReplied($this);
-		}
-
-		return $this;
-	}
-
-	public function removeRepliedVacancy(Vacancy $repliedVacancy): self {
-		if ($this->repliedVacancies->removeElement($repliedVacancy)) {
-			$repliedVacancy->removeWhoReplied($this);
-		}
 
 		return $this;
 	}

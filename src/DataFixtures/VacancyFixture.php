@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\Recruiter;
+use App\Entity\User;
 use App\Entity\Skill;
 use App\Entity\Vacancy;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -21,8 +21,8 @@ class VacancyFixture extends Fixture implements DependentFixtureInterface
 	}
 
 	public function load(ObjectManager $manager): void {
-		$recruiterRepository = $manager->getRepository(Recruiter::class);
-		$recruiters = $recruiterRepository->findAll();
+		$userRepository = $manager->getRepository(User::class);
+		$recruiters = $userRepository->findRecruiters();
 		$skillRepository = $manager->getRepository(Skill::class);
 		$skills = $skillRepository->findAll();
 
@@ -40,7 +40,7 @@ class VacancyFixture extends Fixture implements DependentFixtureInterface
 					$newVacancy->addSkill($skill);
 				}
 			}
-			$newVacancy->setRecruiter($recruiters[rand(0, 9)]);
+			$newVacancy->setOwner($recruiters[1]);
 			$manager->persist($newVacancy);
 		}
 

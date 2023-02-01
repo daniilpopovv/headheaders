@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\Seeker;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -65,11 +65,12 @@ class SeekerFixture extends Fixture
 		];
 
 		foreach ($seekers as $seeker) {
-			$newSeeker = new Seeker();
+			$newSeeker = new User();
 			$newSeeker->setUsername($seeker['username']);
 			$newSeeker->setFullName($seeker['fullName']);
 			$newSeeker->setEmail($seeker['email']);
 			$newSeeker->setPassword('$2y$13$FT/5YkEB/UfBkb158b3Pqeg4QtCtESVzKMGsrRVaIVuXaZWgK4y4W');
+			$newSeeker->setRoles(['ROLE_USER', 'ROLE_SEEKER']);
 			$manager->persist($newSeeker);
 		}
 

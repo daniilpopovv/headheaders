@@ -34,7 +34,7 @@ class ResumeCrudController extends AbstractCrudController
 		return $filters
 			->add(NumericFilter::new('salary', 'Желаемая зарплата'))
 			->add(TextFilter::new('specialization', 'Специализация'))
-			->add(EntityFilter::new('seeker', 'Владелец резюме'));
+			->add(EntityFilter::new('owner', 'Владелец резюме'));
 	}
 
 	public function configureFields(string $pageName): iterable {
@@ -42,7 +42,7 @@ class ResumeCrudController extends AbstractCrudController
 		yield TextareaField::new('description', 'О себе');
 		yield NumberField::new('salary', 'Желаемая ЗП');
 		yield AssociationField::new('skills', 'Скиллы')->hideOnIndex();
-		yield AssociationField::new('seeker', 'Владелец');
+		yield AssociationField::new('owner', 'Владелец');
 		yield AssociationField::new('invites', 'Приглашения');
 		yield AssociationField::new('repliedVacancies', 'Отклики');
 	}

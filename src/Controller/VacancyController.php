@@ -119,7 +119,9 @@ class VacancyController extends AbstractController
 			]);
 
 			$isInvite = (bool)array_intersect($resumes, $vacancy->getInvitedResumes()->toArray());
-			$isReply = in_array($seeker, $vacancy->getWhoReplied()->toArray());
+
+			// TODO: изменить whoReplied на метод репозитория 1
+			// $isReply = in_array($seeker, $vacancy->getWhoReplied()->toArray());
 
 
 			$form = $this->createForm(VacancyReplyType::class);
@@ -128,7 +130,9 @@ class VacancyController extends AbstractController
 				$form_view_data = $form->get('replies')->getViewData();
 				$resume = $resumeRepository->findOneBy(['id' => $form_view_data[0]]);
 				$vacancy->addReply($resume);
-				$vacancy->addWhoReplied($seeker);
+
+				// TODO: изменить whoReplied на метод репозитория 2
+				// $vacancy->addWhoReplied($seeker);
 
 				$this->entityManager->persist($vacancy);
 				$this->entityManager->flush();

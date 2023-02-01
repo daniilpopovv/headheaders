@@ -26,15 +26,15 @@ class VacancyCrudController extends AbstractCrudController
 		return $crud
 			->setEntityLabelInSingular('Вакансия')
 			->setEntityLabelInPlural('Вакансии')
-			->setSearchFields(['specialization', 'recruiter', 'description'])
-			->setDefaultSort(['recruiter' => 'ASC']);
+			->setSearchFields(['specialization', 'owner', 'description'])
+			->setDefaultSort(['owner' => 'ASC']);
 	}
 
 	public function configureFilters(Filters $filters): Filters {
 		return $filters
 			->add(NumericFilter::new('salary', 'Предлагаемая зарплата'))
 			->add(TextFilter::new('specialization', 'Специализация'))
-			->add(EntityFilter::new('recruiter', 'Владелец вакансии'));
+			->add(EntityFilter::new('owner', 'Владелец вакансии'));
 	}
 
 	public function configureFields(string $pageName): iterable {
@@ -42,7 +42,7 @@ class VacancyCrudController extends AbstractCrudController
 		yield TextareaField::new('description', 'Описание вакансии');
 		yield NumberField::new('salary', 'Предлагаемая ЗП');
 		yield AssociationField::new('skills', 'Скиллы')->hideOnIndex();
-		yield AssociationField::new('recruiter', 'Владелец');
+		yield AssociationField::new('owner', 'Владелец');
 		yield AssociationField::new('invitedResumes', 'Приглашения');
 		yield AssociationField::new('replies', 'Отклики');
 	}

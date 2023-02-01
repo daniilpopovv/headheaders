@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\Company;
-use App\Entity\Recruiter;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -76,12 +76,13 @@ class RecruiterFixture extends Fixture implements DependentFixtureInterface
 		];
 
 		foreach ($recruiters as $recruiter) {
-			$newRecruiter = new Recruiter();
+			$newRecruiter = new User();
 			$newRecruiter->setUsername($recruiter['username']);
 			$newRecruiter->setFullName($recruiter['fullName']);
 			$newRecruiter->setEmail($recruiter['email']);
 			$newRecruiter->setCompany($companies[rand(0, 4)]);
 			$newRecruiter->setPassword('$2y$13$FT/5YkEB/UfBkb158b3Pqeg4QtCtESVzKMGsrRVaIVuXaZWgK4y4W');
+			$newRecruiter->setRoles(['ROLE_USER', 'ROLE_RECRUITER']);
 			$manager->persist($newRecruiter);
 		}
 

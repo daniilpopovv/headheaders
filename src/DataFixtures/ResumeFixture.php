@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\Resume;
-use App\Entity\Seeker;
+use App\Entity\User;
 use App\Entity\Skill;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -21,8 +21,8 @@ class ResumeFixture extends Fixture implements DependentFixtureInterface
 	}
 
 	public function load(ObjectManager $manager): void {
-		$seekerRepository = $manager->getRepository(Seeker::class);
-		$seekers = $seekerRepository->findAll();
+		$userRepository = $manager->getRepository(User::class);
+		$seekers = $userRepository->findSeekers();
 		$skillRepository = $manager->getRepository(Skill::class);
 		$skills = $skillRepository->findAll();
 
@@ -40,7 +40,7 @@ class ResumeFixture extends Fixture implements DependentFixtureInterface
 					$newResume->addSkill($skill);
 				}
 			}
-			$newResume->setSeeker($seekers[rand(0, 9)]);
+			$newResume->setOwner($seekers[1]);
 			$manager->persist($newResume);
 		}
 

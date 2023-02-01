@@ -32,11 +32,11 @@ class Company
 	)]
 	private ?string $name = null;
 
-	#[ORM\OneToMany(mappedBy: 'company', targetEntity: Recruiter::class)]
-	private Collection $recruiters;
+	#[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
+	private Collection $staff;
 
 	public function __construct() {
-		$this->recruiters = new ArrayCollection();
+		$this->staff = new ArrayCollection();
 	}
 
 	public function __toString(): string {
@@ -58,25 +58,26 @@ class Company
 	}
 
 	/**
-	 * @return Collection<int, Recruiter>
+	 * @return Collection<int, User>
 	 */
-	public function getRecruiters(): Collection {
-		return $this->recruiters;
+	public function getStaff(): Collection {
+		return $this->staff;
 	}
 
-	public function addRecruiter(Recruiter $recruiter): self {
-		if (!$this->recruiters->contains($recruiter)) {
-			$this->recruiters->add($recruiter);
-			$recruiter->setCompany($this);
+	public function addStaff(User $staff): self {
+		if (!$this->staff->contains($staff)) {
+			$this->staff->add($staff);
+			$staff->setCompany($this);
 		}
 
 		return $this;
 	}
 
-	public function removeRecruiter(Recruiter $recruiter): self {
-		if ($this->recruiters->removeElement($recruiter)) {
-			if ($recruiter->getCompany() === $this) {
-				$recruiter->setCompany(null);
+	public function removeStaff(User $staff): self {
+		if ($this->staff->removeElement($staff)) {
+			// set the owning side to null (unless already changed)
+			if ($staff->getCompany() === $this) {
+				$staff->setCompany(null);
 			}
 		}
 

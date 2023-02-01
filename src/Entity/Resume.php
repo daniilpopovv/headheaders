@@ -62,24 +62,20 @@ class Resume
 	#[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'resumes', fetch: 'EAGER')]
 	private Collection $skills;
 
-	#[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'resumes')]
-	#[ORM\JoinColumn(nullable: false)]
-	private ?Seeker $seeker = null;
-
 	#[ORM\ManyToMany(targetEntity: Vacancy::class, inversedBy: 'invitedResumes')]
 	private Collection $invites;
 
 	#[ORM\ManyToMany(targetEntity: Vacancy::class, mappedBy: 'replies')]
 	private Collection $repliedVacancies;
 
-	#[ORM\ManyToMany(targetEntity: Recruiter::class, inversedBy: 'invitedResumes')]
-	private Collection $whoInvited;
+	#[ORM\ManyToOne(inversedBy: 'resumes')]
+	#[ORM\JoinColumn(nullable: false)]
+	private ?User $owner = null;
 
 	public function __construct() {
 		$this->skills = new ArrayCollection();
 		$this->invites = new ArrayCollection();
 		$this->repliedVacancies = new ArrayCollection();
-		$this->whoInvited = new ArrayCollection();
 	}
 
 	public function __toString(): string {
@@ -141,16 +137,6 @@ class Resume
 		return $this;
 	}
 
-	public function getSeeker(): ?Seeker {
-		return $this->seeker;
-	}
-
-	public function setSeeker(?Seeker $seeker): self {
-		$this->seeker = $seeker;
-
-		return $this;
-	}
-
 	/**
 	 * @return Collection<int, Vacancy>
 	 */
@@ -196,23 +182,12 @@ class Resume
 		return $this;
 	}
 
-	/**
-	 * @return Collection<int, Recruiter>
-	 */
-	public function getWhoInvited(): Collection {
-		return $this->whoInvited;
+	public function getOwner(): ?User {
+		return $this->owner;
 	}
 
-	public function addWhoInvited(Recruiter $whoInvited): self {
-		if (!$this->whoInvited->contains($whoInvited)) {
-			$this->whoInvited->add($whoInvited);
-		}
-
-		return $this;
-	}
-
-	public function removeWhoInvited(Recruiter $whoInvited): self {
-		$this->whoInvited->removeElement($whoInvited);
+	public function setOwner(?User $owner): self {
+		$this->owner = $owner;
 
 		return $this;
 	}

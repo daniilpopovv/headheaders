@@ -118,7 +118,8 @@ class ResumeController extends AbstractController
 				'recruiter' => $recruiter,
 			]);
 
-			$isInvite = in_array($recruiter, $resume->getWhoInvited()->toArray());
+			// TODO: заменить WhoInvited на метод репозитория 1
+			// $isInvite = in_array($recruiter, $resume->getWhoInvited()->toArray());
 			$isReply = (bool)array_intersect($vacancies, $resume->getRepliedVacancies()->toArray());
 
 			$form = $this->createForm(ResumeInviteType::class);
@@ -127,7 +128,9 @@ class ResumeController extends AbstractController
 				$form_view_data = $form->get('invites')->getViewData();
 				$vacancy = $vacancyRepository->findOneBy(['id' => $form_view_data[0]]);
 				$resume->addInvite($vacancy);
-				$resume->addWhoInvited($recruiter);
+
+				// TODO: заменить WhoInvited на метод репозитория 2
+				// $resume->addWhoInvited($recruiter);
 
 				$this->entityManager->persist($resume);
 				$this->entityManager->flush();
