@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Recruiter;
-use App\Entity\Seeker;
+use App\Entity\User;
 use App\Form\RegistrationFormType;
-use App\Repository\RecruiterRepository;
-use App\Repository\SeekerRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,13 +49,13 @@ class RegistrationController extends AbstractController
 	}
 
 	#[Route('/recruiter', name: 'app_register_recruiter')]
-	public function registerRecruiter(Request $request, RecruiterRepository $recruiterRepository, UserPasswordHasherInterface $userPasswordHasher): Response {
-		$user = new Recruiter();
+	public function registerRecruiter(Request $request, UserRepository $userRepository, UserPasswordHasherInterface $userPasswordHasher): Response {
+		$user = new User();
 
 		$form = $this->createForm(RegistrationFormType::class, $user);
 		$form->handleRequest($request);
 
-		$this->FormAction($form, $user, $recruiterRepository, $userPasswordHasher);
+		$this->FormAction($form, $user, $userRepository, $userPasswordHasher);
 
 		return $this->render('security/register.html.twig', [
 			'registrationForm' => $form->createView(),

@@ -72,7 +72,7 @@ class VacancyController extends AbstractController
 	public function editVacancy(Vacancy $vacancy, Request $request, VacancyRepository $vacancyRepository): Response {
 		$recruiter = $this->getUser();
 
-		if (!($vacancy->getRecruiter() === $recruiter)) {
+		if (!($vacancy->getOwner() === $recruiter)) {
 			return $this->redirectToRoute('my_vacancies', [
 				'vacancies' => $vacancyRepository->findBy(['recruiter' => $recruiter]),
 				'my_resumes' => true,
@@ -82,7 +82,7 @@ class VacancyController extends AbstractController
 		$form = $this->createForm(VacancyFormType::class, $vacancy);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
-			$vacancy->setRecruiter($recruiter);
+			$vacancy->setOwner($recruiter);
 
 			$this->entityManager->persist($vacancy);
 			$this->entityManager->flush();

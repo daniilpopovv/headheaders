@@ -42,7 +42,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	)]
 	private ?string $username = null;
 
-	#[ORM\Column(type: 'simple_array')]
+	#[ORM\Column(type: 'array')]
 	private array $roles = [];
 
 	/**

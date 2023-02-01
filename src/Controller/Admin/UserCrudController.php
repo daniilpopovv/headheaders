@@ -6,6 +6,9 @@ use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
@@ -37,5 +40,6 @@ class UserCrudController extends AbstractCrudController
 		yield TextField::new('username', 'Логин');
 		yield TextField::new('password', 'Пароль')->hideOnIndex();
 		yield AssociationField::new('company', 'Компания')->setRequired(false);
+		yield ArrayField::new('roles', 'Роли');
 	}
 }

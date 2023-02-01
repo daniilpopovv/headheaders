@@ -26,8 +26,8 @@ class ResumeCrudController extends AbstractCrudController
 		return $crud
 			->setEntityLabelInSingular('Резюме')
 			->setEntityLabelInPlural('Резюме')
-			->setSearchFields(['specialization', 'seeker', 'description'])
-			->setDefaultSort(['seeker' => 'ASC']);
+			->setSearchFields(['specialization', 'owner', 'description'])
+			->setDefaultSort(['owner' => 'ASC']);
 	}
 
 	public function configureFilters(Filters $filters): Filters {

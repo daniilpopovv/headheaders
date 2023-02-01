@@ -5,13 +5,9 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         # used to reload user from session & other features (e.g. switch_user)
-        app_recruiter_provider:
+        app_user_provider:
             entity:
-                class: App\Entity\Recruiter
-                property: username
-        app_seeker_provider:
-            entity:
-                class: App\Entity\Seeker
+                class: App\Entity\User
                 property: username
         app_admin_provider:
             entity:
@@ -19,7 +15,7 @@ security:
                 property: username
         app_user_providers:
             chain:
-                providers: [ 'app_recruiter_provider', 'app_seeker_provider', 'app_admin_provider' ]
+                providers: [ 'app_user_provider', 'app_admin_provider' ]
         # used to reload user from session & other features (e.g. switch_user)
         # used to reload user from session & other features (e.g. switch_user)
     firewalls:
