@@ -21,6 +21,9 @@ class RegistrationFormType extends AbstractType
 			->add('username', TextType::class, [
 				'label' => 'Логин',
 				'required' => true,
+				'attr' => [
+					'autofocus' => true,
+				],
 			])
 			->add('fullName', TextType::class, [
 				'label' => 'Введите ФИО',

@@ -7,25 +7,18 @@ namespace App\Controller;
 use App\Entity\Recruiter;
 use App\Entity\Seeker;
 use App\Form\RegistrationFormType;
-use App\Security\AppAuthenticator;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\RecruiterRepository;
+use App\Repository\SeekerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 #[Route('/register')]
 class RegistrationController extends AbstractController
 {
-	#[Route('/{slug}', name: 'app_register')]
-	public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AppAuthenticator $authenticator, EntityManagerInterface $entityManager, string $slug): Response {
-		$user = $slug === 'seeker' ? new Seeker() : new Recruiter();
-
-		$form = $this->createForm(RegistrationFormType::class, $user);
-		$form->handleRequest($request);
-
+	public function FormAction($form, $user, $repository, $userPasswordHasher): ?Response {
 		if ($form->isSubmitted() && $form->isValid()) {
 			// encode the plain password
 			$user->setPassword(
@@ -35,15 +28,36 @@ class RegistrationController extends AbstractController
 				)
 			);
 
-			$entityManager->persist($user);
-			$entityManager->flush();
+			$repository->save($user, true);
 
-			return $userAuthenticator->authenticateUser(
-				$user,
-				$authenticator,
-				$request
-			);
+			return $this->redirectToRoute('app_login');
 		}
+
+		return null;
+	}
+
+	#[Route('/seeker', name: 'app_register_seeker')]
+	public function registerSeeker(Request $request, SeekerRepository $seekerRepository, UserPasswordHasherInterface $userPasswordHasher): Response {
+		$user = new Seeker();
+
+		$form = $this->createForm(RegistrationFormType::class, $user);
+		$form->handleRequest($request);
+
+		$this->FormAction($form, $user, $seekerRepository, $userPasswordHasher);
+
+		return $this->render('security/register.html.twig', [
+			'registrationForm' => $form->createView(),
+		]);
+	}
+
+	#[Route('/recruiter', name: 'app_register_recruiter')]
+	public function registerRecruiter(Request $request, RecruiterRepository $recruiterRepository, UserPasswordHasherInterface $userPasswordHasher): Response {
+		$user = new Recruiter();
+
+		$form = $this->createForm(RegistrationFormType::class, $user);
+		$form->handleRequest($request);
+
+		$this->FormAction($form, $user, $recruiterRepository, $userPasswordHasher);
 
 		return $this->render('security/register.html.twig', [
 			'registrationForm' => $form->createView(),
