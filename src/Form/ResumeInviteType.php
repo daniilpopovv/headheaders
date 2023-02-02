@@ -19,9 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ResumeInviteType extends AbstractType
 {
 	public function __construct(Security $security, VacancyRepository $vacancyRepository) {
-		$this->vacancies = $vacancyRepository->findBy([
-			'owner' => $security->getUser(),
-		]);
+		$this->vacancies = $vacancyRepository->findByOwner($security->getUser());
 	}
 
 	public function buildForm(FormBuilderInterface $builder, array $options): void {

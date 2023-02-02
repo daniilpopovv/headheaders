@@ -19,9 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class VacancyReplyType extends AbstractType
 {
 	public function __construct(Security $security, ResumeRepository $resumeRepository) {
-		$this->resumes = $resumeRepository->findBy([
-			'seeker' => $security->getUser(),
-		]);
+		$this->resumes = $resumeRepository->findByOwner($security->getUser());
 	}
 
 	public function buildForm(FormBuilderInterface $builder, array $options): void {
