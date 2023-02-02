@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-alpine AS base
+FROM php:8.2-fpm AS base
 WORKDIR /app/
 ENV COMPOSER_ALLOW_SUPERUSER=1
 

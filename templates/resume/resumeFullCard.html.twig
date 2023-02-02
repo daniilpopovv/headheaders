@@ -2,10 +2,13 @@
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-end">
             <h5 class="card-title pb-2">{{ resume.specialization }}</h5>
-            {# TODO: заменить на метод репо 1 #}
-            {#            {% if app.user in resume.whoInvited %} #}
-            {#                <p class="fw-bold">Вы пригласили ✓</p> #}
-            {#            {% endif %} #}
+            {% if role == 'recruiter' %}
+                {% for invite in resume.invites %}
+                    {% if invite.getOwner == app.user %}
+                        <p class="fw-bold">Вы пригласили ✓</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         </div>
 
         <p class="p-0 m-0">{{ resume.owner.fullName }}</p>
