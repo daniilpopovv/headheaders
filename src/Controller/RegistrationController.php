@@ -33,11 +33,11 @@ class RegistrationController extends AbstractController
 			);
 
 			if ($slug === RoleEnum::seeker->name) {
-				$user->setRoles(['ROLE_USER', RoleEnum::seeker->value]);
+				$user->setRoles([RoleEnum::user->value, RoleEnum::seeker->value]);
 			}
 
 			if ($slug === RoleEnum::recruiter->name) {
-				$user->setRoles(['ROLE_USER', RoleEnum::recruiter->value]);
+				$user->setRoles([RoleEnum::user->value, RoleEnum::recruiter->value]);
 			}
 
 			$userRepository->save($user, true);

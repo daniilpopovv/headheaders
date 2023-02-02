@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Enum\RoleEnum;
 use App\Repository\ResumeRepository;
 use App\Repository\VacancyRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,7 +14,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class NegotiationController extends AbstractController
 {
-	#[IsGranted('ROLE_RECRUITER')]
+	#[IsGranted(RoleEnum::recruiter->value)]
 	#[Route('/sent-invites', name: 'sent-invites')]
 	public function sentInvites(VacancyRepository $vacancyRepository): Response {
 
@@ -23,7 +24,7 @@ class NegotiationController extends AbstractController
 		]);
 	}
 
-	#[IsGranted('ROLE_RECRUITER')]
+	#[IsGranted(RoleEnum::recruiter->value)]
 	#[Route('/received-replies', name: 'received-replies')]
 	public function receivedReplies(VacancyRepository $vacancyRepository): Response {
 
@@ -33,7 +34,7 @@ class NegotiationController extends AbstractController
 		]);
 	}
 
-	#[IsGranted('ROLE_SEEKER')]
+	#[IsGranted(RoleEnum::seeker->value)]
 	#[Route('/sent-replies', name: 'sent-replies')]
 	public function sentReplies(ResumeRepository $resumeRepository): Response {
 
@@ -43,7 +44,7 @@ class NegotiationController extends AbstractController
 		]);
 	}
 
-	#[IsGranted('ROLE_SEEKER')]
+	#[IsGranted(RoleEnum::seeker->value)]
 	#[Route('/received-invites', name: 'received-invites')]
 	public function receivedInvites(ResumeRepository $resumeRepository): Response {
 

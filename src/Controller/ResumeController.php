@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Resume;
+use App\Enum\RoleEnum;
 use App\Form\ResumeFormType;
 use App\Form\ResumeInviteType;
 use App\Form\SearchFormType;
@@ -41,7 +42,7 @@ class ResumeController extends AbstractController
 		]);
 	}
 
-	#[IsGranted('ROLE_SEEKER')]
+	#[IsGranted(RoleEnum::seeker->value)]
 	#[Route('/create', name: 'create_resume')]
 	public function createResume(Request $request, ResumeRepository $resumeRepository): Response {
 		$resume = new Resume();
@@ -60,7 +61,7 @@ class ResumeController extends AbstractController
 		]);
 	}
 
-	#[IsGranted('ROLE_SEEKER')]
+	#[IsGranted(RoleEnum::seeker->value)]
 	#[Route('/edit/{id}', name: 'edit_resume', requirements: ['id' => '^\d+$'])]
 	public function editResume(Resume $resume, Request $request, ResumeRepository $resumeRepository): Response {
 		if ($resume->getOwner() !== $this->getUser()) {
@@ -82,7 +83,7 @@ class ResumeController extends AbstractController
 		]);
 	}
 
-	#[IsGranted('ROLE_SEEKER')]
+	#[IsGranted(RoleEnum::seeker->value)]
 	#[Route('/my', name: 'my_resumes')]
 	public function myResumes(ResumeRepository $resumeRepository): Response {
 		return $this->render('resume/index.html.twig', [
@@ -95,7 +96,7 @@ class ResumeController extends AbstractController
 	public function viewResume(Resume $resume, Request $request, VacancyRepository $vacancyRepository, ResumeRepository $resumeRepository, AuthorizationCheckerInterface $authorizationChecker): Response {
 		$relevant_vacancies = $vacancyRepository->searchByQuery([], $resume->getSkills());
 
-		if ($authorizationChecker->isGranted('ROLE_RECRUITER')) {
+		if ($authorizationChecker->isGranted(RoleEnum::recruiter->value)) {
 			$form = $this->createForm(ResumeInviteType::class);
 			$form->handleRequest($request);
 			if ($form->isSubmitted() && $form->isValid() && $form->get('invites')->getViewData() !== []) {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Vacancy;
+use App\Enum\RoleEnum;
 use App\Form\SearchFormType;
 use App\Form\VacancyFormType;
 use App\Form\VacancyReplyType;
@@ -41,7 +42,7 @@ class VacancyController extends AbstractController
 		]);
 	}
 
-	#[IsGranted('ROLE_RECRUITER')]
+	#[IsGranted(RoleEnum::recruiter->value)]
 	#[Route('/create', name: 'create_vacancy')]
 	public function createVacancy(Request $request, VacancyRepository $vacancyRepository): Response {
 		$vacancy = new Vacancy();
@@ -60,7 +61,7 @@ class VacancyController extends AbstractController
 		]);
 	}
 
-	#[IsGranted('ROLE_RECRUITER')]
+	#[IsGranted(RoleEnum::recruiter->value)]
 	#[Route('/edit/{id}', name: 'edit_vacancy', requirements: ['id' => '^\d+$'])]
 	public function editVacancy(Vacancy $vacancy, Request $request, VacancyRepository $vacancyRepository): Response {
 		if ($vacancy->getOwner() !== $this->getUser()) {
@@ -82,7 +83,7 @@ class VacancyController extends AbstractController
 		]);
 	}
 
-	#[IsGranted('ROLE_RECRUITER')]
+	#[IsGranted(RoleEnum::recruiter->value)]
 	#[Route('/my', name: 'my_vacancies')]
 	public function myVacancies(VacancyRepository $vacancyRepository): Response {
 		return $this->render('vacancy/index.html.twig', [
@@ -95,7 +96,7 @@ class VacancyController extends AbstractController
 	public function viewVacancy(Vacancy $vacancy, Request $request, VacancyRepository $vacancyRepository, ResumeRepository $resumeRepository, AuthorizationCheckerInterface $authorizationChecker): Response {
 		$relevant_resumes = $resumeRepository->searchByQuery([], $vacancy->getSkills());
 
-		if ($authorizationChecker->isGranted('ROLE_SEEKER')) {
+		if ($authorizationChecker->isGranted(RoleEnum::seeker->value)) {
 			$form = $this->createForm(VacancyReplyType::class);
 			$form->handleRequest($request);
 			if ($form->isSubmitted() && $form->isValid() && $form->get('replies')->getViewData() !== []) {

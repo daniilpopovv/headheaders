@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Enum\RoleEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -54,14 +55,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
 	public function findSeekers () {
 		return $qb = $this->createQueryBuilder('user')
-			->where("user.roles LIKE '%ROLE_SEEKER%'")
+			->where("user.roles LIKE '%".RoleEnum::seeker->value."%'")
 			->getQuery()
 			->getResult();
 	}
 
 	public function findRecruiters () {
 		return $qb = $this->createQueryBuilder('user')
-			->where("user.roles LIKE '%ROLE_RECRUITER%'")
+			->where("user.roles LIKE '%".RoleEnum::recruiter->value."%'")
 			->getQuery()
 			->getResult();
 	}

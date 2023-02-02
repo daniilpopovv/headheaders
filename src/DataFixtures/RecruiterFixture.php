@@ -6,6 +6,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Company;
 use App\Entity\User;
+use App\Enum\RoleEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -82,7 +83,7 @@ class RecruiterFixture extends Fixture implements DependentFixtureInterface
 			$newRecruiter->setEmail($recruiter['email']);
 			$newRecruiter->setCompany($companies[rand(0, 4)]);
 			$newRecruiter->setPassword('$2y$13$FT/5YkEB/UfBkb158b3Pqeg4QtCtESVzKMGsrRVaIVuXaZWgK4y4W');
-			$newRecruiter->setRoles(['ROLE_USER', 'ROLE_RECRUITER']);
+			$newRecruiter->setRoles([RoleEnum::user->value, RoleEnum::recruiter->value]);
 			$manager->persist($newRecruiter);
 		}
 

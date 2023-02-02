@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use App\Enum\RoleEnum;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -34,10 +35,10 @@ class UserCrudController extends AbstractCrudController
 			->add(EntityFilter::new('vacancies', 'Вакансия рекрутера'))
 			->add(EntityFilter::new('company', 'Компания рекрутера'))
 			->add(ArrayFilter::new('roles', 'Роли')->setChoices([
-				'Пользователь' => 'ROLE_USER',
-				'Соискатель' => 'ROLE_SEEKER',
-				'Рекрутер' => 'ROLE_RECRUITER',
-				'Админ' => 'ROLE_ADMIN'
+				'Пользователь' => RoleEnum::user->value,
+				'Соискатель' => RoleEnum::seeker->value,
+				'Рекрутер' => RoleEnum::recruiter->value,
+				'Админ' => RoleEnum::admin->value,
 			]));
 	}
 

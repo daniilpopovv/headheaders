@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use App\Enum\RoleEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -70,7 +71,7 @@ class SeekerFixture extends Fixture
 			$newSeeker->setFullName($seeker['fullName']);
 			$newSeeker->setEmail($seeker['email']);
 			$newSeeker->setPassword('$2y$13$FT/5YkEB/UfBkb158b3Pqeg4QtCtESVzKMGsrRVaIVuXaZWgK4y4W');
-			$newSeeker->setRoles(['ROLE_USER', 'ROLE_SEEKER']);
+			$newSeeker->setRoles([RoleEnum::user->value, RoleEnum::seeker->value]);
 			$manager->persist($newSeeker);
 		}
 
