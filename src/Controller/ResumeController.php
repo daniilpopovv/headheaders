@@ -53,7 +53,7 @@ class ResumeController extends AbstractController
 		$form = $this->createForm(ResumeFormType::class, $resume);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
-			$resume->setSeeker($this->getUser());
+			$resume->setOwner($this->getUser());
 
 			$this->entityManager->persist($resume);
 			$this->entityManager->flush();
@@ -68,13 +68,13 @@ class ResumeController extends AbstractController
 	}
 
 	#[IsGranted('ROLE_SEEKER')]
-	#[Route('/edit/{id}', name: 'edit_resume')]
+	#[Route('/edit/{id}', name: 'edit_resume', requirements: ['id' => '^\d+$'])]
 	public function editResume(Resume $resume, Request $request, ResumeRepository $resumeRepository): Response {
 		$seeker = $this->getUser();
 
-		if (!($resume->getSeeker() === $seeker)) {
+		if (!($resume->getOwner() === $seeker)) {
 			return $this->redirectToRoute('my_resumes', [
-				'resumes' => $resumeRepository->findBy(['seeker' => $seeker]),
+				'resumes' => $resumeRepository->findBy(['owner' => $seeker]),
 				'my_resumes' => true,
 			]);
 		}
@@ -82,7 +82,7 @@ class ResumeController extends AbstractController
 		$form = $this->createForm(ResumeFormType::class, $resume);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
-			$resume->setSeeker($seeker);
+			$resume->setOwner($seeker);
 
 			$this->entityManager->persist($resume);
 			$this->entityManager->flush();
@@ -102,12 +102,12 @@ class ResumeController extends AbstractController
 		$seeker = $this->getUser();
 
 		return $this->render('resume/index.html.twig', [
-			'resumes' => $resumeRepository->findBy(['seeker' => $seeker]),
+			'resumes' => $resumeRepository->findBy(['owner' => $seeker]),
 			'my_resumes' => true,
 		]);
 	}
 
-	#[Route('/{id}', name: 'view_resume')]
+	#[Route('/{id}', name: 'view_resume', requirements: ['id' => '^\d+$'])]
 	public function viewResume(Resume $resume, Request $request, VacancyRepository $vacancyRepository, UserRepository $userRepository, AuthorizationCheckerInterface $authorizationChecker): Response {
 		$relevant_vacancies = $vacancyRepository->searchByQuery([], $resume->getSkills());
 

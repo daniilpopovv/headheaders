@@ -60,6 +60,6 @@ class VacancyRepository extends ServiceEntityRepository
 
 	// TODO: '1-2) Не ясна цель использования, так как по сути одно и то же'
 	public function findByRecruiter(UserInterface $recruiter): array {
-		return $this->findBy(['recruiter' => $recruiter]);
+		return $this->findBy(['owner' => $recruiter]);
 	}
 }

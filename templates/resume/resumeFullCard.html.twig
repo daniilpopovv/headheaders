@@ -8,7 +8,7 @@
             {#            {% endif %} #}
         </div>
 
-        <p class="p-0 m-0">{{ resume.seeker.fullName }}</p>
+        <p class="p-0 m-0">{{ resume.owner.fullName }}</p>
         <hr class="my-3"/>
         {% if resume.description %}
             <p class="card-text">{{ resume.description|striptags|slice(0, 100) }}...</p>

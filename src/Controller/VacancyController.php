@@ -9,7 +9,7 @@ use App\Form\SearchFormType;
 use App\Form\VacancyFormType;
 use App\Form\VacancyReplyType;
 use App\Repository\ResumeRepository;
-use App\Repository\SeekerRepository;
+use App\Repository\UserRepository;
 use App\Repository\VacancyRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,7 +53,7 @@ class VacancyController extends AbstractController
 		$form = $this->createForm(VacancyFormType::class, $vacancy);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
-			$vacancy->setRecruiter($this->getUser());
+			$vacancy->setOwner($this->getUser());
 
 			$this->entityManager->persist($vacancy);
 			$this->entityManager->flush();
@@ -68,13 +68,13 @@ class VacancyController extends AbstractController
 	}
 
 	#[IsGranted('ROLE_RECRUITER')]
-	#[Route('/edit/{id}', name: 'edit_vacancy')]
+	#[Route('/edit/{id}', name: 'edit_vacancy', requirements: ['id' => '^\d+$'])]
 	public function editVacancy(Vacancy $vacancy, Request $request, VacancyRepository $vacancyRepository): Response {
 		$recruiter = $this->getUser();
 
 		if (!($vacancy->getOwner() === $recruiter)) {
 			return $this->redirectToRoute('my_vacancies', [
-				'vacancies' => $vacancyRepository->findBy(['recruiter' => $recruiter]),
+				'vacancies' => $vacancyRepository->findBy(['owner' => $recruiter]),
 				'my_resumes' => true,
 			]);
 		}
@@ -102,17 +102,17 @@ class VacancyController extends AbstractController
 		$recruiter = $this->getUser();
 
 		return $this->render('vacancy/index.html.twig', [
-			'vacancies' => $vacancyRepository->findBy(['recruiter' => $recruiter]),
+			'vacancies' => $vacancyRepository->findBy(['owner' => $recruiter]),
 			'my_vacancies' => true,
 		]);
 	}
 
-	#[Route('/{id}', name: 'view_vacancy')]
-	public function viewVacancy(Vacancy $vacancy, Request $request, ResumeRepository $resumeRepository, SeekerRepository $seekerRepository, AuthorizationCheckerInterface $authorizationChecker): Response {
+	#[Route('/{id}', name: 'view_vacancy', requirements: ['id' => '^\d+$'])]
+	public function viewVacancy(Vacancy $vacancy, Request $request, ResumeRepository $resumeRepository, UserRepository $userRepository, AuthorizationCheckerInterface $authorizationChecker): Response {
 		$relevant_resumes = $resumeRepository->searchByQuery([], $vacancy->getSkills());
 
 		if ($authorizationChecker->isGranted('ROLE_SEEKER')) {
-			$seeker = $seekerRepository->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
+			$seeker = $userRepository->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
 
 			$resumes = $resumeRepository->findBy([
 				'seeker' => $this->getUser(),

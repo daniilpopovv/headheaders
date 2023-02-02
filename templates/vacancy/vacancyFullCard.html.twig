@@ -10,10 +10,10 @@
         </div>
 
 
-        {% if vacancy.recruiter.company %}
-            <p class="p-0 m-0">{{ vacancy.recruiter.company.name }}</p>
+        {% if vacancy.owner.company %}
+            <p class="p-0 m-0">{{ vacancy.owner.company.name }}</p>
         {% else %}
-            <p class="p-0 m-0">{{ vacancy.recruiter.fullName }}</p>
+            <p class="p-0 m-0">{{ vacancy.owner.fullName }}</p>
         {% endif %}
 
         <hr class="my-3"/>

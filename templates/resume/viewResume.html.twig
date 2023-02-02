@@ -6,9 +6,9 @@
 
     <div class="p-3 mb-3 container-sm detail-view-container w-50">
         <div class="d-flex justify-content-between mb-3 align-items-center">
-            <h1 class="">{{ resume.seeker.fullName }}</h1>
+            <h1 class="">{{ resume.owner.fullName }}</h1>
 
-            {% if role == 'seeker' and resume.seeker.username == app.user.username %}
+            {% if role == 'seeker' and resume.owner.username == app.user.username %}
                 <a class="btn" href="{{ path('edit_resume', { id: resume.id }) }}">Редактировать</a>
             {% endif %}
 
@@ -16,7 +16,7 @@
 
         {% if isReply %}
             <p class="fw-bold">Соискатель откликнулся на вашу вакансию! Почта для связи: <a
-                        href="mailto:{{ resume.seeker.email }}">{{ resume.seeker.email }}</a></p>
+                        href="mailto:{{ resume.owner.email }}">{{ resume.owner.email }}</a></p>
         {% endif %}
 
         {% if resume.description %}
@@ -66,10 +66,10 @@
                             </div>
 
 
-                            {% if relevant_vacancy.recruiter.company %}
-                                <p class="p-0 m-0">{{ relevant_vacancy.recruiter.company.name }}</p>
+                            {% if relevant_vacancy.owner.company %}
+                                <p class="p-0 m-0">{{ relevant_vacancy.owner.company.name }}</p>
                             {% else %}
-                                <p class="p-0 m-0">{{ relevant_vacancy.recruiter.fullName }}</p>
+                                <p class="p-0 m-0">{{ relevant_vacancy.owner.fullName }}</p>
                             {% endif %}
 
                             <hr class="my-3"/>

@@ -19,7 +19,7 @@ class NegotiationController extends AbstractController
 
 		return $this->render('invites/index.html.twig', [
 			'title' => 'Вы пригласили на вакансии:',
-			'vacancies' => $vacancyRepository->findBy(['recruiter' => $this->getUser()]),
+			'vacancies' => $vacancyRepository->findBy(['owner' => $this->getUser()]),
 
 			// TODO: '1-1) Не ясна цель использования, так как по сути одно и то же'
 			// 'vacancies' => $vacancyRepository->findByRecruiter($this->getUser()),
@@ -32,7 +32,7 @@ class NegotiationController extends AbstractController
 
 		return $this->render('replies/index.html.twig', [
 			'title' => 'На ваши вакансии откликнулись:',
-			'vacancies' => $vacancyRepository->findBy(['recruiter' => $this->getUser()]),
+			'vacancies' => $vacancyRepository->findBy(['owner' => $this->getUser()]),
 		]);
 	}
 
@@ -42,7 +42,7 @@ class NegotiationController extends AbstractController
 
 		return $this->render('replies/index.html.twig', [
 			'title' => 'Вы откликнулись на вакансии:',
-			'resumes' => $resumeRepository->findBy(['seeker' => $this->getUser()]),
+			'resumes' => $resumeRepository->findBy(['owner' => $this->getUser()]),
 		]);
 	}
 
@@ -52,7 +52,7 @@ class NegotiationController extends AbstractController
 
 		return $this->render('invites/index.html.twig', [
 			'title' => 'Вас пригласили на вакансии:',
-			'resumes' => $resumeRepository->findBy(['seeker' => $this->getUser()]),
+			'resumes' => $resumeRepository->findBy(['owner' => $this->getUser()]),
 		]);
 	}
 }

@@ -5,9 +5,9 @@
 
 <div class="d-flex justify-content-between align-items-center">
     <div>
-        <p class="p-0 m-0">{{ resume.seeker.fullName }} / {{ resume.specialization }}</p>
+        <p class="p-0 m-0">{{ resume.owner.fullName }} / {{ resume.specialization }}</p>
         {% if show_contacts_to_recruiter is defined %}
-            <p class="mb-0 mt-3">Почта для связи: <a href="mailto:{{ resume.seeker.email }}">{{ resume.seeker.email }}</a></p>
+            <p class="mb-0 mt-3">Почта для связи: <a href="mailto:{{ resume.owner.email }}">{{ resume.owner.email }}</a></p>
         {% endif %}
     </div>
 

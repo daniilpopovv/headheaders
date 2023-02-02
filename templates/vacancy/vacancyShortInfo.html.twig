@@ -5,14 +5,14 @@
 
 <div class="d-flex justify-content-between align-items-center">
     <div>
-        {% if vacancy.recruiter.company is null %}
-            <p class="p-0 m-0">{{ vacancy.recruiter.fullName }} / {{ vacancy.specialization }}</p>
+        {% if vacancy.owner.company is null %}
+            <p class="p-0 m-0">{{ vacancy.owner.fullName }} / {{ vacancy.specialization }}</p>
         {% else %}
-            <p class="p-0 m-0">{{ vacancy.recruiter.company }} / {{ vacancy.specialization }}</p>
+            <p class="p-0 m-0">{{ vacancy.owner.company }} / {{ vacancy.specialization }}</p>
         {% endif %}
 
         {% if show_contacts_to_seeker is defined %}
-            <p class="mb-0 mt-3">Почта для связи: <a href="mailto:{{ vacancy.recruiter.email }}">{{ vacancy.recruiter.email }}</a></p>
+            <p class="mb-0 mt-3">Почта для связи: <a href="mailto:{{ vacancy.owner.email }}">{{ vacancy.owner.email }}</a></p>
         {% endif %}
     </div>
 

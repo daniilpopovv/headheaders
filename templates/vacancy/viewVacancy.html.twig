@@ -10,15 +10,15 @@
             <p class="m-0 salary salary-in-vacancy">{{ vacancy.salary|number_format(thousandSep = ' ') }} руб.</p>
         </div>
 
-        {% if vacancy.recruiter.company %}
-            <p class="p-0 m-0">{{ vacancy.recruiter.company.name }}</p>
+        {% if vacancy.owner.company %}
+            <p class="p-0 m-0">{{ vacancy.owner.company.name }}</p>
         {% else %}
-            <p class="p-0 m-0">{{ vacancy.recruiter.fullName }}</p>
+            <p class="p-0 m-0">{{ vacancy.owner.fullName }}</p>
         {% endif %}
 
         {% if isInvite %}
             <p class="fw-bold pt-2">Вас пригласили! Почта для связи: <a
-                        href="mailto:{{ vacancy.recruiter.email }}">{{ vacancy.recruiter.email }}</a></p>
+                        href="mailto:{{ vacancy.owner.email }}">{{ vacancy.owner.email }}</a></p>
         {% endif %}
 
         <hr class="my-3"/>
@@ -52,7 +52,7 @@
             {% endif %}
         {% endif %}
 
-        {% if app.user.username is defined and vacancy.recruiter.username == app.user.username %}
+        {% if app.user.username is defined and vacancy.owner.username == app.user.username %}
             <a class="btn" href="{{ path('edit_vacancy', { id: vacancy.id }) }}">Редактировать</a>
         {% endif %}
 
@@ -66,7 +66,7 @@
                                 <h5 class="card-title pb-2">{{ relevant_resume.specialization }}</h5>
                             </div>
 
-                            <p class="p-0 m-0">{{ relevant_resume.seeker.fullName }}</p>
+                            <p class="p-0 m-0">{{ relevant_resume.owner.fullName }}</p>
 
                             <hr class="my-3"/>
 

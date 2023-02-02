@@ -20,7 +20,7 @@ class ResumeInviteType extends AbstractType
 {
 	public function __construct(Security $security, VacancyRepository $vacancyRepository) {
 		$this->vacancies = $vacancyRepository->findBy([
-			'recruiter' => $security->getUser(),
+			'owner' => $security->getUser(),
 		]);
 	}
 
