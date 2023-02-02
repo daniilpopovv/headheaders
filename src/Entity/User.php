@@ -76,7 +76,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	)]
 	private ?string $email = null;
 
-	#[ORM\ManyToOne(inversedBy: 'staff')]
+	#[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'staff')]
 	private ?Company $company = null;
 
 	#[ORM\OneToMany(mappedBy: 'owner', targetEntity: Resume::class, orphanRemoval: true)]

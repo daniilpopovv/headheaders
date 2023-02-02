@@ -68,7 +68,7 @@ class Resume
 	#[ORM\ManyToMany(targetEntity: Vacancy::class, mappedBy: 'replies')]
 	private Collection $repliedVacancies;
 
-	#[ORM\ManyToOne(inversedBy: 'resumes')]
+	#[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'resumes')]
 	#[ORM\JoinColumn(nullable: false)]
 	private ?User $owner = null;
 
