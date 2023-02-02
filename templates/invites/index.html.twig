@@ -11,32 +11,22 @@
                 {% for vacancy in resume.invites|sort((a,b) => a.salary <=> b.salary)|reverse %}
                     <div class="card w-50 mb-3">
                         <div class="card-body">
-                            {% if vacancy in resume.invites %}
-                                {% set show_contacts_to_seeker = true %}
-                            {% endif %}
                             {% include 'vacancy/vacancyShortInfo.html.twig' %}
-
                             <hr class="my-3"/>
-
                             {% include 'resume/resumeShortInfo.html.twig' %}
                         </div>
                     </div>
                 {% endfor %}
             {% endfor %}
+        {% endif %}
 
-        {% elseif role == 'recruiter' %}
+        {% if role == 'recruiter' %}
             {% for vacancy in vacancies %}
-                {% for resume in vacancy.invitedResumes|sort((a,b) => a.salary <=> b.salary) %}
+                {% for resume in vacancy.invites|sort((a,b) => a.salary <=> b.salary) %}
                     <div class="card w-50 mb-3">
                         <div class="card-body">
-
                             {% include 'vacancy/vacancyShortInfo.html.twig' %}
-
                             <hr class="my-3"/>
-
-                            {% if resume in vacancy.replies %}
-                                {% set show_contacts_to_recruiter = true %}
-                            {% endif %}
                             {% include 'resume/resumeShortInfo.html.twig' %}
                         </div>
                     </div>

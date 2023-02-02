@@ -44,6 +44,6 @@ class ResumeCrudController extends AbstractCrudController
 		yield AssociationField::new('skills', 'Скиллы')->hideOnIndex();
 		yield AssociationField::new('owner', 'Владелец');
 		yield AssociationField::new('invites', 'Приглашения');
-		yield AssociationField::new('repliedVacancies', 'Отклики');
+		yield AssociationField::new('replies', 'Отклики');
 	}
 }

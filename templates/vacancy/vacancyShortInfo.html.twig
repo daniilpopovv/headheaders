@@ -11,7 +11,7 @@
             <p class="p-0 m-0">{{ vacancy.owner.company }} / {{ vacancy.specialization }}</p>
         {% endif %}
 
-        {% if show_contacts_to_seeker is defined %}
+        {% if resume is defined and resume in vacancy.invites and role == 'seeker' %}
             <p class="mb-0 mt-3">Почта для связи: <a href="mailto:{{ vacancy.owner.email }}">{{ vacancy.owner.email }}</a></p>
         {% endif %}
     </div>

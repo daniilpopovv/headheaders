@@ -62,11 +62,11 @@ class Resume
 	#[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'resumes', fetch: 'EAGER')]
 	private Collection $skills;
 
-	#[ORM\ManyToMany(targetEntity: Vacancy::class, inversedBy: 'invitedResumes')]
+	#[ORM\ManyToMany(targetEntity: Vacancy::class, inversedBy: 'invites')]
 	private Collection $invites;
 
 	#[ORM\ManyToMany(targetEntity: Vacancy::class, mappedBy: 'replies')]
-	private Collection $repliedVacancies;
+	private Collection $replies;
 
 	#[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'resumes')]
 	#[ORM\JoinColumn(nullable: false)]
@@ -75,7 +75,7 @@ class Resume
 	public function __construct() {
 		$this->skills = new ArrayCollection();
 		$this->invites = new ArrayCollection();
-		$this->repliedVacancies = new ArrayCollection();
+		$this->replies = new ArrayCollection();
 	}
 
 	public function __toString(): string {
@@ -161,22 +161,22 @@ class Resume
 	/**
 	 * @return Collection<int, Vacancy>
 	 */
-	public function getRepliedVacancies(): Collection {
-		return $this->repliedVacancies;
+	public function getReplies(): Collection {
+		return $this->replies;
 	}
 
-	public function addRepliedVacancy(Vacancy $repliedVacancy): self {
-		if (!$this->repliedVacancies->contains($repliedVacancy)) {
-			$this->repliedVacancies->add($repliedVacancy);
-			$repliedVacancy->addReply($this);
+	public function addReply(Vacancy $reply): self {
+		if (!$this->replies->contains($reply)) {
+			$this->replies->add($reply);
+			$reply->addReply($this);
 		}
 
 		return $this;
 	}
 
-	public function removeRepliedVacancy(Vacancy $repliedVacancy): self {
-		if ($this->repliedVacancies->removeElement($repliedVacancy)) {
-			$repliedVacancy->removeReply($this);
+	public function removeReply(Vacancy $reply): self {
+		if ($this->replies->removeElement($reply)) {
+			$reply->removeReply($this);
 		}
 
 		return $this;

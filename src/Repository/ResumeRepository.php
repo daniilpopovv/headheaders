@@ -50,7 +50,7 @@ class ResumeRepository extends ServiceEntityRepository
 
 		foreach ($querySkills as $querySkill) {
 			$id = $querySkill->getId();
-			$qb->join('resume.skills', "resume_skill" . $id, Join::WITH, "resume_skill" . $id . ".id = '$id'");
+			$qb->join('resume.skills', "skill" . $id, Join::WITH, "skill" . $id . ".id = '$id'");
 		}
 
 		return $qb
@@ -60,5 +60,29 @@ class ResumeRepository extends ServiceEntityRepository
 
 	public function findByOwner(?User $user): array {
 		return $this->findBy(['owner' => $user]);
+	}
+
+	public function checkInvite(?User $user, Resume $resume) {
+		$qb = $this->createQueryBuilder('resume');
+
+		$qb->where('resume.id = ' . $resume->getId());
+		$qb->join('resume.invites', 'vacancy', Join::WITH, 'vacancy.owner = :ownerId');
+		$qb->setParameter('ownerId', $user->getId());
+
+		return $qb
+			->getQuery()
+			->getResult();
+	}
+
+	public function checkReply(?User $user, Resume $resume) {
+		$qb = $this->createQueryBuilder('resume');
+
+		$qb->where('resume.id = ' . $resume->getId());
+		$qb->join('resume.replies', 'vacancy', Join::WITH, 'vacancy.owner = :ownerId');
+		$qb->setParameter('ownerId', $user->getId());
+
+		return $qb
+			->getQuery()
+			->getResult();
 	}
 }

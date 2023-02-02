@@ -43,7 +43,7 @@ class VacancyCrudController extends AbstractCrudController
 		yield NumberField::new('salary', 'Предлагаемая ЗП');
 		yield AssociationField::new('skills', 'Скиллы')->hideOnIndex();
 		yield AssociationField::new('owner', 'Владелец');
-		yield AssociationField::new('invitedResumes', 'Приглашения');
+		yield AssociationField::new('invites', 'Приглашения');
 		yield AssociationField::new('replies', 'Отклики');
 	}
 }

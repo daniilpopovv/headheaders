@@ -5,19 +5,19 @@
                 <li><a href="{{ path('homepage') }}" class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'homepage' ? 'fw-bold' }}">Главная</a></li>
                 <li><a href="{{ path('resumes') }}" class="nav-link px-2 link-dark active {{ app.request.attributes.get('_route') == 'resumes' ? 'fw-bold' }}">Резюме</a></li>
                 <li><a href="{{ path('vacancies') }}" class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'vacancies' ? 'fw-bold' }}">Вакансии</a></li>
-                {% if role == 'seeker' or role == 'recruiter' %}
-                    {% if role == 'seeker' %}
-                        <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'my_resumes' ? 'fw-bold' }}" href="{{ path('my_resumes') }}">Мои резюме</a></li>
-                        <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'sent-replies' ? 'fw-bold' }}" href="{{ path('sent-replies') }}">Отклики</a></li>
-                        <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'received-invites' ? 'fw-bold' }}" href="{{ path('received-invites') }}">Приглашения</a></li>
-                    {% endif %}
 
-                    {% if role == 'recruiter' %}
-                        <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'my_vacancies' ? 'fw-bold' }}" href="{{ path('my_vacancies') }}">Мои вакансии</a></li>
-                        <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'received-replies' ? 'fw-bold' }}" href="{{ path('received-replies') }}">Отклики</a></li>
-                        <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'sent-invites' ? 'fw-bold' }}" href="{{ path('sent-invites') }}">Приглашения</a></li>
-                    {% endif %}
+                {% if role == 'seeker' %}
+                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'my_resumes' ? 'fw-bold' }}" href="{{ path('my_resumes') }}">Мои резюме</a></li>
+                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'sent-replies' ? 'fw-bold' }}" href="{{ path('sent-replies') }}">Отклики</a></li>
+                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'received-invites' ? 'fw-bold' }}" href="{{ path('received-invites') }}">Приглашения</a></li>
                 {% endif %}
+
+                {% if role == 'recruiter' %}
+                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'my_vacancies' ? 'fw-bold' }}" href="{{ path('my_vacancies') }}">Мои вакансии</a></li>
+                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'received-replies' ? 'fw-bold' }}" href="{{ path('received-replies') }}">Отклики</a></li>
+                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'sent-invites' ? 'fw-bold' }}" href="{{ path('sent-invites') }}">Приглашения</a></li>
+                {% endif %}
+
             </ul>
             <ul class="nav justify-content-right align-items-center">
                 {% if role == 'guest' %}
@@ -26,11 +26,9 @@
 
                 {% if role == 'admin' %}
                     <a class="nav-link px-2 auth-link btn me-3" href="{{ path('admin') }}">Админка</a>
-
-                    <a class="nav-link px-2 auth-link btn" href="{{ path('app_logout') }}">Выйти</a>
                 {% endif %}
 
-                {% if role == 'seeker' or role == 'recruiter' %}
+                {% if role != 'guest' %}
                     <p class="p-0 mb-0 me-3">{{ app.user.fullName }}</p>
 
                     {% if role == 'seeker' %}

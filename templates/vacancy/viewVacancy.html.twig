@@ -17,23 +17,17 @@
         {% endif %}
 
         {% if isInvite %}
-            <p class="fw-bold pt-2">Вас пригласили! Почта для связи: <a
-                        href="mailto:{{ vacancy.owner.email }}">{{ vacancy.owner.email }}</a></p>
+            <p class="fw-bold pt-2">Вас пригласили! Почта для связи: <a href="mailto:{{ vacancy.owner.email }}">{{ vacancy.owner.email }}</a></p>
         {% endif %}
 
         <hr class="my-3"/>
+        <p class="card-text">{{ vacancy.description|nl2br }}</p>
 
-        {% if vacancy.description %}
-            <p class="card-text">{{ vacancy.description|nl2br }}</p>
-        {% endif %}
-
-        {% if vacancy.skills %}
-            <div class="d-flex flex-wrap mt-2">
-                {% for skill in vacancy.skills %}
-                    <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
+        <div class="d-flex flex-wrap mt-2">
+            {% for skill in vacancy.skills %}
+                <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
+            {% endfor %}
+        </div>
 
         {% if role == 'seeker' %}
             {% if isReply %}
@@ -41,18 +35,18 @@
             {% else %}
                 <div class="form-block w-100">
                     {{ form_start(vacancy_form) }}
-                        <div class="d-flex flex-row align-items-end">
-                            {{ form_row(vacancy_form.replies) }}
-                            <div class="ps-4">
-                                {{ form_row(vacancy_form.submit) }}
-                            </div>
+                    <div class="d-flex flex-row align-items-end">
+                        {{ form_row(vacancy_form.replies) }}
+                        <div class="ps-4">
+                            {{ form_row(vacancy_form.submit) }}
                         </div>
+                    </div>
                     {{ form_end(vacancy_form) }}
                 </div>
             {% endif %}
         {% endif %}
 
-        {% if app.user.username is defined and vacancy.owner.username == app.user.username %}
+        {% if role == 'recruiter' and vacancy.owner.username == app.user.username %}
             <a class="btn" href="{{ path('edit_vacancy', { id: vacancy.id }) }}">Редактировать</a>
         {% endif %}
 
@@ -60,34 +54,7 @@
             <h2 class="mt-4">Подходящие резюме:</h2>
             <div class="p-0 pt-1 mb-3 ms-0 w-75 container d-flex flex-column ">
                 {% for relevant_resume in relevant_resumes|sort((a,b) => a.skills|length <=> b.skills|length)|reverse|sort((a,b) => a.salary <=> b.salary) %}
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-end">
-                                <h5 class="card-title pb-2">{{ relevant_resume.specialization }}</h5>
-                            </div>
-
-                            <p class="p-0 m-0">{{ relevant_resume.owner.fullName }}</p>
-
-                            <hr class="my-3"/>
-
-                            {% if relevant_resume.description %}
-                                <p class="card-text">{{ relevant_resume.description|striptags|slice(0, 100) }}...</p>
-                            {% endif %}
-
-                            {% if relevant_resume.skills %}
-                                <div class="d-flex flex-wrap">
-                                    {% for skill in relevant_resume.skills|slice(0,9) %}
-                                        <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="m-0 salary">{{ relevant_resume.salary|number_format(thousandSep = ' ') }} руб.</p>
-                                <a href="{{ path('view_resume', { id: relevant_resume.id }) }}" class="btn btn-primary">Открыть</a>
-                            </div>
-                        </div>
-                    </div>
+                    {% include 'resume/resumeFullCard.html.twig' with {'resume': relevant_resume} %}
                 {% endfor %}
             </div>
         </div>

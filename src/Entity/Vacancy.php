@@ -62,9 +62,9 @@ class Vacancy
 	private Collection $skills;
 
 	#[ORM\ManyToMany(targetEntity: Resume::class, mappedBy: 'invites')]
-	private Collection $invitedResumes;
+	private Collection $invites;
 
-	#[ORM\ManyToMany(targetEntity: Resume::class, inversedBy: 'repliedVacancies')]
+	#[ORM\ManyToMany(targetEntity: Resume::class, inversedBy: 'replies')]
 	private Collection $replies;
 
 	#[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'vacancies')]
@@ -73,7 +73,7 @@ class Vacancy
 
 	public function __construct() {
 		$this->skills = new ArrayCollection();
-		$this->invitedResumes = new ArrayCollection();
+		$this->invites = new ArrayCollection();
 		$this->replies = new ArrayCollection();
 	}
 
@@ -139,22 +139,22 @@ class Vacancy
 	/**
 	 * @return Collection<int, Resume>
 	 */
-	public function getInvitedResumes(): Collection {
-		return $this->invitedResumes;
+	public function getInvites(): Collection {
+		return $this->invites;
 	}
 
-	public function addInvitedResume(Resume $invitedResume): self {
-		if (!$this->invitedResumes->contains($invitedResume)) {
-			$this->invitedResumes->add($invitedResume);
-			$invitedResume->addInvite($this);
+	public function addInvite(Resume $invite): self {
+		if (!$this->invites->contains($invite)) {
+			$this->invites->add($invite);
+			$invite->addInvite($this);
 		}
 
 		return $this;
 	}
 
-	public function removeInvitedResume(Resume $invitedResume): self {
-		if ($this->invitedResumes->removeElement($invitedResume)) {
-			$invitedResume->removeInvite($this);
+	public function removeInvite(Resume $invite): self {
+		if ($this->invites->removeElement($invite)) {
+			$invite->removeInvite($this);
 		}
 
 		return $this;

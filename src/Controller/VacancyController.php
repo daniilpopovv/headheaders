@@ -96,21 +96,10 @@ class VacancyController extends AbstractController
 		$relevant_resumes = $resumeRepository->searchByQuery([], $vacancy->getSkills());
 
 		if ($authorizationChecker->isGranted('ROLE_SEEKER')) {
-			$resumes = $resumeRepository->findByOwner($this->getUser());
-
-			$isInvite = (bool)array_intersect($resumes, $vacancy->getInvitedResumes()->toArray());
-			// TODO: изменить whoReplied на метод репозитория 1
-			// $isReply = in_array($seeker, $vacancy->getWhoReplied()->toArray());
-
 			$form = $this->createForm(VacancyReplyType::class);
 			$form->handleRequest($request);
 			if ($form->isSubmitted() && $form->isValid() && $form->get('replies')->getViewData() !== []) {
-				$resume = $resumeRepository->findOneBy(['id' => $form->get('replies')->getViewData()[0]]);
-				$vacancy->addReply($resume);
-
-				// TODO: изменить whoReplied на метод репозитория 2
-				// $vacancy->addWhoReplied($seeker);
-
+				$vacancy->addReply($form->get('replies')->getNormData()[0]);
 				$vacancyRepository->save($vacancy, true);
 
 				return $this->redirectToRoute('view_vacancy', ['id' => $vacancy->getId()]);
@@ -121,8 +110,8 @@ class VacancyController extends AbstractController
 			'vacancy' => $vacancy,
 			'vacancy_form' => isset($form) ? $form->createView() : null,
 			'relevant_resumes' => $relevant_resumes,
-			'isInvite' => $isInvite ?? false,
-			'isReply' => $isReply ?? false,
+			'isInvite' => $authorizationChecker->isGranted('IS_AUTHENTICATED') ? $vacancyRepository->checkInvite($this->getUser(), $vacancy) : false,
+			'isReply' => $authorizationChecker->isGranted('IS_AUTHENTICATED') ? $vacancyRepository->checkReply($this->getUser(), $vacancy) : false,
 		]);
 	}
 }

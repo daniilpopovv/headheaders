@@ -10,17 +10,13 @@
 
         <p class="p-0 m-0">{{ resume.owner.fullName }}</p>
         <hr class="my-3"/>
-        {% if resume.description %}
-            <p class="card-text">{{ resume.description|striptags|slice(0, 100) }}...</p>
-        {% endif %}
+        <p class="card-text">{{ resume.description|striptags|slice(0, 100) }}...</p>
 
-        {% if resume.skills %}
-            <div class="d-flex flex-wrap">
-                {% for skill in resume.skills|slice(0,9) %}
-                    <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
+        <div class="d-flex flex-wrap">
+            {% for skill in resume.skills|slice(0,9) %}
+                <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
+            {% endfor %}
+        </div>
 
         <div class="d-flex justify-content-between align-items-center">
             <p class="m-0 salary">{{ resume.salary|number_format(thousandSep = ' ') }} руб.</p>

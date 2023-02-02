@@ -11,32 +11,24 @@
             {% if role == 'seeker' and resume.owner.username == app.user.username %}
                 <a class="btn" href="{{ path('edit_resume', { id: resume.id }) }}">Редактировать</a>
             {% endif %}
-
         </div>
 
         {% if isReply %}
-            <p class="fw-bold">Соискатель откликнулся на вашу вакансию! Почта для связи: <a
-                        href="mailto:{{ resume.owner.email }}">{{ resume.owner.email }}</a></p>
+            <p class="fw-bold">Соискатель откликнулся на вашу вакансию! Почта для связи: <a href="mailto:{{ resume.owner.email }}">{{ resume.owner.email }}</a></p>
         {% endif %}
 
-        {% if resume.description %}
-            <p class="card-text">{{ resume.description|nl2br }}</p>
-        {% endif %}
-
+        <p class="card-text">{{ resume.description|nl2br }}</p>
         <hr/>
-
         <div class="d-flex justify-content-between">
             <h5 class="card-title pb-2">{{ resume.specialization }}</h5>
             <p class="m-0 salary">{{ resume.salary|number_format(thousandSep = ' ') }} руб.</p>
         </div>
 
-        {% if resume.skills %}
-            <div class="d-flex flex-wrap mt-2">
-                {% for skill in resume.skills %}
-                    <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
+        <div class="d-flex flex-wrap mt-2">
+            {% for skill in resume.skills %}
+                <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
+            {% endfor %}
+        </div>
 
         {% if role == 'recruiter' %}
             {% if isInvite %}
@@ -59,40 +51,7 @@
             <h2 class="mt-4">Подходящие вакансии:</h2>
             <div class="p-0 pt-1 mb-3 ms-0 w-75 container d-flex flex-column ">
                 {% for relevant_vacancy in relevant_vacancies|sort((a,b) => a.skills|length <=> b.skills|length)|sort((a,b) => a.salary <=> b.salary)|reverse %}
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-end">
-                                <h5 class="card-title pb-2">{{ relevant_vacancy.specialization }}</h5>
-                            </div>
-
-
-                            {% if relevant_vacancy.owner.company %}
-                                <p class="p-0 m-0">{{ relevant_vacancy.owner.company.name }}</p>
-                            {% else %}
-                                <p class="p-0 m-0">{{ relevant_vacancy.owner.fullName }}</p>
-                            {% endif %}
-
-                            <hr class="my-3"/>
-
-                            {% if relevant_vacancy.description %}
-                                <p class="card-text">{{ relevant_vacancy.description|striptags|slice(0, 100) }}...</p>
-                            {% endif %}
-
-                            {% if relevant_vacancy.skills %}
-                                <div class="d-flex flex-wrap">
-                                    {% for skill in relevant_vacancy.skills|slice(0,9) %}
-                                        <p class="skill p-1 px-3 me-3"> {{ skill }}</p>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="m-0 salary">{{ relevant_vacancy.salary|number_format(thousandSep = ' ') }}
-                                    руб.</p>
-                                <a href="{{ path('view_vacancy', { id: relevant_vacancy.id }) }}" class="btn btn-primary">Открыть</a>
-                            </div>
-                        </div>
-                    </div>
+                    {% include 'vacancy/vacancyFullCard.html.twig' with {'vacancy': relevant_vacancy} %}
                 {% endfor %}
             </div>
         </div>

@@ -96,34 +96,22 @@ class ResumeController extends AbstractController
 		$relevant_vacancies = $vacancyRepository->searchByQuery([], $resume->getSkills());
 
 		if ($authorizationChecker->isGranted('ROLE_RECRUITER')) {
-			$vacancies = $vacancyRepository->findByOwner($this->getUser());
-
-			// TODO: заменить WhoInvited на метод репозитория 1
-			// $isInvite = in_array($recruiter, $resume->getWhoInvited()->toArray());
-			$isReply = (bool)array_intersect($vacancies, $resume->getRepliedVacancies()->toArray());
-
 			$form = $this->createForm(ResumeInviteType::class);
 			$form->handleRequest($request);
 			if ($form->isSubmitted() && $form->isValid() && $form->get('invites')->getViewData() !== []) {
-				$vacancy = $vacancyRepository->findOneBy(['id' => $form->get('invites')->getViewData()[0]]);
-				$resume->addInvite($vacancy);
-
-				// TODO: заменить WhoInvited на метод репозитория 2
-				// $resume->addWhoInvited($recruiter);
-
+				$resume->addInvite($form->get('invites')->getNormData()[0]);
 				$resumeRepository->save($resume, true);
 
 				return $this->redirectToRoute('view_resume', ['id' => $resume->getId()]);
 			}
 		}
 
-
 		return $this->render('resume/viewResume.html.twig', [
 			'resume' => $resume,
 			'resume_form' => isset($form) ? $form->createView() : null,
 			'relevant_vacancies' => $relevant_vacancies ?? [],
-			'isInvite' => $isInvite ?? false,
-			'isReply' => $isReply ?? false,
+			'isInvite' => $authorizationChecker->isGranted('IS_AUTHENTICATED') ? $resumeRepository->checkInvite($this->getUser(), $resume) : false,
+			'isReply' => $authorizationChecker->isGranted('IS_AUTHENTICATED') ? $resumeRepository->checkReply($this->getUser(), $resume) : false,
 		]);
 	}
 }
