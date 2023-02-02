@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\ArrayFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
@@ -31,7 +32,13 @@ class UserCrudController extends AbstractCrudController
 			->add(TextFilter::new('fullName', 'Полное имя'))
 			->add(TextFilter::new('email', 'Почта'))
 			->add(EntityFilter::new('vacancies', 'Вакансия рекрутера'))
-			->add(EntityFilter::new('company', 'Компания рекрутера'));
+			->add(EntityFilter::new('company', 'Компания рекрутера'))
+			->add(ArrayFilter::new('roles', 'Роли')->setChoices([
+				'Пользователь' => 'ROLE_USER',
+				'Соискатель' => 'ROLE_SEEKER',
+				'Рекрутер' => 'ROLE_RECRUITER',
+				'Админ' => 'ROLE_ADMIN'
+			]));
 	}
 
 	public function configureFields(string $pageName): iterable {

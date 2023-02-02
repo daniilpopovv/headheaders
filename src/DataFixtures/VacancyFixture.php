@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\User;
 use App\Entity\Skill;
+use App\Entity\User;
 use App\Entity\Vacancy;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -40,7 +40,7 @@ class VacancyFixture extends Fixture implements DependentFixtureInterface
 					$newVacancy->addSkill($skill);
 				}
 			}
-			$newVacancy->setOwner($recruiters[1]);
+			$newVacancy->setOwner($recruiters[rand(0, count($recruiters) - 1)]);
 			$manager->persist($newVacancy);
 		}
 

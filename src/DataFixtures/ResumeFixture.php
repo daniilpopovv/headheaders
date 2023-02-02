@@ -40,7 +40,7 @@ class ResumeFixture extends Fixture implements DependentFixtureInterface
 					$newResume->addSkill($skill);
 				}
 			}
-			$newResume->setOwner($seekers[1]);
+			$newResume->setOwner($seekers[rand(0, count($seekers) - 1)]);
 			$manager->persist($newResume);
 		}
 

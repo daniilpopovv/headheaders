@@ -3,9 +3,10 @@
         <div class="d-flex justify-content-between align-items-end">
             <h5 class="card-title pb-2">{{ vacancy.specialization }}</h5>
 
-            {% if app.user in  vacancy.whoReplied %}
-                <p class="fw-bold">Вы откликнулись ✓</p>
-            {% endif %}
+            {# TODO: заменить на метод репо 2 #}
+            {#            {% if app.user in  vacancy.whoReplied %} #}
+            {#                <p class="fw-bold">Вы откликнулись ✓</p> #}
+            {#            {% endif %} #}
         </div>
 
 

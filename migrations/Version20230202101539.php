@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230201231813 extends AbstractMigration
+final class Version20230202101539 extends AbstractMigration
 {
 	public function getDescription(): string {
 		return '';
@@ -18,14 +18,11 @@ final class Version20230201231813 extends AbstractMigration
 
 	public function up(Schema $schema): void {
 		// this up() migration is auto-generated, please modify it to your needs
-		$this->addSql('CREATE SEQUENCE admin_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
 		$this->addSql('CREATE SEQUENCE company_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
 		$this->addSql('CREATE SEQUENCE resume_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
 		$this->addSql('CREATE SEQUENCE skill_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
 		$this->addSql('CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
 		$this->addSql('CREATE SEQUENCE vacancy_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-		$this->addSql('CREATE TABLE admin (id INT NOT NULL, username VARCHAR NOT NULL, roles JSON NOT NULL, password VARCHAR NOT NULL, PRIMARY KEY(id))');
-		$this->addSql('CREATE UNIQUE INDEX UNIQ_880E0D76F85E0677 ON admin (username)');
 		$this->addSql('CREATE TABLE company (id INT NOT NULL, name VARCHAR NOT NULL, PRIMARY KEY(id))');
 		$this->addSql('CREATE TABLE resume (id INT NOT NULL, owner_id INT NOT NULL, specialization VARCHAR NOT NULL, description VARCHAR DEFAULT NULL, salary INT NOT NULL, PRIMARY KEY(id))');
 		$this->addSql('CREATE INDEX IDX_60C1D0A07E3C61F9 ON resume (owner_id)');
@@ -78,7 +75,6 @@ final class Version20230201231813 extends AbstractMigration
 	public function down(Schema $schema): void {
 		// this down() migration is auto-generated, please modify it to your needs
 		$this->addSql('CREATE SCHEMA public');
-		$this->addSql('DROP SEQUENCE admin_id_seq CASCADE');
 		$this->addSql('DROP SEQUENCE company_id_seq CASCADE');
 		$this->addSql('DROP SEQUENCE resume_id_seq CASCADE');
 		$this->addSql('DROP SEQUENCE skill_id_seq CASCADE');
@@ -95,7 +91,6 @@ final class Version20230201231813 extends AbstractMigration
 		$this->addSql('ALTER TABLE vacancy_skill DROP CONSTRAINT FK_87739B155585C142');
 		$this->addSql('ALTER TABLE vacancy_resume DROP CONSTRAINT FK_C3A49EAB433B78C4');
 		$this->addSql('ALTER TABLE vacancy_resume DROP CONSTRAINT FK_C3A49EABD262AF09');
-		$this->addSql('DROP TABLE admin');
 		$this->addSql('DROP TABLE company');
 		$this->addSql('DROP TABLE resume');
 		$this->addSql('DROP TABLE resume_skill');

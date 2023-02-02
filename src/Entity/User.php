@@ -42,7 +42,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	)]
 	private ?string $username = null;
 
-	#[ORM\Column(type: 'array')]
+	#[ORM\Column(type: 'simple_array')]
 	private array $roles = [];
 
 	/**
@@ -88,6 +88,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	public function __construct() {
 		$this->resumes = new ArrayCollection();
 		$this->vacancies = new ArrayCollection();
+	}
+
+	public function __toString(): string {
+		return $this->fullName . ' aka ' . $this->username;
 	}
 
 	public function getId(): ?int {
