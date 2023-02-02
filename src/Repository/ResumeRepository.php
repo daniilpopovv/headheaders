@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Resume;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
@@ -55,5 +56,9 @@ class ResumeRepository extends ServiceEntityRepository
 		return $qb
 			->getQuery()
 			->getResult();
+	}
+
+	public function findByOwner(?User $user): array {
+		return $this->findBy(['owner' => $user]);
 	}
 }

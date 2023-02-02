@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Vacancy;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Vacancy>
@@ -58,8 +58,7 @@ class VacancyRepository extends ServiceEntityRepository
 			->getResult();
 	}
 
-	// TODO: '1-2) Не ясна цель использования, так как по сути одно и то же'
-	public function findByRecruiter(UserInterface $recruiter): array {
-		return $this->findBy(['owner' => $recruiter]);
+	public function findByOwner(?User $user): array {
+		return $this->findBy(['owner' => $user]);
 	}
 }
