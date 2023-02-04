@@ -6,6 +6,8 @@ namespace App\Form;
 
 use App\Entity\Vacancy;
 use App\Repository\VacancyRepository;
+use App\Service\SearchService;
+use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
@@ -18,8 +20,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ResumeInviteType extends AbstractType
 {
-	public function __construct(Security $security, VacancyRepository $vacancyRepository) {
-		$this->vacancies = $vacancyRepository->findByOwner($security->getUser());
+	private array $vacancies;
+
+	/**
+	 * @throws Exception
+	 */
+	public function __construct(Security $security, VacancyRepository $vacancyRepository, SearchService $searchService) {
+		$this->vacancies = $searchService->searchByOwner($security->getUser(), $vacancyRepository);
 	}
 
 	public function buildForm(FormBuilderInterface $builder, array $options): void {

@@ -40,28 +40,6 @@ class VacancyRepository extends ServiceEntityRepository
 		}
 	}
 
-	public function searchByQuery(array $queryText, $querySkills) {
-		$qb = $this->createQueryBuilder('vacancy');
-
-		foreach ($queryText as $queryTextElement) {
-			$qb->orWhere("vacancy.specialization LIKE '%$queryTextElement%'");
-			$qb->orWhere("vacancy.description LIKE '%$queryTextElement%'");
-		}
-
-		foreach ($querySkills as $querySkill) {
-			$id = $querySkill->getId();
-			$qb->join('vacancy.skills', "skill" . $id, Join::WITH, "skill" . $id . ".id = '$id'");
-		}
-
-		return $qb
-			->getQuery()
-			->getResult();
-	}
-
-	public function findByOwner(?User $user): array {
-		return $this->findBy(['owner' => $user]);
-	}
-
 	public function checkInvite(?User $user, Vacancy $vacancy) {
 		$qb = $this->createQueryBuilder('vacancy');
 

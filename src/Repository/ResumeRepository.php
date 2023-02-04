@@ -40,28 +40,6 @@ class ResumeRepository extends ServiceEntityRepository
 		}
 	}
 
-	public function searchByQuery(array $queryText, $querySkills) {
-		$qb = $this->createQueryBuilder('resume');
-
-		foreach ($queryText as $queryTextElement) {
-			$qb->orWhere("resume.specialization LIKE '%$queryTextElement%'");
-			$qb->orWhere("resume.description LIKE '%$queryTextElement%'");
-		}
-
-		foreach ($querySkills as $querySkill) {
-			$id = $querySkill->getId();
-			$qb->join('resume.skills', "skill" . $id, Join::WITH, "skill" . $id . ".id = '$id'");
-		}
-
-		return $qb
-			->getQuery()
-			->getResult();
-	}
-
-	public function findByOwner(?User $user): array {
-		return $this->findBy(['owner' => $user]);
-	}
-
 	public function checkInvite(?User $user, Resume $resume) {
 		$qb = $this->createQueryBuilder('resume');
 

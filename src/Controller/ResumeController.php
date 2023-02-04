@@ -11,6 +11,8 @@ use App\Form\ResumeInviteType;
 use App\Form\SearchFormType;
 use App\Repository\ResumeRepository;
 use App\Repository\VacancyRepository;
+use App\Service\SearchService;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,23 +23,21 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/resumes')]
 class ResumeController extends AbstractController
 {
+	/**
+	 * @throws Exception
+	 */
 	#[Route('/', name: 'resumes')]
-	public function index(ResumeRepository $resumeRepository, Request $request): Response {
+	public function index(Request $request, ResumeRepository $resumeRepository, SearchService $searchService): Response {
 		$searchForm = $this->createForm(SearchFormType::class);
+		$resumes = $resumeRepository->findAll();
+
 		$searchForm->handleRequest($request);
 		if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-			$queryText = preg_split('/[,-.\s;]+/', $searchForm->get('query_text')->getViewData()) ?? '';
-			$querySkills = $searchForm->get('query_skills')->getNormData();
-			$resumes = $resumeRepository->searchByQuery($queryText, $querySkills);
-
-			return $this->render('resume/index.html.twig', [
-				'resumes' => $resumes ?? [],
-				'search_form' => $searchForm->createView(),
-			]);
+			$resumes = $searchService->search($request, $resumeRepository);
 		}
 
 		return $this->render('resume/index.html.twig', [
-			'resumes' => $resumeRepository->findAll(),
+			'resumes' => $resumes,
 			'search_form' => $searchForm->createView(),
 		]);
 	}
@@ -83,18 +83,24 @@ class ResumeController extends AbstractController
 		]);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[IsGranted(RoleEnum::seeker->value)]
 	#[Route('/my', name: 'my_resumes')]
-	public function myResumes(ResumeRepository $resumeRepository): Response {
+	public function myResumes(ResumeRepository $resumeRepository, SearchService $searchService): Response {
 		return $this->render('resume/index.html.twig', [
-			'resumes' => $resumeRepository->findByOwner($this->getUser()),
+			'resumes' => $searchService->searchByOwner($this->getUser(), $resumeRepository),
 			'my_resumes' => true,
 		]);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	#[Route('/{id}', name: 'view_resume', requirements: ['id' => '^\d+$'])]
-	public function viewResume(Resume $resume, Request $request, VacancyRepository $vacancyRepository, ResumeRepository $resumeRepository, AuthorizationCheckerInterface $authorizationChecker): Response {
-		$relevant_vacancies = $vacancyRepository->searchByQuery([], $resume->getSkills());
+	public function viewResume(Resume $resume, Request $request, SearchService $searchService, VacancyRepository $vacancyRepository, ResumeRepository $resumeRepository, AuthorizationCheckerInterface $authorizationChecker): Response {
+		$relevant_vacancies = $searchService->searchBySkills($resume->getSkills(), $vacancyRepository);
 
 		if ($authorizationChecker->isGranted(RoleEnum::recruiter->value)) {
 			$form = $this->createForm(ResumeInviteType::class);
