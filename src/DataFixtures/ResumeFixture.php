@@ -13,33 +13,44 @@ use Doctrine\Persistence\ObjectManager;
 
 class ResumeFixture extends Fixture implements DependentFixtureInterface
 {
-	public function getDependencies(): array {
-		return [
-			SeekerFixture::class,
-			SkillFixture::class,
-		];
-	}
+    public function getDependencies(): array
+    {
+        return [
+            SeekerFixture::class,
+            SkillFixture::class,
+        ];
+    }
 
-	public function load(ObjectManager $manager): void {
-		$userRepository = $manager->getRepository(User::class);
-		$seekers = $userRepository->findSeekers();
-		$skillRepository = $manager->getRepository(Skill::class);
-		$skills = $skillRepository->findAll();
+    public function load(ObjectManager $manager): void
+    {
+        $userRepository = $manager->getRepository(User::class);
+        $seekers = $userRepository->findSeekers();
+        $skillRepository = $manager->getRepository(Skill::class);
+        $skills = $skillRepository->findAll();
 
-		$specializations = ['Senior PHP разработчик', 'Senior developer TypeScript', 'Golang разработчик',
-			'Java разработчик', 'Программист-разработчик 1С', 'Веб-разработчик',
-			'Программист-стажер Desktop приложений', 'Младший Golang разработчик', 'PHP-программист Junior', 'Младший PHP-программист'];
+        $specializations = ['Senior PHP разработчик', 'Senior developer TypeScript', 'Golang разработчик',
+            'Java разработчик', 'Программист-разработчик 1С', 'Веб-разработчик',
+            'Программист-стажер Desktop приложений', 'Младший Golang разработчик', 'PHP-программист Junior',
+            'Младший PHP-программист'];
 
-		foreach ($specializations as $specialization) {
-			$newResume = new Resume();
-			$newResume->setSpecialization($specialization);
-			$newResume->setDescription('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
-			$newResume->setSalary(rand(13890, 500000));
-			$newResume->setOwner($seekers[rand(0, count($seekers) - 1)]);
-			foreach ($skills as $skill) if (rand(0, 1)) $newResume->addSkill($skill);
-			$manager->persist($newResume);
-		}
+        foreach ($specializations as $specialization) {
+            $newResume = new Resume();
+            $newResume->setSpecialization($specialization);
+            $newResume->setDescription('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+            in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non 
+            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
+            $newResume->setSalary(rand(13890, 500000));
+            $newResume->setOwner($seekers[rand(0, count($seekers) - 1)]);
+            foreach ($skills as $skill) {
+                if (rand(0, 1)) {
+                    $newResume->addSkill($skill);
+                }
+            }
+            $manager->persist($newResume);
+        }
 
-		$manager->flush();
-	}
+        $manager->flush();
+    }
 }

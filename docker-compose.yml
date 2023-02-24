@@ -5,11 +5,13 @@ services:
     container_name: database
     image: postgres:14-alpine
     environment:
-      POSTGRES_PASSWORD: secret
-      POSTGRES_USER: symfony
-      POSTGRES_DB: symfony_docker
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./docker/db/data:/var/lib/postgresql/data:rw
     healthcheck:
-      test: pg_isready -U symfony -d symfony_docker
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
       interval: 10s
       timeout: 5s
       retries: 5

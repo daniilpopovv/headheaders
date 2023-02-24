@@ -18,32 +18,38 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
 class VacancyCrudController extends AbstractCrudController
 {
-	public static function getEntityFqcn(): string {
-		return Vacancy::class;
-	}
+    public static function getEntityFqcn(): string
+    {
+        return Vacancy::class;
+    }
 
-	public function configureCrud(Crud $crud): Crud {
-		return $crud
-			->setEntityLabelInSingular('Вакансия')
-			->setEntityLabelInPlural('Вакансии')
-			->setSearchFields(['specialization', 'owner', 'description'])
-			->setDefaultSort(['owner' => 'ASC']);
-	}
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular('crud.vacancy.entity_label.singular')
+            ->setEntityLabelInPlural('crud.vacancy.entity_label.plural')
+            ->setSearchFields(['specialization', 'owner', 'description'])
+            ->setDefaultSort(['owner' => 'ASC']);
+    }
 
-	public function configureFilters(Filters $filters): Filters {
-		return $filters
-			->add(NumericFilter::new('salary', 'Предлагаемая зарплата'))
-			->add(TextFilter::new('specialization', 'Специализация'))
-			->add(EntityFilter::new('owner', 'Владелец вакансии'));
-	}
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(NumericFilter::new('salary', 'crud.vacancy.fields.salary'))
+            ->add(TextFilter::new('specialization', 'crud.vacancy.fields.specialization'))
+            ->add(EntityFilter::new('owner', 'crud.vacancy.fields.owner'));
+    }
 
-	public function configureFields(string $pageName): iterable {
-		yield TextField::new('specialization', 'Специализация');
-		yield TextareaField::new('description', 'Описание вакансии');
-		yield NumberField::new('salary', 'Предлагаемая ЗП');
-		yield AssociationField::new('skills', 'Скиллы')->hideOnIndex();
-		yield AssociationField::new('owner', 'Владелец');
-		yield AssociationField::new('invites', 'Приглашения');
-		yield AssociationField::new('replies', 'Отклики');
-	}
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            TextField::new('specialization', 'crud.vacancy.fields.specialization'),
+            TextareaField::new('description', 'crud.vacancy.fields.description'),
+            NumberField::new('salary', 'crud.vacancy.fields.salary'),
+            AssociationField::new('skills', 'crud.vacancy.fields.skills')->hideOnIndex(),
+            AssociationField::new('owner', 'crud.vacancy.fields.owner'),
+            AssociationField::new('invites', 'crud.vacancy.fields.invites'),
+            AssociationField::new('replies', 'crud.vacancy.fields.replies'),
+        ];
+    }
 }

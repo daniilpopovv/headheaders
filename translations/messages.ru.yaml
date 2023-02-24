@@ -1,0 +1,44 @@
+base:
+    main:
+        title:
+            link: 'Главная'
+    login:
+        link: 'Войти'
+        form:
+            title: 'Войдите'
+            username_label: 'Введите логин'
+            password_label: 'Введите пароль'
+            button: 'Войти'
+    logout:
+        link: 'Выйти'
+    admin:
+        link: 'Админка'
+
+objects:
+    currency: 'руб.'
+    open:
+        button: 'Открыть'
+    relevant:
+        full: 'Полностью совпадающие'
+        partly: 'Частично совпадающие'
+    contacts: 'Контакты'
+
+resumes:
+    title:
+        link: 'Резюме'
+        page: 'Просмотр резюме'
+
+vacancies:
+    title:
+        link: 'Вакансии'
+        page: 'Просмтр вакансий'
+
+search:
+    title: 'Поиск'
+    query:
+        text:
+            label: 'Введите запрос'
+        skills:
+            label: 'Выберите навыки'
+    submit:
+        label: 'Поиск'

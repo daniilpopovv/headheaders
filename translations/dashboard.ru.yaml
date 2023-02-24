@@ -1,0 +1,63 @@
+dashboard:
+    links:
+        homepage: 'Обратно на главную'
+        resume: 'Резюме'
+        vacancy: 'Вакансии'
+        skill: 'Скиллы'
+        user: 'Пользователи'
+        company: 'Компании'
+
+crud:
+    resume:
+        entity_label:
+            singular: 'Резюме'
+            plural: 'Резюме'
+        fields:
+            specialization: 'Специализация'
+            description: 'О себе'
+            salary: 'Желаемая зарплата'
+            skills: 'Скиллы'
+            owner: 'Владелец резюме'
+            invites: 'Приглашения'
+            replies: 'Отклики'
+    vacancy:
+        entity_label:
+            singular: 'Вакансия'
+            plural: 'Вакансии'
+        fields:
+            specialization: 'Специализация'
+            description: 'Описание вакансии'
+            salary: 'Предлагаемая зарплата'
+            skills: 'Скиллы'
+            owner: 'Владелец вакансии'
+            invites: 'Приглашения'
+            replies: 'Отклики'
+    skill:
+        entity_label:
+            singular: 'Навык'
+            plural: 'Навыки'
+        fields:
+            name: 'Название навыка'
+    user:
+        entity_label:
+            singular: 'Пользователь'
+            plural: 'Пользователи'
+        fields:
+            username: 'Логин'
+            password: 'Пароль'
+            fullName: 'Полное имя'
+            email: 'Почта'
+            company: 'Компания рекрутера'
+            roles:
+                label: 'Роли'
+                admin: 'Админ'
+                user: 'Пользователь'
+                seeker: 'Соискатель'
+                recruiter: 'Рекрутер'
+    company:
+        entity_label:
+            singular: 'Компания'
+            plural: 'Компании'
+        fields:
+            name: 'Название компании'
+            staff: 'Сотрудник компании'

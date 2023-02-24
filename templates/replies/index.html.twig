@@ -6,34 +6,22 @@
     <div class="p-3 mb-3 container-sm">
         <h1 class="pb-3">{{ block('title') }}</h1>
 
-        {% if role == 'seeker' %}
-            {% for resume in resumes %}
-                {% for vacancy in resume.replies|sort((a,b) => a.salary <=> b.salary)|reverse %}
-                    <div class="card w-50 mb-3">
-                        <div class="card-body">
-                            {% include 'vacancy/vacancyShortInfo.html.twig' %}
-                            <hr class="my-3"/>
-                            {% include 'resume/resumeShortInfo.html.twig' %}
-                        </div>
-                    </div>
+        <div class="w-50">
+            {% if role == 'seeker' %}
+                {% for resume in resumes %}
+                    {% for vacancy in resume.replies|sort((a,b) => a.salary <=> b.salary)|reverse %}
+                        {% include '_object_card_small.html.twig' with {'object': vacancy} %}
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
-        {% endif %}
+            {% endif %}
 
-        {% if role == 'recruiter' %}
-            {% for vacancy in vacancies %}
-                {% for resume in vacancy.replies|sort((a,b) => a.salary <=> b.salary) %}
-                    <div class="card w-50 mb-3">
-                        <div class="card-body">
-                            {% include 'vacancy/vacancyShortInfo.html.twig' %}
-                            <hr class="my-3"/>
-                            {% include 'resume/resumeShortInfo.html.twig' %}
-                        </div>
-                    </div>
+            {% if role == 'recruiter' %}
+                {% for vacancy in vacancies %}
+                    {% for resume in vacancy.replies|sort((a,b) => a.salary <=> b.salary) %}
+                        {% include '_object_card_small.html.twig' with {'object': resume} %}
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
-        {% endif %}
-
-
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

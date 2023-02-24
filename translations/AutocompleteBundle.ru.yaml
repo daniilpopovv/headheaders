@@ -1,0 +1,5 @@
+search:
+    query:
+        skills:
+            no_more_results_text: 'Больше навыков нет'
+            no_results_found_text: 'Навык не найден'

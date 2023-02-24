@@ -11,8 +11,7 @@ use App\Form\ResumeInviteType;
 use App\Form\SearchFormType;
 use App\Repository\ResumeRepository;
 use App\Repository\VacancyRepository;
-use App\Service\SearchService;
-use Exception;
+use App\Service\ObjectsSearchService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,105 +19,130 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/resumes')]
+#[Route('/{_locale<%app.supported_locales%>}/resumes')]
 class ResumeController extends AbstractController
 {
-	/**
-	 * @throws Exception
-	 */
-	#[Route('/', name: 'resumes')]
-	public function index(Request $request, ResumeRepository $resumeRepository, SearchService $searchService): Response {
-		$searchForm = $this->createForm(SearchFormType::class);
-		$resumes = $resumeRepository->findAll();
+    #[Route('/', name: 'resumes')]
+    public function index(
+        Request              $request,
+        ResumeRepository     $resumeRepository,
+        ObjectsSearchService $objectsSearchService
+    ): Response {
+        $searchForm = $this->createForm(SearchFormType::class);
+        $searchForm->handleRequest($request);
 
-		$searchForm->handleRequest($request);
-		if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-			$resumes = $searchService->search($request, $resumeRepository);
-		}
+        $resumes = match (true) {
+            $searchForm->isSubmitted() && $searchForm->isValid() =>
+            $objectsSearchService->search(
+                repository: $resumeRepository,
+                queryText: $searchForm->get('query_text')->getViewData(),
+                querySkills: $searchForm->get('query_skills')->getViewData(),
+                withAdditionalSkills: true
+            )['full'],
+            default => $resumeRepository->findAll()
+        };
 
-		return $this->render('resume/index.html.twig', [
-			'resumes' => $resumes,
-			'search_form' => $searchForm->createView(),
-		]);
-	}
+        return $this->render('object_list.html.twig', [
+            'objects' => $resumes,
+            'search_form' => $searchForm,
+            'path_link' => 'viewResume',
+            'title' => 'Просмотр резюме',
+        ]);
+    }
 
-	#[IsGranted(RoleEnum::seeker->value)]
-	#[Route('/create', name: 'create_resume')]
-	public function createResume(Request $request, ResumeRepository $resumeRepository): Response {
-		$resume = new Resume();
-		$form = $this->createForm(ResumeFormType::class, $resume);
-		$form->handleRequest($request);
-		if ($form->isSubmitted() && $form->isValid()) {
-			$resume->setOwner($this->getUser());
-			$resumeRepository->save($resume, true);
+    #[IsGranted(RoleEnum::seeker->value)]
+    #[Route('/create', name: 'createResume')]
+    public function createResume(Request $request, ResumeRepository $resumeRepository): Response
+    {
+        $resume = new Resume();
+        $form = $this->createForm(ResumeFormType::class, $resume);
 
-			return $this->redirectToRoute('view_resume', ['id' => $resume->getId()]);
-		}
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $resume->setOwner($this->getUser());
+            $resumeRepository->save($resume, true);
 
-		return $this->render('propertyActions.html.twig', [
-			'actions_form' => $form->createView(),
-			'title' => 'Создание резюме',
-		]);
-	}
+            return $this->redirectToRoute('viewResume', ['id' => $resume->getId()]);
+        }
 
-	#[IsGranted(RoleEnum::seeker->value)]
-	#[Route('/edit/{id}', name: 'edit_resume', requirements: ['id' => '^\d+$'])]
-	public function editResume(Resume $resume, Request $request, ResumeRepository $resumeRepository): Response {
-		if ($resume->getOwner() !== $this->getUser()) {
-			return $this->redirectToRoute('my_resumes');
-		}
+        return $this->render('propertyActions.html.twig', [
+            'actions_form' => $form->createView(),
+            'title' => 'Создание резюме',
+        ]);
+    }
 
-		$form = $this->createForm(ResumeFormType::class, $resume);
-		$form->handleRequest($request);
-		if ($form->isSubmitted() && $form->isValid()) {
-			$resume->setOwner($this->getUser());
-			$resumeRepository->save($resume, true);
+    #[IsGranted(RoleEnum::seeker->value)]
+    #[Route('/edit/{id}', name: 'editResume', requirements: ['id' => '^\d+$'])]
+    public function editResume(Resume $resume, Request $request, ResumeRepository $resumeRepository): Response
+    {
+        if ($resume->getOwner() !== $this->getUser()) {
+            return $this->redirectToRoute('myResumes');
+        }
 
-			return $this->redirectToRoute('view_resume', ['id' => $resume->getId()]);
-		}
+        $form = $this->createForm(ResumeFormType::class, $resume);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $resume->setOwner($this->getUser());
+            $resumeRepository->save($resume, true);
 
-		return $this->render('propertyActions.html.twig', [
-			'actions_form' => $form->createView(),
-			'title' => 'Редактирование резюме',
-		]);
-	}
+            return $this->redirectToRoute('myResumes', ['id' => $resume->getId()]);
+        }
 
-	/**
-	 * @throws Exception
-	 */
-	#[IsGranted(RoleEnum::seeker->value)]
-	#[Route('/my', name: 'my_resumes')]
-	public function myResumes(ResumeRepository $resumeRepository, SearchService $searchService): Response {
-		return $this->render('resume/index.html.twig', [
-			'resumes' => $searchService->searchByOwner($this->getUser(), $resumeRepository),
-			'my_resumes' => true,
-		]);
-	}
+        return $this->render('propertyActions.html.twig', [
+            'actions_form' => $form->createView(),
+            'title' => 'Редактирование резюме',
+        ]);
+    }
 
-	/**
-	 * @throws Exception
-	 */
-	#[Route('/{id}', name: 'view_resume', requirements: ['id' => '^\d+$'])]
-	public function viewResume(Resume $resume, Request $request, SearchService $searchService, VacancyRepository $vacancyRepository, ResumeRepository $resumeRepository, AuthorizationCheckerInterface $authorizationChecker): Response {
-		$relevant_vacancies = $searchService->searchBySkills($resume->getSkills(), $vacancyRepository);
+    #[IsGranted(RoleEnum::seeker->value)]
+    #[Route('/my', name: 'myResumes')]
+    public function myResumes(ResumeRepository $resumeRepository): Response
+    {
+        return $this->render('object_list.html.twig', [
+            'objects' => $resumeRepository->searchByOwner($this->getUser()),
+            'path_link' => 'viewResume',
+            'title' => 'Мои резюме',
+        ]);
+    }
 
-		if ($authorizationChecker->isGranted(RoleEnum::recruiter->value)) {
-			$form = $this->createForm(ResumeInviteType::class);
-			$form->handleRequest($request);
-			if ($form->isSubmitted() && $form->isValid() && $form->get('invites')->getViewData() !== []) {
-				$resume->addInvite($form->get('invites')->getNormData()[0]);
-				$resumeRepository->save($resume, true);
+    #[Route('/{id}', name: 'viewResume', requirements: ['id' => '^\d+$'])]
+    public function viewResume(
+        Resume                        $resume,
+        Request                       $request,
+        ObjectsSearchService          $objectsSearchService,
+        VacancyRepository             $vacancyRepository,
+        ResumeRepository              $resumeRepository,
+        AuthorizationCheckerInterface $authorizationChecker
+    ): Response {
+        if ($authorizationChecker->isGranted(RoleEnum::recruiter->value)) {
+            $form = $this->createForm(ResumeInviteType::class);
+            $form->handleRequest($request);
 
-				return $this->redirectToRoute('view_resume', ['id' => $resume->getId()]);
-			}
-		}
+            if ($form->isSubmitted() && $form->isValid() && $form->get('invites')->getViewData() !== []) {
+                $resume->addInvite($form->get('invites')->getNormData()[0]);
+                $resumeRepository->save($resume, true);
 
-		return $this->render('resume/viewResume.html.twig', [
-			'resume' => $resume,
-			'resume_form' => isset($form) ? $form->createView() : null,
-			'relevant_vacancies' => $relevant_vacancies ?? [],
-			'isInvite' => $authorizationChecker->isGranted('IS_AUTHENTICATED') ? $resumeRepository->checkInvite($this->getUser(), $resume) : false,
-			'isReply' => $authorizationChecker->isGranted('IS_AUTHENTICATED') ? $resumeRepository->checkReply($this->getUser(), $resume) : false,
-		]);
-	}
+                return $this->redirectToRoute('viewResume', ['id' => $resume->getId()]);
+            }
+        }
+
+        $relevantVacancies = $objectsSearchService->search(
+            repository: $vacancyRepository,
+            querySkills: $resume->getSkills()->map(fn($skill) => $skill->getId())->toArray()
+        );
+
+        return $this->render('object_view.html.twig', [
+            'object' => $resume,
+            'object_type' => 'resume',
+            'resume_form' => isset($form) ? $form->createView() : null,
+            'relevant_full' => $relevantVacancies['full'],
+            'relevant_partial' => $relevantVacancies['partial'],
+            'is_invite' => $authorizationChecker->isGranted('IS_AUTHENTICATED') ?
+                $resumeRepository->checkInvite($this->getUser(), $resume) : false,
+            'is_reply' => $authorizationChecker->isGranted('IS_AUTHENTICATED') ?
+                $resumeRepository->checkReply($this->getUser(), $resume) : false,
+            'path_link' => 'viewVacancy',
+            'edit_link' => 'editResume',
+        ]);
+    }
 }

@@ -2,7 +2,7 @@
     {% set role = 'admin' %}
 {% elseif is_granted('ROLE_SEEKER') %}
     {% set role = 'seeker' %}
-{% elseif is_granted('ROLE_RECRUITER')%}
+{% elseif is_granted('ROLE_RECRUITER') %}
     {% set role = 'recruiter' %}
 {% else %}
     {% set role = 'guest' %}
@@ -28,8 +28,9 @@
         {{ encore_entry_script_tags('app') }}
     {% endblock %}
 </head>
+
 <body>
-{% include '/elements/header.html.twig' %}
+{% include '/elements/_header.html.twig' %}
 
 {% block body %}{% endblock %}
 </body>

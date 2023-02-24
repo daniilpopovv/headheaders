@@ -13,24 +13,30 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
 class SkillCrudController extends AbstractCrudController
 {
-	public static function getEntityFqcn(): string {
-		return Skill::class;
-	}
+    public static function getEntityFqcn(): string
+    {
+        return Skill::class;
+    }
 
-	public function configureCrud(Crud $crud): Crud {
-		return $crud
-			->setEntityLabelInSingular('Навык')
-			->setEntityLabelInPlural('Навыки')
-			->setSearchFields(['name'])
-			->setDefaultSort(['name' => 'ASC']);
-	}
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular('crud.skill.entity_label.singular')
+            ->setEntityLabelInPlural('crud.skill.entity_label.plural')
+            ->setSearchFields(['name'])
+            ->setDefaultSort(['name' => 'ASC']);
+    }
 
-	public function configureFilters(Filters $filters): Filters {
-		return $filters
-			->add(TextFilter::new('name', 'Название навыка'));
-	}
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(TextFilter::new('name', 'crud.skill.fields.name'));
+    }
 
-	public function configureFields(string $pageName): iterable {
-		yield TextField::new('name', 'Название навыка');
-	}
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            TextField::new('name', 'crud.skill.fields.name'),
+        ];
+    }
 }

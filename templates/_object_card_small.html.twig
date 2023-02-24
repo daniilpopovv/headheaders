@@ -1,0 +1,19 @@
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-end">
+            <h5 class="card-title">{{ object.specialization }}</h5>
+        </div>
+
+        {% if object.owner.company %}
+            <p class="p-0 m-0">{{ object.owner.company.name }}</p>
+        {% else %}
+            <p class="p-0 m-0">{{ object.owner.fullName }}</p>
+        {% endif %}
+
+        <div class="d-flex justify-content-between align-items-center">
+            <p class="salary m-0">{{ object.salary|number_format(thousandSep = ' ') }} {{ 'objects.currency'|trans }}</p>
+
+            <a href="{{ path(path_link, { id: object.id }) }}" class="btn btn-primary">{{ 'objects.open.button'|trans }}</a>
+        </div>
+    </div>
+</div>

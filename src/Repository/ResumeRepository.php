@@ -20,47 +20,57 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ResumeRepository extends ServiceEntityRepository
 {
-	public function __construct(ManagerRegistry $registry) {
-		parent::__construct($registry, Resume::class);
-	}
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Resume::class);
+    }
 
-	public function save(Resume $entity, bool $flush = false): void {
-		$this->getEntityManager()->persist($entity);
+    public function save(Resume $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
 
-		if ($flush) {
-			$this->getEntityManager()->flush();
-		}
-	}
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
 
-	public function remove(Resume $entity, bool $flush = false): void {
-		$this->getEntityManager()->remove($entity);
+    public function remove(Resume $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
 
-		if ($flush) {
-			$this->getEntityManager()->flush();
-		}
-	}
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
 
-	public function checkInvite(?User $user, Resume $resume) {
-		$qb = $this->createQueryBuilder('resume');
+    public function checkInvite(?User $user, Resume $resume)
+    {
+        $qb = $this->createQueryBuilder('resume');
 
-		$qb->where('resume.id = ' . $resume->getId());
-		$qb->join('resume.invites', 'vacancy', Join::WITH, 'vacancy.owner = :ownerId');
-		$qb->setParameter('ownerId', $user->getId());
+        $qb->where('resume.id = ' . $resume->getId());
+        $qb->join('resume.invites', 'vacancy', Join::WITH, 'vacancy.owner = :ownerId');
+        $qb->setParameter('ownerId', $user->getId());
 
-		return $qb
-			->getQuery()
-			->getResult();
-	}
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 
-	public function checkReply(?User $user, Resume $resume) {
-		$qb = $this->createQueryBuilder('resume');
+    public function checkReply(?User $user, Resume $resume)
+    {
+        $qb = $this->createQueryBuilder('resume');
 
-		$qb->where('resume.id = ' . $resume->getId());
-		$qb->join('resume.replies', 'vacancy', Join::WITH, 'vacancy.owner = :ownerId');
-		$qb->setParameter('ownerId', $user->getId());
+        $qb->where('resume.id = ' . $resume->getId());
+        $qb->join('resume.replies', 'vacancy', Join::WITH, 'vacancy.owner = :ownerId');
+        $qb->setParameter('ownerId', $user->getId());
 
-		return $qb
-			->getQuery()
-			->getResult();
-	}
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function searchByOwner(?User $user): array
+    {
+        return $this->findBy(['owner' => $user]);
+    }
 }

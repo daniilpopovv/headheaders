@@ -14,39 +14,41 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/register')]
+#[Route('/register/{_locale<%app.supported_locales%>}')]
 class RegistrationController extends AbstractController
 {
-	#[Route('/{slug}', name: 'app_register', requirements: ['slug' => '^(seeker|recruiter)$'])]
-	public function registerSeeker(Request $request, UserRepository $userRepository, UserPasswordHasherInterface $userPasswordHasher, string $slug): Response {
-		$user = new User();
+    #[Route('/{slug}', name: 'app_register', requirements: ['slug' => '^(seeker|recruiter)$'])]
+    public function registerSeeker(
+        Request                     $request,
+        UserRepository              $userRepository,
+        UserPasswordHasherInterface $userPasswordHasher,
+        string                      $slug
+    ): Response {
+        $user = new User();
 
-		$form = $this->createForm(RegistrationFormType::class, $user);
-		$form->handleRequest($request);
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
 
-		if ($form->isSubmitted() && $form->isValid()) {
-			$user->setPassword(
-				$userPasswordHasher->hashPassword(
-					$user,
-					$form->get('password')->getData()
-				)
-			);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
 
-			if ($slug === RoleEnum::seeker->name) {
-				$user->setRoles([RoleEnum::user->value, RoleEnum::seeker->value]);
-			}
+            match ($slug) {
+                RoleEnum::seeker->name => $user->setRoles([RoleEnum::user->value, RoleEnum::seeker->value]),
+                RoleEnum::recruiter->name => $user->setRoles([RoleEnum::user->value, RoleEnum::recruiter->value]),
+            };
 
-			if ($slug === RoleEnum::recruiter->name) {
-				$user->setRoles([RoleEnum::user->value, RoleEnum::recruiter->value]);
-			}
+            $userRepository->save($user, true);
 
-			$userRepository->save($user, true);
+            return $this->redirectToRoute('app_login');
+        }
 
-			return $this->redirectToRoute('app_login');
-		}
-
-		return $this->render('security/register.html.twig', [
-			'registrationForm' => $form->createView(),
-		]);
-	}
+        return $this->render('security/register.html.twig', [
+            'registrationForm' => $form->createView(),
+        ]);
+    }
 }

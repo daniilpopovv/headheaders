@@ -18,32 +18,38 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
 class ResumeCrudController extends AbstractCrudController
 {
-	public static function getEntityFqcn(): string {
-		return Resume::class;
-	}
+    public static function getEntityFqcn(): string
+    {
+        return Resume::class;
+    }
 
-	public function configureCrud(Crud $crud): Crud {
-		return $crud
-			->setEntityLabelInSingular('Резюме')
-			->setEntityLabelInPlural('Резюме')
-			->setSearchFields(['specialization', 'owner', 'description'])
-			->setDefaultSort(['owner' => 'ASC']);
-	}
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular('crud.resume.entity_label.singular')
+            ->setEntityLabelInPlural('crud.resume.entity_label.plural')
+            ->setSearchFields(['specialization', 'owner', 'description'])
+            ->setDefaultSort(['owner' => 'ASC']);
+    }
 
-	public function configureFilters(Filters $filters): Filters {
-		return $filters
-			->add(NumericFilter::new('salary', 'Желаемая зарплата'))
-			->add(TextFilter::new('specialization', 'Специализация'))
-			->add(EntityFilter::new('owner', 'Владелец резюме'));
-	}
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(NumericFilter::new('salary', 'crud.resume.fields.salary'))
+            ->add(TextFilter::new('specialization', 'crud.resume.fields.specialization'))
+            ->add(EntityFilter::new('owner', 'crud.resume.fields.owner'));
+    }
 
-	public function configureFields(string $pageName): iterable {
-		yield TextField::new('specialization', 'Специализация');
-		yield TextareaField::new('description', 'О себе');
-		yield NumberField::new('salary', 'Желаемая ЗП');
-		yield AssociationField::new('skills', 'Скиллы')->hideOnIndex();
-		yield AssociationField::new('owner', 'Владелец');
-		yield AssociationField::new('invites', 'Приглашения');
-		yield AssociationField::new('replies', 'Отклики');
-	}
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            TextField::new('specialization', 'crud.resume.fields.specialization'),
+            TextareaField::new('description', 'crud.resume.fields.description'),
+            NumberField::new('salary', 'crud.resume.fields.salary'),
+            AssociationField::new('skills', 'crud.resume.fields.skills')->hideOnIndex(),
+            AssociationField::new('owner', 'crud.resume.fields.owner'),
+            AssociationField::new('invites', 'crud.resume.fields.invites'),
+            AssociationField::new('replies', 'crud.resume.fields.replies'),
+        ];
+    }
 }

@@ -7,13 +7,13 @@
                 <li><a href="{{ path('vacancies') }}" class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'vacancies' ? 'fw-bold' }}">Вакансии</a></li>
 
                 {% if role == 'seeker' %}
-                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'my_resumes' ? 'fw-bold' }}" href="{{ path('my_resumes') }}">Мои резюме</a></li>
+                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'my_resumes' ? 'fw-bold' }}" href="{{ path('myResumes') }}">Мои резюме</a></li>
                     <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'sent-replies' ? 'fw-bold' }}" href="{{ path('sent-replies') }}">Отклики</a></li>
                     <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'received-invites' ? 'fw-bold' }}" href="{{ path('received-invites') }}">Приглашения</a></li>
                 {% endif %}
 
                 {% if role == 'recruiter' %}
-                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'my_vacancies' ? 'fw-bold' }}" href="{{ path('my_vacancies') }}">Мои вакансии</a></li>
+                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'my_vacancies' ? 'fw-bold' }}" href="{{ path('myVacancies') }}">Мои вакансии</a></li>
                     <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'received-replies' ? 'fw-bold' }}" href="{{ path('received-replies') }}">Отклики</a></li>
                     <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'sent-invites' ? 'fw-bold' }}" href="{{ path('sent-invites') }}">Приглашения</a></li>
                 {% endif %}
@@ -32,12 +32,12 @@
                     <p class="p-0 mb-0 me-3">{{ app.user.fullName }}</p>
 
                     {% if role == 'seeker' %}
-                        <a class="nav-link px-2 auth-link btn me-3" href="{{ path('create_resume') }}">Создать
+                        <a class="nav-link px-2 auth-link btn me-3" href="{{ path('createResume') }}">Создать
                             резюме</a>
                     {% endif %}
 
                     {% if role == 'recruiter' %}
-                        <a class="nav-link px-2 auth-link btn me-3" href="{{ path('create_vacancy') }}">Создать
+                        <a class="nav-link px-2 auth-link btn me-3" href="{{ path('createVacancy') }}">Создать
                             вакансию</a>
                     {% endif %}
 

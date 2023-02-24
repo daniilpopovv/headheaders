@@ -16,38 +16,43 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
 class UserCrudController extends AbstractCrudController
 {
-	public static function getEntityFqcn(): string {
-		return User::class;
-	}
+    public static function getEntityFqcn(): string
+    {
+        return User::class;
+    }
 
-	public function configureCrud(Crud $crud): Crud {
-		return $crud
-			->setEntityLabelInSingular('Рекрутер')
-			->setEntityLabelInPlural('Рекрутеры')
-			->setSearchFields(['fullName', 'email'])
-			->setDefaultSort(['fullName' => 'ASC']);
-	}
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular('crud.user.entity_label.singular')
+            ->setEntityLabelInPlural('crud.user.entity_label.plural')
+            ->setSearchFields(['fullName', 'email'])
+            ->setDefaultSort(['fullName' => 'ASC']);
+    }
 
-	public function configureFilters(Filters $filters): Filters {
-		return $filters
-			->add(TextFilter::new('fullName', 'Полное имя'))
-			->add(TextFilter::new('email', 'Почта'))
-			->add(EntityFilter::new('vacancies', 'Вакансия рекрутера'))
-			->add(EntityFilter::new('company', 'Компания рекрутера'))
-			->add(ArrayFilter::new('roles', 'Роли')->setChoices([
-				'Пользователь' => RoleEnum::user->value,
-				'Соискатель' => RoleEnum::seeker->value,
-				'Рекрутер' => RoleEnum::recruiter->value,
-				'Админ' => RoleEnum::admin->value,
-			]));
-	}
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(TextFilter::new('fullName', 'crud.user.fields.fullName'))
+            ->add(TextFilter::new('email', 'crud.user.fields.email'))
+            ->add(EntityFilter::new('company', 'crud.user.fields.company'))
+            ->add(ArrayFilter::new('roles', 'crud.user.fields.roles.label')->setChoices([
+                'crud.user.fields.roles.user' => RoleEnum::user->value,
+                'crud.user.fields.roles.seeker' => RoleEnum::seeker->value,
+                'crud.user.fields.roles.recruiter' => RoleEnum::recruiter->value,
+                'crud.user.fields.roles.admin' => RoleEnum::admin->value,
+            ]));
+    }
 
-	public function configureFields(string $pageName): iterable {
-		yield TextField::new('fullName', 'Полное имя');
-		yield TextField::new('email', 'Email');
-		yield TextField::new('username', 'Логин');
-		yield TextField::new('password', 'Пароль')->hideOnIndex();
-		yield AssociationField::new('company', 'Компания')->setRequired(false);
-		yield ArrayField::new('roles', 'Роли');
-	}
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            TextField::new('fullName', 'crud.user.fields.fullName'),
+            TextField::new('email', 'crud.user.fields.email'),
+            TextField::new('username', 'crud.user.fields.username'),
+            TextField::new('password', 'crud.user.fields.password')->hideOnIndex(),
+            AssociationField::new('company', 'crud.user.fields.company')->setRequired(false),
+            ArrayField::new('roles', 'crud.user.fields.roles.label'),
+        ];
+    }
 }

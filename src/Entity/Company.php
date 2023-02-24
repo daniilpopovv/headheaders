@@ -13,74 +13,82 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
 class Company
 {
-	#[ORM\Id]
-	#[ORM\GeneratedValue]
-	#[ORM\Column]
-	private ?int $id = null;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-	#[ORM\Column(nullable: false)]
-	#[Assert\NotBlank]
-	#[Assert\Regex(
-		pattern: '/[а-яА-ЯёЁa-zA-Z0-9\.\s]+/',
-		message: 'Название компании может содержать только латинские и кириллические буквы, точки и цифры.'
-	)]
-	#[Assert\Length(
-		min: 3,
-		max: 60,
-		minMessage: 'Название компании должно содержать минимум {{ limit }} символов.',
-		maxMessage: 'Название компании не может быть больше {{ limit }} символов.',
-	)]
-	private ?string $name = null;
+    #[ORM\Column(nullable: false)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: '/[а-яА-ЯёЁa-zA-Z0-9\.\s]+/',
+        message: 'Название компании может содержать только латинские и кириллические буквы, точки и цифры.'
+    )]
+    #[Assert\Length(
+        min: 3,
+        max: 60,
+        minMessage: 'Название компании должно содержать минимум {{ limit }} символов.',
+        maxMessage: 'Название компании не может быть больше {{ limit }} символов.',
+    )]
+    private ?string $name = null;
 
-	#[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
-	private Collection $staff;
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
+    private Collection $staff;
 
-	public function __construct() {
-		$this->staff = new ArrayCollection();
-	}
+    public function __construct()
+    {
+        $this->staff = new ArrayCollection();
+    }
 
-	public function __toString(): string {
-		return $this->name;
-	}
+    public function __toString(): string
+    {
+        return $this->name;
+    }
 
-	public function getId(): ?int {
-		return $this->id;
-	}
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-	public function getName(): ?string {
-		return $this->name;
-	}
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
 
-	public function setName(string $name): self {
-		$this->name = $name;
+    public function setName(string $name): self
+    {
+        $this->name = $name;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @return Collection<int, User>
-	 */
-	public function getStaff(): Collection {
-		return $this->staff;
-	}
+    /**
+     * @return Collection<int, User>
+     */
+    public function getStaff(): Collection
+    {
+        return $this->staff;
+    }
 
-	public function addStaff(User $staff): self {
-		if (!$this->staff->contains($staff)) {
-			$this->staff->add($staff);
-			$staff->setCompany($this);
-		}
+    public function addStaff(User $staff): self
+    {
+        if (!$this->staff->contains($staff)) {
+            $this->staff->add($staff);
+            $staff->setCompany($this);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function removeStaff(User $staff): self {
-		if ($this->staff->removeElement($staff)) {
-			// set the owning side to null (unless already changed)
-			if ($staff->getCompany() === $this) {
-				$staff->setCompany(null);
-			}
-		}
+    public function removeStaff(User $staff): self
+    {
+        if ($this->staff->removeElement($staff)) {
+            // set the owning side to null (unless already changed)
+            if ($staff->getCompany() === $this) {
+                $staff->setCompany(null);
+            }
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 }
