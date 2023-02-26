@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/{_locale<%app.supported_locales%>}/vacancies')]
+#[Route('/vacancies')]
 class VacancyController extends AbstractController
 {
     #[Route('/', name: 'vacancies')]
@@ -42,11 +42,11 @@ class VacancyController extends AbstractController
             default => $vacancyRepository->findAll()
         };
 
-        return $this->render('object_list.html.twig', [
+        return $this->render('object/object_list.html.twig', [
             'objects' => $vacancies,
             'search_form' => $searchForm->createView(),
             'path_link' => 'viewVacancy',
-            'title' => 'Просмотр вакансий',
+            'title' => 'vacancies.title.page.all',
         ]);
     }
 
@@ -65,9 +65,9 @@ class VacancyController extends AbstractController
             return $this->redirectToRoute('viewVacancy', ['id' => $vacancy->getId()]);
         }
 
-        return $this->render('propertyActions.html.twig', [
-            'actions_form' => $form->createView(),
-            'title' => 'Создание вакансии',
+        return $this->render('object/object_actions.html.twig', [
+            'action_form' => $form->createView(),
+            'title' => 'vacancies.title.page.create',
         ]);
     }
 
@@ -88,9 +88,9 @@ class VacancyController extends AbstractController
             return $this->redirectToRoute('viewVacancy', ['id' => $vacancy->getId()]);
         }
 
-        return $this->render('propertyActions.html.twig', [
-            'actions_form' => $form->createView(),
-            'title' => 'Редактирование вакансии',
+        return $this->render('object/object_actions.html.twig', [
+            'action_form' => $form->createView(),
+            'title' => 'vacancies.title.page.edit',
         ]);
     }
 
@@ -98,10 +98,10 @@ class VacancyController extends AbstractController
     #[Route('/my', name: 'myVacancies')]
     public function myVacancies(VacancyRepository $vacancyRepository): Response
     {
-        return $this->render('object_list.html.twig', [
-            'objects' => $vacancyRepository->searchByOwner($this->getUser()),
+        return $this->render('object/object_list.html.twig', [
+            'objects' => $vacancyRepository->findByOwner($this->getUser()),
             'path_link' => 'viewVacancy',
-            'title' => 'Мои вакансии',
+            'title' => 'vacancies.title.page.my',
         ]);
     }
 
@@ -117,8 +117,8 @@ class VacancyController extends AbstractController
         if ($authorizationChecker->isGranted(RoleEnum::seeker->value)) {
             $form = $this->createForm(VacancyReplyType::class);
             $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid() && $form->get('replies')->getViewData() !== []) {
-                $vacancy->addReply($form->get('replies')->getNormData()[0]);
+            if ($form->isSubmitted() && $form->isValid() && $form->get('replies')->getData() !== []) {
+                $vacancy->addReply($form->get('replies')->getData()->first());
                 $vacancyRepository->save($vacancy, true);
 
                 return $this->redirectToRoute('viewVacancy', ['id' => $vacancy->getId()]);
@@ -130,7 +130,7 @@ class VacancyController extends AbstractController
             querySkills: $vacancy->getSkills()->map(fn($skill) => $skill->getId())->toArray()
         );
 
-        return $this->render('object_view.html.twig', [
+        return $this->render('object/object_view.html.twig', [
             'object' => $vacancy,
             'object_type' => 'vacancy',
             'vacancy_form' => isset($form) ? $form->createView() : null,

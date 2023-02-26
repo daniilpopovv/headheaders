@@ -17,23 +17,23 @@ class SearchFormType extends AbstractType
     {
         $builder
             ->add('query_text', SearchType::class, [
-                'label' => 'Введите запрос',
+                'label' => 'search.query.text.label',
                 'attr' => ['class' => 'form-control search-field'],
                 'required' => false,
             ])
             ->add('query_skills', EntityType::class, [
-                'label' => 'Выберите навыки',
+                'label' => 'search.query.skills.label',
                 'class' => Skill::class,
                 'multiple' => true,
                 'autocomplete' => true,
-                'no_more_results_text' => 'Больше навыков нет',
-                'no_results_found_text' => 'Навык не найден',
+                'no_more_results_text' => 'search.query.skills.no_more_results_text',
+                'no_results_found_text' => 'search.query.skills.no_results_found_text',
                 'required' => false,
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Поиск',
-                'attr' => ['class' => 'w-100 mt-3']
+                'label' => 'search.submit.label',
+                'attr' => ['class' => 'w-100 mt-3'],
             ]);
     }
 }

@@ -12,6 +12,7 @@ use App\Form\SearchFormType;
 use App\Repository\ResumeRepository;
 use App\Repository\VacancyRepository;
 use App\Service\ObjectsSearchService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/{_locale<%app.supported_locales%>}/resumes')]
+#[Route('/resumes')]
 class ResumeController extends AbstractController
 {
     #[Route('/', name: 'resumes')]
@@ -42,11 +43,11 @@ class ResumeController extends AbstractController
             default => $resumeRepository->findAll()
         };
 
-        return $this->render('object_list.html.twig', [
+        return $this->render('object/object_list.html.twig', [
             'objects' => $resumes,
             'search_form' => $searchForm,
             'path_link' => 'viewResume',
-            'title' => 'Просмотр резюме',
+            'title' => 'resumes.title.page.all',
         ]);
     }
 
@@ -65,9 +66,9 @@ class ResumeController extends AbstractController
             return $this->redirectToRoute('viewResume', ['id' => $resume->getId()]);
         }
 
-        return $this->render('propertyActions.html.twig', [
-            'actions_form' => $form->createView(),
-            'title' => 'Создание резюме',
+        return $this->render('object/object_actions.html.twig', [
+            'action_form' => $form->createView(),
+            'title' => 'resumes.title.page.create',
         ]);
     }
 
@@ -85,12 +86,12 @@ class ResumeController extends AbstractController
             $resume->setOwner($this->getUser());
             $resumeRepository->save($resume, true);
 
-            return $this->redirectToRoute('myResumes', ['id' => $resume->getId()]);
+            return $this->redirectToRoute('viewResume', ['id' => $resume->getId()]);
         }
 
-        return $this->render('propertyActions.html.twig', [
-            'actions_form' => $form->createView(),
-            'title' => 'Редактирование резюме',
+        return $this->render('object/object_actions.html.twig', [
+            'action_form' => $form->createView(),
+            'title' => 'resumes.title.page.edit',
         ]);
     }
 
@@ -98,10 +99,10 @@ class ResumeController extends AbstractController
     #[Route('/my', name: 'myResumes')]
     public function myResumes(ResumeRepository $resumeRepository): Response
     {
-        return $this->render('object_list.html.twig', [
-            'objects' => $resumeRepository->searchByOwner($this->getUser()),
+        return $this->render('object/object_list.html.twig', [
+            'objects' => $resumeRepository->findByOwner($this->getUser()),
             'path_link' => 'viewResume',
-            'title' => 'Мои резюме',
+            'title' => 'resumes.title.page.my',
         ]);
     }
 
@@ -118,8 +119,8 @@ class ResumeController extends AbstractController
             $form = $this->createForm(ResumeInviteType::class);
             $form->handleRequest($request);
 
-            if ($form->isSubmitted() && $form->isValid() && $form->get('invites')->getViewData() !== []) {
-                $resume->addInvite($form->get('invites')->getNormData()[0]);
+            if ($form->isSubmitted() && $form->isValid() && $form->get('invites')->getData() !== []) {
+                $resume->addInvite($form->get('invites')->getData()->first());
                 $resumeRepository->save($resume, true);
 
                 return $this->redirectToRoute('viewResume', ['id' => $resume->getId()]);
@@ -131,7 +132,7 @@ class ResumeController extends AbstractController
             querySkills: $resume->getSkills()->map(fn($skill) => $skill->getId())->toArray()
         );
 
-        return $this->render('object_view.html.twig', [
+        return $this->render('object/object_view.html.twig', [
             'object' => $resume,
             'object_type' => 'resume',
             'resume_form' => isset($form) ? $form->createView() : null,

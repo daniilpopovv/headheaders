@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title|trans }}{% endblock %}
+
+{% block body %}
+    <div class="p-3 mb-3 container-sm">
+        <h1 class="pb-3">{{ block('title') }}:</h1>
+
+        <div class="w-50">
+            {% for object in objects %}
+                {% include 'object/elements/_object_card_small.html.twig' with {'object': object} %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

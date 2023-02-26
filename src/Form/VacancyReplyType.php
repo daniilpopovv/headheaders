@@ -18,14 +18,14 @@ class VacancyReplyType extends AbstractType
 
     public function __construct(Security $security, ResumeRepository $resumeRepository)
     {
-        $this->resumes = $resumeRepository->searchByOwner($security->getUser());
+        $this->resumes = $resumeRepository->findByOwner($security->getUser());
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('replies', EntityType::class, [
-                'label' => 'Выберите резюме, чтобы откликнуться на вакансию',
+                'label' => 'negotiation.reply.form.label',
                 'class' => Resume::class,
                 'choices' => $this->resumes,
                 'choice_value' => function (Resume $resume) {
@@ -35,10 +35,12 @@ class VacancyReplyType extends AbstractType
                 'autocomplete' => true,
                 'tom_select_options' => [
                     'maxItems' => 1,
-                ]
+                ],
+                'no_more_results_text' => 'negotiation.reply.form.no_more_results_text',
+                'no_results_found_text' => 'negotiation.reply.form.no_results_found_text',
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Откликнуться',
+                'label' => 'negotiation.reply.form.submit',
                 'attr' => ['class' => 'w-100 mt-3']
             ]);
     }

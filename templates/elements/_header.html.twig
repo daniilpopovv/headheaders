@@ -7,13 +7,13 @@
                 <li><a href="{{ path('vacancies') }}" class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'vacancies' ? 'fw-bold' }}">Вакансии</a></li>
 
                 {% if role == 'seeker' %}
-                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'my_resumes' ? 'fw-bold' }}" href="{{ path('myResumes') }}">Мои резюме</a></li>
+                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'myResumes' ? 'fw-bold' }}" href="{{ path('myResumes') }}">Мои резюме</a></li>
                     <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'sent-replies' ? 'fw-bold' }}" href="{{ path('sent-replies') }}">Отклики</a></li>
                     <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'received-invites' ? 'fw-bold' }}" href="{{ path('received-invites') }}">Приглашения</a></li>
                 {% endif %}
 
                 {% if role == 'recruiter' %}
-                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'my_vacancies' ? 'fw-bold' }}" href="{{ path('myVacancies') }}">Мои вакансии</a></li>
+                    <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'myVacancies' ? 'fw-bold' }}" href="{{ path('myVacancies') }}">Мои вакансии</a></li>
                     <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'received-replies' ? 'fw-bold' }}" href="{{ path('received-replies') }}">Отклики</a></li>
                     <li><a class="nav-link px-2 link-dark {{ app.request.attributes.get('_route') == 'sent-invites' ? 'fw-bold' }}" href="{{ path('sent-invites') }}">Приглашения</a></li>
                 {% endif %}

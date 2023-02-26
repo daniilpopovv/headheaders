@@ -21,26 +21,26 @@ class VacancyFormType extends AbstractType
     {
         $builder
             ->add('specialization', TextType::class, [
-                'label' => 'Желаемая специализация',
+                'label' => 'vacancies.form.specialization.label',
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Описание вакансии',
+                'label' => 'vacancies.form.description.label',
                 'required' => false,
             ])
             ->add('salary', NumberType::class, [
-                'label' => 'Предлагаемая ЗП',
+                'label' => 'vacancies.form.salary.label',
             ])
             ->add('skills', EntityType::class, [
-                'label' => 'Перечислите необходимые навыки',
+                'label' => 'vacancies.form.skills.label',
                 'class' => Skill::class,
                 'multiple' => true,
                 'autocomplete' => true,
-                'no_more_results_text' => 'Больше навыков нет',
-                'no_results_found_text' => 'Навык не найден',
+                'no_more_results_text' => 'vacancy.form.skills.no_more_results_text',
+                'no_results_found_text' => 'vacancy.form.skills.no_results_found_text',
                 'required' => false,
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Отправить',
+                'label' => 'vacancies.form.submit.label',
                 'attr' => ['class' => 'w-100 mt-3']
             ]);
     }

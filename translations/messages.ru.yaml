@@ -25,13 +25,63 @@ objects:
 
 resumes:
     title:
-        link: 'Резюме'
-        page: 'Просмотр резюме'
+        link:
+            all: 'Резюме'
+            my: 'Мои резюме'
+        page:
+            all: 'Просмотр резюме'
+            my: 'Мои резюме'
+            create: 'Создание резюме'
+            edit: 'Редактирование резюме'
+    form:
+        specialization:
+            label: 'Ваша специализация'
+        description:
+            label: 'Расскажите немного о себе'
+        salary:
+            label: 'Желаемая ЗП'
+        skills:
+            label: 'Перечислите ваши навыки'
+        submit:
+            label: 'Отправить'
 
 vacancies:
     title:
-        link: 'Вакансии'
-        page: 'Просмтр вакансий'
+        link:
+            all: 'Вакансии'
+            my: 'Мои вакансии'
+        page:
+            all: 'Просмотр вакансий'
+            my: 'Мои вакансии'
+            create: 'Создание вакансии'
+            edit: 'Редактирование вакансии'
+    form:
+        specialization:
+            label: 'Желаемая специализация'
+        description:
+            label: 'Описание вакансии'
+        salary:
+            label: 'Предлагаемая ЗП'
+        skills:
+            label: 'Перечислите необходимые навыки'
+        submit:
+            label: 'Отправить'
+
+negotiation:
+    invite:
+        title:
+            asRecruiter: 'Вы пригласили на вакансии'
+            asSeeker: 'Вас пригласили на вакансии'
+        form:
+            label: 'Выберите вакансию, чтобы пригласить'
+            submit: 'Пригласить'
+    reply:
+        title:
+            asRecruiter: 'На ваши вакансии откликнулись'
+            asSeeker: 'Вы откликнулись на вакансии'
+        form:
+            label: 'Выберите резюме, чтобы откликнуться'
+            submit: 'Откликнуться'
 
 search:
     title: 'Поиск'
@@ -42,3 +92,22 @@ search:
             label: 'Выберите навыки'
     submit:
         label: 'Поиск'
+
+registration:
+    username:
+        label: 'Логин'
+    fullName:
+        label: 'Введите ФИО'
+    email:
+        label: 'Ваш email'
+    password:
+        label: 'Введите пароль'
+        invalid_message: 'Пароли должны совпадать'
+        constraints:
+            notBlank: 'Пожалуйста, введите пароль'
+            length:
+                minMessage: 'Пароль должен содержать не менее {{ limit }} символов.'
+        repeatPass:
+            label: 'Повторите пароль'
+        submit:
+            label: 'Зарегистрироваться'

@@ -12,6 +12,6 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-            -
+
     search:
         class: App\Service\ObjectsSearchService

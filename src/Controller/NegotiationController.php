@@ -15,45 +15,81 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class NegotiationController extends AbstractController
 {
     #[IsGranted(RoleEnum::recruiter->value)]
-    #[Route('/{_locale<%app.supported_locales%>}/sent-invites', name: 'sent-invites')]
+    #[Route('/sent-invites', name: 'sent-invites')]
     public function sentInvites(VacancyRepository $vacancyRepository): Response
     {
-        return $this->render('invites/index.html.twig', [
-            'title' => 'Вы пригласили на вакансии:',
-            'vacancies' => $vacancyRepository->searchByOwner($this->getUser()),
+        $vacancies = $vacancyRepository->findByOwner($this->getUser());
+        foreach ($vacancies as $vacancy) {
+            $invites = $vacancy->getInvites();
+            foreach ($invites as $invite) {
+                $objects[] = $invite;
+            }
+        }
+
+        return $this->render('negotiation/negotiation.html.twig', [
+            'title' => 'negotiation.invite.title.asRecruiter',
+            'objects' => $objects ?? [],
+            'vacancies' => $vacancyRepository->findByOwner($this->getUser()),
             'path_link' => 'viewResume',
         ]);
     }
 
     #[IsGranted(RoleEnum::recruiter->value)]
-    #[Route('/{_locale<%app.supported_locales%>}/received-replies', name: 'received-replies')]
+    #[Route('/received-replies', name: 'received-replies')]
     public function receivedReplies(VacancyRepository $vacancyRepository): Response
     {
-        return $this->render('replies/index.html.twig', [
-            'title' => 'На ваши вакансии откликнулись:',
-            'vacancies' => $vacancyRepository->searchByOwner($this->getUser()),
+        $vacancies = $vacancyRepository->findByOwner($this->getUser());
+        foreach ($vacancies as $vacancy) {
+            $invites = $vacancy->getReplies();
+            foreach ($invites as $reply) {
+                $objects[] = $reply;
+            }
+        }
+
+        return $this->render('negotiation/negotiation.html.twig', [
+            'title' => 'negotiation.reply.title.asRecruiter',
+            'objects' => $objects ?? [],
+            'vacancies' => $vacancyRepository->findByOwner($this->getUser()),
             'path_link' => 'viewResume',
         ]);
     }
 
     #[IsGranted(RoleEnum::seeker->value)]
-    #[Route('/{_locale<%app.supported_locales%>}/sent-replies', name: 'sent-replies')]
+    #[Route('/sent-replies', name: 'sent-replies')]
     public function sentReplies(ResumeRepository $resumeRepository): Response
     {
-        return $this->render('replies/index.html.twig', [
-            'title' => 'Вы откликнулись на вакансии:',
-            'resumes' => $resumeRepository->searchByOwner($this->getUser()),
+        $resumes = $resumeRepository->findByOwner($this->getUser());
+        foreach ($resumes as $resume) {
+            $replies = $resume->getReplies();
+            foreach ($replies as $reply) {
+                $objects[] = $reply;
+            }
+        }
+
+        return $this->render('negotiation/negotiation.html.twig', [
+            'title' => 'negotiation.reply.title.asSeeker',
+            'objects' => $objects ?? [],
+            'resumes' => $resumeRepository->findByOwner($this->getUser()),
             'path_link' => 'viewVacancy',
         ]);
     }
 
     #[IsGranted(RoleEnum::seeker->value)]
-    #[Route('/{_locale<%app.supported_locales%>}/received-invites', name: 'received-invites')]
+    #[Route('/received-invites', name: 'received-invites')]
     public function receivedInvites(ResumeRepository $resumeRepository): Response
     {
-        return $this->render('invites/index.html.twig', [
-            'title' => 'Вас пригласили на вакансии:',
-            'resumes' => $resumeRepository->searchByOwner($this->getUser()),
+        $resumes = $resumeRepository->findByOwner($this->getUser());
+        foreach ($resumes as $resume) {
+            $replies = $resume->getInvites();
+            foreach ($replies as $invite) {
+                $objects[] = $invite;
+            }
+        }
+
+        return $this->render('negotiation/negotiation.html.twig', [
+            'title' => 'negotiation.invite.title.asSeeker',
+            'objects' => $objects ?? [],
+            'resumes' => $resumeRepository->findByOwner($this->getUser()),
             'path_link' => 'viewVacancy',
         ]);
     }

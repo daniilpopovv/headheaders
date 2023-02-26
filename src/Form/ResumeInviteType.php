@@ -11,6 +11,8 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class ResumeInviteType extends AbstractType
 {
@@ -18,14 +20,14 @@ class ResumeInviteType extends AbstractType
 
     public function __construct(Security $security, VacancyRepository $vacancyRepository)
     {
-        $this->vacancies = $vacancyRepository->searchByOwner($security->getUser());
+        $this->vacancies = $vacancyRepository->findByOwner($security->getUser());
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('invites', EntityType::class, [
-                'label' => 'Выберите вакансию, чтобы пригласить',
+                'label' => 'negotiation.invite.form.label',
                 'class' => Vacancy::class,
                 'choices' => $this->vacancies,
                 'choice_value' => function (Vacancy $vacancy) {
@@ -37,9 +39,11 @@ class ResumeInviteType extends AbstractType
                     'maxItems' => 1,
                 ],
                 'required' => true,
+                'no_more_results_text' => 'negotiation.invite.form.no_more_results_text',
+                'no_results_found_text' => 'negotiation.invite.form.no_results_found_text',
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Пригласить',
+                'label' => 'negotiation.invite.form.submit',
                 'attr' => ['class' => 'w-100 mt-3']
             ]);
     }

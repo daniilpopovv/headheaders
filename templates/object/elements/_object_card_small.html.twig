@@ -10,6 +10,8 @@
             <p class="p-0 m-0">{{ object.owner.fullName }}</p>
         {% endif %}
 
+        <hr/>
+
         <div class="d-flex justify-content-between align-items-center">
             <p class="salary m-0">{{ object.salary|number_format(thousandSep = ' ') }} {{ 'objects.currency'|trans }}</p>
 

@@ -21,49 +21,48 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('username', TextType::class, [
-                'label' => 'Логин',
+                'label' => 'registration.username.label',
                 'required' => true,
                 'attr' => [
                     'autofocus' => true,
                 ],
             ])
             ->add('fullName', TextType::class, [
-                'label' => 'Введите ФИО',
+                'label' => 'registration.fullName.label',
                 'required' => true,
             ])
             ->add('email', TextType::class, [
-                'label' => 'Ваш email',
+                'label' => 'registration.email.label',
                 'required' => true,
             ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'invalid_message' => 'Пароли должны совпадать',
+                'invalid_message' => 'registration.password.invalid_message',
                 'first_options' => [
-                    'label' => 'Введите пароль',
+                    'label' => 'registration.password.label',
                     'mapped' => false,
                     'attr' => ['autocomplete' => 'new-password'],
                     'required' => true,
                     'constraints' => [
                         new NotBlank([
-                            'message' => 'Пожалуйста, введите пароль',
+                            'message' => 'registration.password.constraints.notBlank',
                         ]),
                         new Length([
                             'min' => 6,
-                            'minMessage' => 'Пароль должен содержать не менее {{ limit }} символов.',
-                            // max length allowed by Symfony for security reasons
+                            'minMessage' => 'registration.password.constraints.length.minMessage',
                             'max' => 4096,
                         ]),
                     ],
                 ],
                 'second_options' => [
-                    'label' => 'Повторите пароль',
+                    'label' => 'registration.password.repeatPass.label',
                     'mapped' => false,
                     'attr' => ['autocomplete' => 'new-password'],
                     'required' => true,
                 ]
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Зарегистрироваться',
+                'label' => 'registration.password.submit.label',
                 'attr' => ['class' => 'w-100 mt-3']
             ]);
     }

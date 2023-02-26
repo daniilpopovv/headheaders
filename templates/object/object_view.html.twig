@@ -23,7 +23,7 @@
         {% endif %}
         {% if role == 'recruiter' %}
             {% if is_reply %}
-                <p class="fw-bold">Соискатель откликнулся на вашу вакансию! Почта для связи: <a href="mailto:{{ resume.owner.email }}">{{ resume.owner.email }}</a></p>
+                <p class="fw-bold">Соискатель откликнулся на вашу вакансию! Почта для связи: <a href="mailto:{{ object.owner.email }}">{{ object.owner.email }}</a></p>
             {% endif %}
         {% endif %}
 
@@ -63,7 +63,7 @@
                     <div class="form-block w-100">
                         {{ form_start(resume_form) }}
                         <div class="d-flex flex-row align-items-end">
-                            {{ form_row(resume_form.invites) }}
+                                {{ form_row(resume_form.invites) }}
                             <div class="ps-4">
                                 {{ form_row(resume_form.submit) }}
                             </div>
@@ -83,7 +83,7 @@
                 <h3 class="mt-4">{{ 'objects.relevant.full'|trans }}:</h3>
                 <div class="p-0 pt-1 mb-3 ms-0 container d-flex flex-column ">
                     {% for relevant in relevant_full|sort((a,b) => a.skills|length <=> b.skills|length)|reverse|sort((a,b) => a.salary <=> b.salary) %}
-                        {% include '_object_card_small.html.twig' with {'object': relevant} %}
+                        {% include 'object/elements/_object_card_small.html.twig' with {'object': relevant} %}
                     {% endfor %}
                 </div>
             </div>
@@ -91,7 +91,7 @@
                 <h3 class="mt-4">{{ 'objects.relevant.partly'|trans }}:</h3>
                 <div class="p-0 pt-1 mb-3 ms-0 container d-flex flex-column ">
                     {% for relevant in relevant_partial|sort((a,b) => a.skills|length <=> b.skills|length)|reverse|sort((a,b) => a.salary <=> b.salary) %}
-                        {% include '_object_card_small.html.twig' with {'object': relevant} %}
+                        {% include 'object/elements/_object_card_small.html.twig' with {'object': relevant} %}
                     {% endfor %}
                 </div>
             </div>

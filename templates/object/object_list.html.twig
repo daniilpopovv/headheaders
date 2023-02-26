@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ title|trans }}{% endblock %}
 
 {% block body %}
     <div class="p-3 mb-3 container-sm">
@@ -9,7 +9,7 @@
         <div class="d-flex justify-content-between">
             <div class="w-50">
                 {% for object in objects|sort((a,b) => a.salary <=> b.salary)|reverse|sort((a,b) => a.salary <=> b.salary) %}
-                    {% include '_object_card_full.html.twig' with {'object': object} %}
+                    {% include 'object/elements/_object_card_full.html.twig' with {'object': object} %}
                 {% endfor %}
             </div>
 

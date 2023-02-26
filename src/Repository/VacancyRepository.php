@@ -69,7 +69,7 @@ class VacancyRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function searchByOwner(?User $user): array
+    public function findByOwner(?User $user): array
     {
         return $this->findBy(['owner' => $user]);
     }
