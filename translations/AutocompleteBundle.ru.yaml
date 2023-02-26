@@ -14,13 +14,13 @@ negotiation:
             no_more_results_text: 'Больше резюме нет'
             no_results_found_text: 'Резюме не найдено'
 
-resume:
+resumes:
     form:
         skills:
             no_more_results_text: 'Больше навыков нет'
             no_results_found_text: 'Навык не найден'
 
-vacancy:
+vacancies:
     form:
         skills:
             no_more_results_text: 'Больше навыков нет'
