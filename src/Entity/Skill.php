@@ -20,17 +20,17 @@ class Skill
 
     #[ORM\Column(nullable: false)]
     #[Assert\NotBlank(
-        message: 'constraints.skill.name.notBlank'
+        message: 'skill.name.notBlank'
     )]
     #[Assert\Regex(
         pattern: '/[А-яёЁA-z0-9\-\–\—\s\!]+/',
-        message: 'constraints.skill.name.regex'
+        message: 'skill.name.regex'
     )]
     #[Assert\Length(
         min: 1,
         max: 50,
-        minMessage: 'constraints.skill.name.length.minMessage',
-        maxMessage: 'constraints.skill.name.length.maxMessage',
+        minMessage: 'skill.name.length.minMessage',
+        maxMessage: 'skill.name.length.maxMessage',
     )]
     private ?string $name = null;
 
