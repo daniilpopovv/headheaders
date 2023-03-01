@@ -34,10 +34,10 @@ class VacancyController extends AbstractController
         $vacancies = match (true) {
             $searchForm->isSubmitted() && $searchForm->isValid() =>
             $objectsSearchService->search(
-                repository: $vacancyRepository,
-                queryText: $searchForm->get('query_text')->getViewData(),
-                querySkills: $searchForm->get('query_skills')->getViewData(),
-                withAdditionalSkills: true
+                $vacancyRepository,
+                $searchForm->get('query_text')->getViewData(),
+                $searchForm->get('query_skills')->getViewData(),
+                true
             )['full'],
             default => $vacancyRepository->findAll()
         };
@@ -46,7 +46,7 @@ class VacancyController extends AbstractController
             'objects' => $vacancies,
             'search_form' => $searchForm->createView(),
             'path_link' => 'viewVacancy',
-            'title' => 'vacancies.title.page.all',
+            'title' => 'vacancy.title.page.all',
         ]);
     }
 
@@ -67,7 +67,7 @@ class VacancyController extends AbstractController
 
         return $this->render('object/object_actions.html.twig', [
             'action_form' => $form->createView(),
-            'title' => 'vacancies.title.page.create',
+            'title' => 'vacancy.title.page.create',
         ]);
     }
 
@@ -90,7 +90,7 @@ class VacancyController extends AbstractController
 
         return $this->render('object/object_actions.html.twig', [
             'action_form' => $form->createView(),
-            'title' => 'vacancies.title.page.edit',
+            'title' => 'vacancy.title.page.edit',
         ]);
     }
 
@@ -101,7 +101,7 @@ class VacancyController extends AbstractController
         return $this->render('object/object_list.html.twig', [
             'objects' => $vacancyRepository->findByOwner($this->getUser()),
             'path_link' => 'viewVacancy',
-            'title' => 'vacancies.title.page.my',
+            'title' => 'vacancy.title.page.my',
         ]);
     }
 

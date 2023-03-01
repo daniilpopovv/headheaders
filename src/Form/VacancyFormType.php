@@ -21,17 +21,17 @@ class VacancyFormType extends AbstractType
     {
         $builder
             ->add('specialization', TextType::class, [
-                'label' => 'vacancies.form.specialization.label',
+                'label' => 'vacancy.form.specialization.label',
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'vacancies.form.description.label',
+                'label' => 'vacancy.form.description.label',
                 'required' => false,
             ])
             ->add('salary', NumberType::class, [
-                'label' => 'vacancies.form.salary.label',
+                'label' => 'vacancy.form.salary.label',
             ])
             ->add('skills', EntityType::class, [
-                'label' => 'vacancies.form.skills.label',
+                'label' => 'vacancy.form.skills.label',
                 'class' => Skill::class,
                 'multiple' => true,
                 'autocomplete' => true,
@@ -40,7 +40,7 @@ class VacancyFormType extends AbstractType
                 'required' => false,
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'vacancies.form.submit.label',
+                'label' => 'vacancy.form.submit.label',
                 'attr' => ['class' => 'w-100 mt-3']
             ]);
     }

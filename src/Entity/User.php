@@ -16,11 +16,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(
     fields: ['username'],
-    message: 'Пользователь с таким логином уже существует',
+    message: 'user.uniqueEntity.username',
 )]
 #[UniqueEntity(
     fields: ['email'],
-    message: 'Пользователь с такой почтой уже существует',
+    message: 'user.uniqueEntity.email',
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -30,16 +30,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(unique: true)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(
+        message: 'user.username.notBlank'
+    )]
     #[Assert\Regex(
-        pattern: '/[a-zA-Z0-9]+/',
-        message: 'Логин должен состоять только из латинских букв и цифр.'
+        pattern: '/[A-z0-9]+/',
+        message: 'user.username.regex'
     )]
     #[Assert\Length(
         min: 4,
         max: 20,
-        minMessage: 'Логин должен содержать минимум {{ limit }} символа.',
-        maxMessage: 'Длина логина не должна превышать {{ limit }} символов.',
+        minMessage: 'user.username.length.minMessage',
+        maxMessage: 'user.username.length.maxMessage',
     )]
     private ?string $username = null;
 
@@ -53,27 +55,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(nullable: false)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(
+        message: 'user.fullName.notBlank'
+    )]
     #[Assert\Regex(
-        pattern: '/[а-яА-ЯёЁa-zA-Z0-9\-\–\—\s]+/',
-        message: 'ФИО может содержать только латинские и кириллические буквы, тире'
+        pattern: '/[А-яёЁA-z0-9\-\–\—\s]+/',
+        message: 'user.fullName.regex'
     )]
     #[Assert\Length(
-        min: 4,
-        max: 100,
-        minMessage: 'ФИО должно состоять минимум из {{ limit }} символов.',
-        maxMessage: 'ФИО не должно превышать {{ limit }} символов.',
+        min: 5,
+        max: 60,
+        minMessage: 'user.fullName.length.minMessage',
+        maxMessage: 'user.fullName.length.maxMessage',
     )]
     private ?string $fullName = null;
 
     #[ORM\Column(nullable: false)]
-    #[Assert\NotBlank]
-    #[Assert\Email]
-    #[Assert\Length(
-        min: 6,
-        max: 50,
-        minMessage: 'Email должен состоять минимум из {{ limit }} символов.',
-        maxMessage: 'Email не должен превышать {{ limit }} символов.',
+    #[Assert\NotBlank(
+        message: 'user.email.notBlank'
+    )]
+    #[Assert\Email(
+        message: 'user.email.type'
     )]
     private ?string $email = null;
 

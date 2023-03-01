@@ -19,16 +19,18 @@ class Resume
     private ?int $id = null;
 
     #[ORM\Column(nullable: false)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(
+        message: 'vacancy.specialization.notBlank'
+    )]
     #[Assert\Regex(
-        pattern: '/[а-яА-ЯёЁa-zA-Z0-9\.\s]+/',
-        message: 'Название специальности может содержать только латинские и кириллические буквы, точки и цифры.'
+        pattern: '/[А-яёЁA-z0-9\.\s]+/',
+        message: 'vacancy.specialization.regex'
     )]
     #[Assert\Length(
         min: 3,
         max: 100,
-        minMessage: 'Название специальности должно содержать минимум {{ limit }} символа.',
-        maxMessage: 'Название специальности не должно превышать {{ limit }} символов.',
+        minMessage: 'vacancy.specialization.length.minMessage',
+        maxMessage: 'vacancy.specialization.length.maxMessage',
     )]
     private ?string $specialization = null;
 
@@ -36,26 +38,22 @@ class Resume
     #[ORM\Column(nullable: true)]
     #[Assert\Length(
         max: 2000,
-        maxMessage: 'Описание резюме не должно превышать {{ limit }} символов.',
+        maxMessage: 'vacancy.description.length.maxMessage',
     )]
     private ?string $description = null;
 
     #[ORM\Column(nullable: false)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(
+        message: 'vacancy.salary.notBlank'
+    )]
     #[Assert\Type(
         type: 'integer',
-        message: 'Пожалуйста, введите целое число',
+        message: 'vacancy.salary.type',
     )]
     #[Assert\Range(
-        notInRangeMessage: 'Зарплата должна быть в диапазоне от 13 890 до 2 000 000 рублей.',
+        notInRangeMessage: 'vacancy.salary.range.notInRangeMessage',
         min: 13890,
         max: 2000000,
-    )]
-    #[Assert\Length(
-        min: 5,
-        max: 8,
-        minMessage: 'Зарплата должна содержать минимум {{ limit }} символов.',
-        maxMessage: 'Зарплата не должна превышать {{ limit }} символов.',
     )]
     private ?int $salary = null;
 

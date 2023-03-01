@@ -21,26 +21,26 @@ class ResumeFormType extends AbstractType
     {
         $builder
             ->add('specialization', TextType::class, [
-                'label' => 'resumes.form.specialization.label',
+                'label' => 'resume.form.specialization.label',
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'resumes.form.description.label',
+                'label' => 'resume.form.description.label',
                 'required' => false,
             ])
             ->add('salary', NumberType::class, [
-                'label' => 'resumes.form.salary.label',
+                'label' => 'resume.form.salary.label',
             ])
             ->add('skills', EntityType::class, [
-                'label' => 'resumes.form.skills.label',
+                'label' => 'resume.form.skills.label',
                 'class' => Skill::class,
                 'multiple' => true,
                 'autocomplete' => true,
-                'no_more_results_text' => 'resumes.form.skills.no_more_results_text',
-                'no_results_found_text' => 'resumes.form.skills.no_results_found_text',
+                'no_more_results_text' => 'resume.form.skills.no_more_results_text',
+                'no_results_found_text' => 'resume.form.skills.no_results_found_text',
                 'required' => false,
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'resumes.form.submit.label',
+                'label' => 'resume.form.submit.label',
                 'attr' => ['class' => 'w-100 mt-3']
             ]);
     }

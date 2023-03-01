@@ -14,7 +14,7 @@ base:
     admin:
         link: 'Админка'
 
-objects:
+object:
     currency: 'руб.'
     open:
         button: 'Открыть'
@@ -23,7 +23,7 @@ objects:
         partly: 'Частично совпадающие'
     contacts: 'Контакты'
 
-resumes:
+resume:
     title:
         link:
             all: 'Резюме'

@@ -19,16 +19,18 @@ class Company
     private ?int $id = null;
 
     #[ORM\Column(nullable: false)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(
+        message: 'company.name.notBlank'
+    )]
     #[Assert\Regex(
-        pattern: '/[а-яА-ЯёЁa-zA-Z0-9\.\s]+/',
-        message: 'Название компании может содержать только латинские и кириллические буквы, точки и цифры.'
+        pattern: '/[А-яёЁA-z0-9\.\s]+/',
+        message: 'company.name.regex'
     )]
     #[Assert\Length(
         min: 3,
         max: 60,
-        minMessage: 'Название компании должно содержать минимум {{ limit }} символов.',
-        maxMessage: 'Название компании не может быть больше {{ limit }} символов.',
+        minMessage: 'company.name.length.minMessage',
+        maxMessage: 'company.name.length.maxMessage',
     )]
     private ?string $name = null;
 

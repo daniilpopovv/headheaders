@@ -14,7 +14,7 @@ negotiation:
             no_more_results_text: 'Больше резюме нет'
             no_results_found_text: 'Резюме не найдено'
 
-resumes:
+resume:
     form:
         skills:
             no_more_results_text: 'Больше навыков нет'

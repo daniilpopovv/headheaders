@@ -20,18 +20,18 @@ class ObjectsSearchService
         $qb = $repository->createQueryBuilder('o');
 
         if ($queryText) {
-            $this->searchByText(qb: $qb, queryText: $queryText);
+            $this->searchByText($qb, $queryText);
         }
 
         if ($querySkills) {
-            $this->searchPartialInterception(qb: $qb, querySkills: $querySkills);
+            $this->searchPartialInterception($qb, $querySkills);
         }
 
         $relevantObjects['partial'] = $qb->getQuery()->getResult();
         $relevantObjects['full'] = $this->extractFullInterception(
-            partialRelevantObjects: $relevantObjects['partial'],
-            querySkills: $querySkills,
-            withAdditionalSkills: $withAdditionalSkills
+            $relevantObjects['partial'],
+            $querySkills,
+            $withAdditionalSkills
         );
 
         return $relevantObjects;

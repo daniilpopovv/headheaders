@@ -80,7 +80,7 @@
 
         <div class="d-flex justify-content-between">
             <div class="w-50 me-3">
-                <h3 class="mt-4">{{ 'objects.relevant.full'|trans }}:</h3>
+                <h3 class="mt-4">{{ 'object.relevant.full'|trans }}:</h3>
                 <div class="p-0 pt-1 mb-3 ms-0 container d-flex flex-column ">
                     {% for relevant in relevant_full|sort((a,b) => a.skills|length <=> b.skills|length)|reverse|sort((a,b) => a.salary <=> b.salary) %}
                         {% include 'object/elements/_object_card_small.html.twig' with {'object': relevant} %}
@@ -88,7 +88,7 @@
                 </div>
             </div>
             <div class="w-50 ms-3">
-                <h3 class="mt-4">{{ 'objects.relevant.partly'|trans }}:</h3>
+                <h3 class="mt-4">{{ 'object.relevant.partly'|trans }}:</h3>
                 <div class="p-0 pt-1 mb-3 ms-0 container d-flex flex-column ">
                     {% for relevant in relevant_partial|sort((a,b) => a.skills|length <=> b.skills|length)|reverse|sort((a,b) => a.salary <=> b.salary) %}
                         {% include 'object/elements/_object_card_small.html.twig' with {'object': relevant} %}

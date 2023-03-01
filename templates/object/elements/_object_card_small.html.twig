@@ -13,9 +13,9 @@
         <hr/>
 
         <div class="d-flex justify-content-between align-items-center">
-            <p class="salary m-0">{{ object.salary|number_format(thousandSep = ' ') }} {{ 'objects.currency'|trans }}</p>
+            <p class="salary m-0">{{ object.salary|number_format(thousandSep = ' ') }} {{ 'object.currency'|trans }}</p>
 
-            <a href="{{ path(path_link, { id: object.id }) }}" class="btn btn-primary">{{ 'objects.open.button'|trans }}</a>
+            <a href="{{ path(path_link, { id: object.id }) }}" class="btn btn-primary">{{ 'object.open.button'|trans }}</a>
         </div>
     </div>
 </div>

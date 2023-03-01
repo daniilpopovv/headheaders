@@ -35,10 +35,10 @@ class ResumeController extends AbstractController
         $resumes = match (true) {
             $searchForm->isSubmitted() && $searchForm->isValid() =>
             $objectsSearchService->search(
-                repository: $resumeRepository,
-                queryText: $searchForm->get('query_text')->getViewData(),
-                querySkills: $searchForm->get('query_skills')->getViewData(),
-                withAdditionalSkills: true
+                $resumeRepository,
+                $searchForm->get('query_text')->getViewData(),
+                $searchForm->get('query_skills')->getViewData(),
+                true
             )['full'],
             default => $resumeRepository->findAll()
         };
@@ -47,7 +47,7 @@ class ResumeController extends AbstractController
             'objects' => $resumes,
             'search_form' => $searchForm,
             'path_link' => 'viewResume',
-            'title' => 'resumes.title.page.all',
+            'title' => 'resume.title.page.all',
         ]);
     }
 
@@ -68,7 +68,7 @@ class ResumeController extends AbstractController
 
         return $this->render('object/object_actions.html.twig', [
             'action_form' => $form->createView(),
-            'title' => 'resumes.title.page.create',
+            'title' => 'resume.title.page.create',
         ]);
     }
 
@@ -91,7 +91,7 @@ class ResumeController extends AbstractController
 
         return $this->render('object/object_actions.html.twig', [
             'action_form' => $form->createView(),
-            'title' => 'resumes.title.page.edit',
+            'title' => 'resume.title.page.edit',
         ]);
     }
 
@@ -102,7 +102,7 @@ class ResumeController extends AbstractController
         return $this->render('object/object_list.html.twig', [
             'objects' => $resumeRepository->findByOwner($this->getUser()),
             'path_link' => 'viewResume',
-            'title' => 'resumes.title.page.my',
+            'title' => 'resume.title.page.my',
         ]);
     }
 

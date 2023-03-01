@@ -19,16 +19,18 @@ class Skill
     private ?int $id = null;
 
     #[ORM\Column(nullable: false)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(
+        message: 'constraints.skill.name.notBlank'
+    )]
     #[Assert\Regex(
-        pattern: '/[а-яА-ЯёЁa-zA-Z0-9\-\–\—\s\!]+/',
-        message: 'Название навыка содержит недопустимые символы'
+        pattern: '/[А-яёЁA-z0-9\-\–\—\s\!]+/',
+        message: 'constraints.skill.name.regex'
     )]
     #[Assert\Length(
         min: 1,
         max: 50,
-        minMessage: 'Название навыка должно содержать минимум {{ limit }} символ.',
-        maxMessage: 'Название навыка не может быть больше {{ limit }} символов.',
+        minMessage: 'constraints.skill.name.length.minMessage',
+        maxMessage: 'constraints.skill.name.length.maxMessage',
     )]
     private ?string $name = null;
 
