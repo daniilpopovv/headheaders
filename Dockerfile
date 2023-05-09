@@ -16,7 +16,6 @@ RUN composer install -n \
     --no-autoloader \
     --no-scripts \
     --no-suggest
-#добавить для прода --no-dev
 
 FROM node:18.3-alpine AS assets
 WORKDIR /app/

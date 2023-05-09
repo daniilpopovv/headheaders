@@ -45,7 +45,7 @@ resume:
         submit:
             label: 'Отправить'
 
-vacancies:
+vacancy:
     title:
         link:
             all: 'Вакансии'

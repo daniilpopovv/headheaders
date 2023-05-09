@@ -11,6 +11,6 @@ HeadHeaders - аналог проекта HeadHunter.
 
 
 ### Запуск:
-```
+```shell
 docker-compose up --build
 ```
