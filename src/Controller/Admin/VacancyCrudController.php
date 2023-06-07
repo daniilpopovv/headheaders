@@ -28,7 +28,7 @@ class VacancyCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('crud.vacancy.entity_label.singular')
             ->setEntityLabelInPlural('crud.vacancy.entity_label.plural')
-            ->setSearchFields(['specialization', 'owner', 'description'])
+            ->setSearchFields(['specialization', 'owner.name', 'description'])
             ->setDefaultSort(['owner' => 'ASC']);
     }
 
